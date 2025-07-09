@@ -1,11 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Mi app Electron</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FarmStock</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <h1>¡Funciona Electron!</h1>
-  <h2>freddy es una loca</h2>
+  <div class="container">
+    <aside class="sidebar">
+      <h2>🌱 FarmStock</h2>
+      <ul>
+        <li onclick="mostrarSeccion('registro')">Registro Herramientas</li>
+        <li onclick="mostrarSeccion('historial')">Historial</li>
+        <li onclick="mostrarSeccion('inventario')">Inventario</li>
+        <li onclick="mostrarSeccion('notificaciones')">Notificaciones</li>
+        <li onclick="mostrarSeccion('estadisticas')">Estadísticas</li>
+      </ul>
+    </aside>
+
+    <main class="contenido">
+      <section id="registro" class="seccion visible">
+        <h1>Registro de Herramientas</h1>
+        <!-- Aquí luego metemos el formulario como en tu imagen -->
+      </section>
+
+      <section id="historial" class="seccion">Historial</section>
+      <section id="inventario" class="seccion">Inventario</section>
+      <section id="notificaciones" class="seccion">Notificaciones</section>
+      <section id="estadisticas" class="seccion">Estadísticas</section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
