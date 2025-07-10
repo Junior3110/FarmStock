@@ -16,7 +16,6 @@ const edad = 9; // siempre va a valer lo mismo por eso es usado para cosas const
 }
 
 console.log("Hola desde sintaxis.js");
-
 METODO MATH
 
 let numeroRamdom = Math.random();
@@ -24,6 +23,27 @@ console.log(numeroRamdom);
 
 */ 
 
+/*  cadena de texto -----
 let nombre = "junior"; 
 let apellido = "diaz"; 
 console.log(nombre + " " + apellido); 
+
+*/ 
+// prompt() no se puede usar en node 
+
+const prompt = require('prompt-sync')();
+let nombre = prompt("Ingresa su nombre: "); 
+
+
+let mayor = true;
+while (mayor){ 
+  let numero = Number(prompt("Ingresa tu edad "));
+  if (numero > 18){ 
+  console.log(nombre, "Es mayor de edad"); 
+  mayor = false; 
+}else{
+  console.log(nombre, "Es menor de edad");
+  
+}
+
+}
