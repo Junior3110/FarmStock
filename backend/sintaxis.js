@@ -38,7 +38,7 @@ let nombre = prompt("Ingresa su nombre: ");
 let mayor = true;
 while (mayor){ 
   let numero = Number(prompt("Ingresa tu edad "));
-  if (numero > 18){ 
+  if (numero >= 18){ 
   console.log(nombre, "Es mayor de edad"); 
   mayor = false; 
 }else{
