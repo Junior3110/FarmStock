@@ -2,53 +2,66 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 body, html {
   height: 100%;
 }
 
+header {
+  display: flex;
+}
+
 .container {
   display: flex;
   height: 100vh;
+  margin-bottom: 10px;
 }
 
 .sidebar {
   width: 250px;
   background-color: #f4f4f4;
   padding: 20px;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo h2 {
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.logo img {
+  width: 50px;
+  margin-right: 0px;
+}
+
+
+
 .sidebar h2 {
-  margin-bottom: 20px;
+ margin-right: 40px;
 }
 
 .sidebar ul {
   list-style: none;
+  margin-top: 100px;
 }
 
 .sidebar ul li {
-  margin-bottom: 15px;
+  margin-bottom: 30px;
   cursor: pointer;
   color: #333;
+  transition: 0.3s;
+  font-weight: 900;
 }
 
 .sidebar ul li:hover {
   color: green;
   font-weight: bold;
-}
-
-.contenido {
-  flex: 1;
-  padding: 20px;
-}
-
-.seccion {
-  display: none;
-}
-
-.visible {
-  display: block;
 }

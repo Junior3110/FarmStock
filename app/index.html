@@ -2,35 +2,34 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FarmStock</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
 </head>
 <body>
-  <div class="container">
-    <aside class="sidebar">
-      <h2>🌱 FarmStock</h2>
-      <ul>
-        <li onclick="mostrarSeccion('registro')">Registro Herramientas</li>
-        <li onclick="mostrarSeccion('historial')">Historial</li>
-        <li onclick="mostrarSeccion('inventario')">Inventario</li>
-        <li onclick="mostrarSeccion('notificaciones')">Notificaciones</li>
-      </ul>
-    </aside>
-
-    <main class="contenido">
-      <section id="registro" class="seccion visible">
-        <h1>Registro de Herramientas</h1>
-        <!-- Aquí luego metemos el formulario como en tu imagen -->
-      </section>
-
-      <section id="historial" class="seccion">Historial</section>
-      <section id="inventario" class="seccion">Inventario</section>
-      <section id="notificaciones" class="seccion">Notificaciones</section>
-      <section id="estadisticas" class="seccion">Estadísticas</section>
-    </main>
-  </div>
+  <header>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">
+          <img src="/FarmStock/app/imagenes/logo FarmStock.png" alt="Logo FarmStock" />
+          <h2>FarmStock</h2>
+        </div>
+        <ul>
+          <li onclick="mostrarSeccion('registro')">Registro Herramientas</li>
+          <li onclick="mostrarSeccion('historial')">Historial</li>
+          <li onclick="mostrarSeccion('inventario')">Inventario</li>
+          <li onclick="mostrarSeccion('notificaciones')">Notificaciones</li>
+          <li onclick="mostrarSeccion('estadisticas')">Estadísticas</li>
+        </ul>
+      </aside>
+    </div>
+  </header>
 
   <script src="script.js"></script>
 </body>
 </html>
+
