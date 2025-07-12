@@ -65,3 +65,30 @@ header {
   color: green;
   font-weight: bold;
 }
+
+.container {
+  display: flex;
+}
+
+.main-content {
+  flex: 1; 
+  padding: 20px;
+}
+.foto-usuario {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.bienvenida { 
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+} /* para poner el nombre de usuario al lado de la foto de usuario */
+
+.main-content { 
+  flex: 1;
+  padding: 20px;
+}
