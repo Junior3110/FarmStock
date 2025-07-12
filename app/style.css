@@ -7,16 +7,12 @@
 
 body, html {
   height: 100%;
-}
-
-header {
-  display: flex;
+  background-color: #e6e6e6;
 }
 
 .container {
   display: flex;
   height: 100vh;
-  margin-bottom: 10px;
 }
 
 .sidebar {
@@ -32,29 +28,23 @@ header {
   justify-content: center;
 }
 
+.logo img {
+  width: 50px;
+  margin-right: 5px;
+}
+
 .logo h2 {
   font-size: 24px;
   font-weight: 900;
 }
 
-.logo img {
-  width: 50px;
-  margin-right: 0px;
-}
-
-
-
-.sidebar h2 {
- margin-right: 40px;
-}
-
 .sidebar ul {
   list-style: none;
-  margin-top: 100px;
+  margin-top: 80px;
 }
 
 .sidebar ul li {
-  margin-bottom: 30px;
+  margin-bottom: 25px;
   cursor: pointer;
   color: #333;
   transition: 0.3s;
@@ -63,32 +53,106 @@ header {
 
 .sidebar ul li:hover {
   color: green;
-  font-weight: bold;
-}
-
-.container {
-  display: flex;
 }
 
 .main-content {
-  flex: 1; 
-  padding: 20px;
+  flex: 1;
+  padding: 20px 30px;
 }
+
 .foto-usuario {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   object-fit: cover;
   margin-right: 10px;
 }
 
-.bienvenida { 
+.bienvenida {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-} /* para poner el nombre de usuario al lado de la foto de usuario */
+}
 
-.main-content { 
-  flex: 1;
-  padding: 20px;
+.formulario-herramienta {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  width: 90%;
+  max-width: 1100px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.grupo-campos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+.campo {
+  flex: 1 1 250px;
+  display: flex;
+  flex-direction: column;
+}
+
+.campo label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.campo select,
+.campo input[type="date"],
+textarea {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+  background-color: #f5f5f5;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: "Roboto", sans-serif;
+}
+
+.grupo-descripcion {
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.grupo-descripcion textarea {
+  width: 100%;
+}
+
+.grupo-descripcion label {
+  font-weight: bold;
+}
+
+button[type="submit"] {
+  width: 140px;
+  align-self: flex-end;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 10px;
+  background-color: #99c296;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+}
+
+button[type="submit"]:hover {
+  background-color: #7ca879;
 }

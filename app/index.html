@@ -8,11 +8,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
 </head>
 <body>
   <header>
     <div class="container">
+
+      <!-- Barra lateral -->
       <aside class="sidebar">
         <div class="logo">
           <img src="imagenes/logo_FarmStock.png" alt="Logo FarmStock" />
@@ -26,23 +27,28 @@
           <li onclick="mostrarSeccion('estadisticas')">Estadísticas</li>
         </ul>
       </aside>
-       <div class = "main-content">
-          <div class="bienvenida">
-            <img src="imagenes/fotoPerfil.jpg" alt="Foto de usuario" class= "foto-usuario"> 
-            <p><strong> ¡Hola María! </strong></p>
-          </div>
-          <div class="formulario-herramienta">
+
+      <!-- Contenido principal -->
+      <div class="main-content">
+        <div class="bienvenida">
+          <img src="imagenes/fotoPerfil.jpg" alt="Foto de usuario" class="foto-usuario">
+          <p><strong>¡Hola María!</strong></p>
+        </div>
+
+        <!-- Formulario -->
+        <div class="formulario-herramienta">
           <form>
             <div class="grupo-campos">
               <div class="campo">
-                <label for="nombre"> nombre de herramienta</label>
+                <label for="nombre">Nombre de herramienta</label>
                 <select id="nombre" name="nombre">
-                  <option value="">seleccionar</option>
+                  <option value="">Seleccionar</option>
                   <option value="motosierra">Motosierra</option>
                   <option value="pico">Pico</option>
                   <option value="pala">Pala</option>
-                </select>"
+                </select>
               </div>
+
               <div class="campo">
                 <label for="estado">Estado</label>
                 <select id="estado" name="estado">
@@ -52,6 +58,48 @@
                   <option value="no_disponible">No disponible</option>
                 </select>
               </div>
+            </div>
+
+            <div class="grupo-campos">
+              <div class="campo">
+                <label for="tipo">Tipo</label>
+                <select id="tipo" name="tipo">
+                  <option value="">Seleccionar</option>
+                  <option value="manual">Manual</option>
+                  <option value="electrica">Eléctrica</option>
+                </select>
+              </div>
+
+              <div class="campo">
+                <label for="ubicacion">Ubicación</label>
+                <select id="ubicacion" name="ubicacion">
+                  <option value="">Seleccionar</option>
+                  <option value="bodega1">Bodega 1</option>
+                  <option value="bodega2">Bodega 2</option>
+                </select>
+              </div>
+
+              <div class="campo">
+                <label for="fecha">Fecha de ingreso</label>
+                <input type="date" id="fecha" name="fecha">
+              </div>
+
+              <div class="campo">
+                <label for="lote">Número de Lote</label>
+                <select id="lote" name="lote">
+                  <option value="">Seleccionar</option>
+                  <option value="lote1">Lote 1</option>
+                  <option value="lote2">Lote 2</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grupo-descripcion">
+              <label for="descripcion">Descripción de herramienta</label>
+              <textarea id="descripcion" name="descripcion" rows="4" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
+
+              <button type="submit">Registrar</button>
+            </div>
           </form>
         </div>
       </div>
@@ -61,4 +109,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
