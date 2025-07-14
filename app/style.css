@@ -22,6 +22,19 @@ body, html {
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
+.logo-green {
+    color: #2ecc71;
+    font-weight: 900;
+    font-size: 20px;
+}
+
+.logo-black {
+    color: #000;
+    font-weight: 900;
+    font-size: 20px;
+}
+
+
 .logo {
   display: flex;
   align-items: center;
