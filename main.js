@@ -3,15 +3,15 @@ const path = require('path');
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1920,
-    height: 1080,
+    width: 1280,
+    height: 720,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
     }
   });
 
-  win.loadFile(path.join(__dirname, 'app', 'index.html'));
+  win.loadFile(path.join(__dirname, 'app', 'login.html'));
 }
 
 app.whenReady().then(createWindow);
