@@ -10,7 +10,7 @@ function createWindow() {
       contextIsolation: false
     }
   });
-
+  win.webContents.openDevTools();
   win.loadFile(path.join(__dirname, 'app', 'login.html'));
 }
 

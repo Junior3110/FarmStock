@@ -40,8 +40,9 @@ body, html {
 
 
 .logo img {
-    width: 50px;
-    margin-right: 5px;
+    width: 100px;
+    margin-right: 0px;
+    margin-bottom: 0px;
 }
 
 .logo-green {
