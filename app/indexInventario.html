@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+  <title>FarmStock</title>
+  <link rel="stylesheet" href="Iventario.css">
+</head>
+
+<body>
+  <div class="contenedor-principal">
+    <!-- Menú lateral con logo arriba -->
+    <nav class="menu-lateral">
+      <header class="logo-encabezado">
+        <img src="imagenes/Logo.png" alt="Logo del sitio" width="257" height="86" />
+      </header>
+      <ul>
+        <li><a href="#">Registro Herramientas</a></li>
+        <li><a href="#">Historial de Herramientas</a></li>
+        <li><a class="activo" href="#">Inventario</a></li>
+        <li><a href="#">Notificaciones</a></li>
+        <li><a href="#">Estadísticas</a></li>
+      </ul>
+    </nav>
+
+    <!-- Panel gris de contenido -->
+    <div class="contenido-central">
+      <!-- Usuario arriba del panel gris -->
+      <div class="usuario-info">
+        <img src="imagenes/Maria.png" alt="Foto de Maria" class="foto-usuario">
+        <span>¡Hola Maria!</span>
+      </div>
+      <!-- Panel blanco -->
+      <div class="cuadro-visual">
+        <div class="encabezado-panel">
+          <h2>Inventario</h2>
+          <div class="menu-verde-completo">
+            <span class="menu-verde-label">Ver desde</span>
+            <select class="menu-verde-select">
+              <option>3 meses</option>
+              <!-- más opciones -->
+            </select>
+          </div>
+        </div>
+        <p>Contenido del inventario aquí...</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
