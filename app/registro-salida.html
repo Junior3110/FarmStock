@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FarmStock Panel</title>
+    <link rel="stylesheet" href="/FarmStock/app/registro-salida.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+    <aside class="sidebar">
+        <div class="logo">
+            <span class="logo-green">Farm</span><span class="logo-black">Stock</span>
+        </div>
+    <nav>
+        <ul>
+            <li class="active">Registro Herramientas</li>
+            <li class="disabled">Historial de herramientas</li>
+            <li>Inventario</li>
+            <li>Notificaciones</li>
+            <li>Estadisticas</li>
+        </ul>
+    </nav>
+    <div class="footer">
+        <span>🌜 Modo noche</span>
+    </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <header class="header">
+            <div class="user-info">
+                <img src="img/usuario.jpg" alt="María" class="avatar">
+                <span>¡Hola María!</span>
+            </div>
+        </header>
+
+    <section class="registro">
+        <div class="registro-header">
+            <h2>Registro Salida</h2>
+            <div class="filtros">
+                <select><option>Cédula</option></select>
+                <select><option>Estado</option></select>
+                <select><option>Herramienta</option></select>
+                <button class="registrar">Registrar salida</button>
+            </div>
+        </div>
+
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th></th><th>ID</th><th>Nombre</th><th>Estado</th><th>C.C Aprendiz</th><th>Número Ficha</th><th>Fecha</th><th>Hora salida</th><th>Hora Entrada</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><input type="checkbox" /></td><td>1001</td><td>Pala</td><td>Bueno</td><td>1092525927</td><td>293007</td><td>14/02/2025</td><td>3:40 PM</td><td>5:30 PM</td></tr>
+                <tr><td><input type="checkbox" /></td><td>1002</td><td>Carretilla</td><td>Bueno</td><td>1091911309</td><td>293007</td><td>14/02/2025</td><td>4:36 PM</td><td>6:37 PM</td></tr>
+                <tr><td><input type="checkbox" /></td><td>1003</td><td>Pala</td><td>Bueno</td><td>1092525927</td><td>293007</td><td>14/02/2025</td><td>3:40 PM</td><td>5:30 PM</td></tr>
+                <tr><td><input type="checkbox" /></td><td>1004</td><td>Carretilla</td><td>Bueno</td><td>1091911309</td><td>293007</td><td>14/02/2025</td><td>4:36 PM</td><td>6:37 PM</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="estadistica">
+        <div class="buscador">
+            <input type="text" placeholder="Cesar Diaz">
+            <button>🔍</button>
+        </div>
+
+        <div class="contenido">
+            <div class="herramientas">
+                <h4>Herramienta</h4>
+            <ul>
+                <li><input type="checkbox" /> Motosierra - <span>2 unidades</span></li>
+                <li><input type="checkbox" checked /> <span class="verde">Picos</span> - <span>5 unidades</span></li>
+            </ul>
+                <button class="ver">Ver</button>
+            </div>
+
+        <div class="grafico">
+            <h4>Estadística de uso</h4>
+            <div class="placeholder-grafico">[Gráfico aquí]</div>
+        </div>
+        </div>
+    </section>
+    </main>
+</div>
+</body>
+</html>

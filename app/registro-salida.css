@@ -1,0 +1,221 @@
+
+
+body {
+margin: 0;
+font-family: 'Inter', sans-serif;
+background-color: #f5f5f5;
+}
+
+.container {
+display: flex;
+height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    background-color: white;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 1000;
+}
+
+.logo-green {
+    color: #27ae60;
+}
+
+.logo-black {
+    color: #000;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    padding: 10px 0;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.sidebar li.disabled {
+    color: #ccc;
+}
+
+.sidebar li.active {
+    color: #000;
+}
+
+.footer {
+    font-size: 14px;
+    color: #444;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 10px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Registro */
+.registro {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.registro-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.filtros select,
+.filtros button {
+    margin-left: 10px;
+    padding: 6px 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-weight: 500;
+}
+
+.registrar {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/* Tabla */
+.tabla {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla thead {
+    background-color: #f0f0f0;
+    font-weight: 600;
+}
+
+.tabla th,
+.tabla td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Estadistica */
+.estadistica {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Buscador */
+.buscador {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.buscador input {
+    padding: 8px;
+    flex: 1;
+    border-radius: 5px 0 0 5px;
+    border: 1px solid #ccc;
+}
+
+.buscador button {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    background: #eaeaea;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+/* Contenido */
+.contenido {
+    display: flex;
+    gap: 20px;
+}
+
+/* Herramientas */
+.herramientas {
+    flex: 1;
+}
+
+.herramientas ul {
+    list-style: none;
+    padding: 0;
+}
+
+.herramientas li {
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+/* Utilidades */
+.verde {
+    color: #27ae60;
+    font-weight: 600;
+}
+
+.ver {
+    margin-top: 10px;
+    padding: 6px 12px;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Grafico */
+.grafico {
+    flex: 1;
+}
+
+.placeholder-grafico {
+    background-color: #f9f9f9;
+    height: 160px;
+    border: 1px dashed #ccc;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-style: italic;
+}

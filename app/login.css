@@ -30,19 +30,19 @@ body, html {
     background-position: center;
 }
 
+
 .logo {
     font-size: 3rem;
     margin-bottom: 30px;
+    margin-right: 20px;
     display: flex;
-    align-items: flex-start;
-    gap: 10px;
+    align-items: center;
+    gap: 0px; /* Espacio pequeño entre logo e título */
 }
 
-
 .logo img {
-    width: 100px;
-    margin-right: 0px;
-    margin-bottom: 0px;
+    width: 110px; /* Ajusta el tamaño si es necesario */
+    margin: 0;
 }
 
 .logo-green {
@@ -58,6 +58,8 @@ body, html {
 h1 {
     margin-bottom: 50px;
     font-size: 3.5rem;
+    font-weight: 740;
+    letter-spacing: -2px;
 }
 
 label {
