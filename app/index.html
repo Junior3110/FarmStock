@@ -10,102 +10,75 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <div class="container">
-
-      <!-- Barra lateral -->
-      <aside class="sidebar">
-        <div class="logo">
-          <img src="imagenes/logo_FarmStock.png" alt="Logo FarmStock" />
-          <span class="logo-green">Farm</span><span class="logo-black">Stock</span>
-        </div>
-        <ul>
-          <li onclick="mostrarSeccion('registro')">Registro Herramientas</li>
-          <li onclick="mostrarSeccion('historial')">Historial</li>
-          <li onclick="mostrarSeccion('inventario')">Inventario</li>
-          <li onclick="mostrarSeccion('notificaciones')">Notificaciones</li>
-          <li onclick="mostrarSeccion('estadisticas')">Estadísticas</li>
-        </ul>
-      </aside>
-
-      <!-- Contenido principal -->
-      <div class="main-content">
-        <div class="bienvenida">
-          <img src="imagenes/maria_vuelve.jpg" alt="Foto de usuario" class="foto-usuario">
-          <p><strong>¡Hola María!</strong></p>
-        </div>
-
-        <!-- Formulario -->
-        <div class="formulario-herramienta">
-          <form>
-            <div class="grupo-campos">
-              <div class="campo">
-                <label for="nombre">Nombre de herramienta</label>
-                <select id="nombre" name="nombre">
-                  <option value="">Seleccionar</option>
-                  <option value="motosierra">Motosierra</option>
-                  <option value="pico">Pico</option>
-                  <option value="pala">Pala</option>
-                </select>
-              </div>
-
-              <div class="campo">
-                <label for="estado">Estado</label>
-                <select id="estado" name="estado">
-                  <option value="">Seleccionar</option>
-                  <option value="funcional">Funcional</option>
-                  <option value="mantenimiento">Mantenimiento</option>
-                  <option value="no_disponible">No disponible</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="grupo-campos">
-              <div class="campo">
-                <label for="tipo">Tipo</label>
-                <select id="tipo" name="tipo">
-                  <option value="">Seleccionar</option>
-                  <option value="manual">Manual</option>
-                  <option value="electrica">Eléctrica</option>
-                </select>
-              </div>
-
-              <div class="campo">
-                <label for="ubicacion">Ubicación</label>
-                <select id="ubicacion" name="ubicacion">
-                  <option value="">Seleccionar</option>
-                  <option value="bodega1">Bodega 1</option>
-                  <option value="bodega2">Bodega 2</option>
-                </select>
-              </div>
-
-              <div class="campo">
-                <label for="fecha">Fecha de ingreso</label>
-                <input type="date" id="fecha" name="fecha">
-              </div>
-
-              <div class="campo">
-                <label for="lote">Número de Lote</label>
-                <select id="lote" name="lote">
-                  <option value="">Seleccionar</option>
-                  <option value="lote1">Lote 1</option>
-                  <option value="lote2">Lote 2</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="grupo-descripcion">
-              <label for="descripcion">Descripción de herramienta</label>
-              <textarea id="descripcion" name="descripcion" rows="4" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
-
-              <button type="submit">Registrar</button>
-            </div>
-          </form>
-        </div>
+  <div class="container">
+    <!-- Barra lateral -->
+    <aside class="sidebar">
+      <div class="logo">
+        <img src="imagenes/logo_FarmStock.png" alt="Logo FarmStock" />
+        <span class="logo-green">Farm</span><span class="logo-black">Stock</span>
       </div>
-    </div>
-  </header>
+      <ul>
+        <li>Registro Herramientas</li>
+        <li>Historial</li>
+        <li>Inventario</li>
+        <li>Notificaciones</li>
+        <li>Estadísticas</li>
+      </ul>
+    </aside>
 
-  <script src="script.js"></script>
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <div class="bienvenida">
+        <img src="imagenes/maria_vuelve.jpg" alt="Foto de usuario" class="foto-usuario">
+        <p><strong>¡Hola María!</strong></p>
+      </div>
+
+      <!-- Formulario estilo horizontal -->
+      <div class="formulario-card">
+  <form class="formulario-horizontal">
+    <div class="columna borde-derecho">
+      <label for="nombre">Nombre de herramienta</label>
+      <select id="nombre">
+        <option>Seleccionar</option>
+      </select>
+
+      <label for="estado">Estado</label>
+      <select id="estado">
+        <option>Seleccionar</option>
+      </select>
+
+      <label for="tipo">Tipo</label>
+      <select id="tipo">
+        <option>Seleccionar</option>
+      </select>
+
+      <label for="ubicacion">Ubicación</label>
+      <select id="ubicacion">
+        <option>Seleccionar</option>
+      </select>
+    </div>
+
+    <div class="columna borde-derecho">
+      <label for="fecha">Fecha ingreso</label>
+      <input type="date" id="fecha">
+
+      <label for="lote">Número de Lote</label>
+      <select id="lote">
+        <option>Seleccionar</option>
+      </select>
+    </div>
+
+    <div class="columna descripcion">
+      <label for="descripcion">Descripción de herramienta</label>
+      <textarea id="descripcion" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
+
+      <button type="submit">Registrar</button>
+    </div>
+  </form>
+</div>
+
+      
+    </main>
+  </div>
 </body>
 </html>
