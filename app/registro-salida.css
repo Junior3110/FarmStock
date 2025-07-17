@@ -13,18 +13,25 @@ height: 100vh;
 
 /* Sidebar */
 .sidebar {
-    width: 240px;
-    background-color: white;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    width: 300px; /* 👉 antes tenías 250px, aquí lo aumentamos */
+    background: #fff;
+    padding: 20px 20px 20px 30px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: 20px;
+    height: 100vh;
 }
 
 .logo {
-    font-size: 24px;
-    font-weight: 1000;
+    display: block;
+    align-items: center;
+    justify-content: center;
+    margin-right: 40px;
+}
+
+.logo img {
+    margin: 0;
+    margin-left: -38px; /* Ajusta según el espacio transparente */
 }
 
 .logo-green {
@@ -38,21 +45,20 @@ height: 100vh;
 .sidebar ul {
     list-style: none;
     padding: 0;
+    margin-top: 50px;
 }
 
 .sidebar li {
     padding: 10px 0;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: clamp(16px, 2vw, 20px); /* Tamaño adaptable */
 }
 
-.sidebar li.disabled {
-    color: #ccc;
+.sidebar li:hover {
+    color: #27ae60;
 }
 
-.sidebar li.active {
-    color: #000;
-}
 
 .footer {
     font-size: 14px;
@@ -102,17 +108,24 @@ height: 100vh;
     margin-bottom: 10px;
 }
 
+.registro-header h2 {
+    font-size: 1.8rem;
+    font-weight: 1000;
+    letter-spacing: -1px;
+    color: #333;
+}
+
 .filtros select,
 .filtros button {
     margin-left: 10px;
     padding: 6px 12px;
-    border-radius: 5px;
+    border-radius: 8px;
     border: 1px solid #ccc;
     font-weight: 500;
 }
 
 .registrar {
-    background-color: #27ae60;
+    background-color: #ACD7A4;
     color: white;
     border: none;
     cursor: pointer;
