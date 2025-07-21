@@ -4,10 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FarmStock</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+  <!-- FLATPICKR CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+
+  <!-- Fuentes y estilo principal -->
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet" />
 </head>
 <body>
   <div class="container">
@@ -18,67 +23,129 @@
         <span class="logo-green">Farm</span><span class="logo-black">Stock</span>
       </div>
       <ul>
-        <li>Registro Herramientas</li>
-        <li>Historial</li>
+        <li class="inactive">Registro Herramientas</li>
+        <li><strong>Historial de herramientas</strong></li>
         <li>Inventario</li>
         <li>Notificaciones</li>
         <li>Estadísticas</li>
       </ul>
+      <p class="modo-noche">🌙 Modo noche</p>
     </aside>
 
     <!-- Contenido principal -->
     <main class="main-content">
       <div class="bienvenida">
-        <img src="imagenes/maria_vuelve.jpg" alt="Foto de usuario" class="foto-usuario">
+        <img src="imagenes/maria_vuelve.jpg" alt="Foto de usuario" class="foto-usuario" />
         <p><strong>¡Hola María!</strong></p>
       </div>
 
-      <!-- Formulario estilo horizontal -->
-      <div class="formulario-card">
-  <form class="formulario-horizontal">
-    <div class="columna borde-derecho">
-      <label for="nombre">Nombre de herramienta</label>
-      <select id="nombre">
-        <option>Seleccionar</option>
-      </select>
+      <!-- Área principal dividida en dos secciones: superior (form) e inferior (info) -->
+      <div class="area-superior">
+        <!-- Formulario -->
+        <div class="formulario-card">
+          <form class="formulario-horizontal">
+            <div class="columna borde-derecho">
+              <label for="nombre">Nombre de herramienta</label>
+              <select id="nombre">
+                <option>Seleccionar</option>
+              </select>
 
-      <label for="estado">Estado</label>
-      <select id="estado">
-        <option>Seleccionar</option>
-      </select>
+              <label for="estado">Estado</label>
+              <select id="estado">
+                <option>Seleccionar</option>
+              </select>
 
-      <label for="tipo">Tipo</label>
-      <select id="tipo">
-        <option>Seleccionar</option>
-      </select>
+              <label for="tipo">Tipo</label>
+              <select id="tipo">
+                <option>Seleccionar</option>
+              </select>
 
-      <label for="ubicacion">Ubicación</label>
-      <select id="ubicacion">
-        <option>Seleccionar</option>
-      </select>
-    </div>
+              <label for="ubicacion">Ubicación</label>
+              <select id="ubicacion">
+                <option>Seleccionar</option>
+              </select>
+            </div>
 
-    <div class="columna borde-derecho">
-      <label for="fecha">Fecha ingreso</label>
-      <input type="date" id="fecha">
+            <div class="columna borde-derecho">
+              <label for="fecha">Fecha ingreso</label>
+              <input type="date" id="fecha" />
 
-      <label for="lote">Número de Lote</label>
-      <select id="lote">
-        <option>Seleccionar</option>
-      </select>
-    </div>
+              <label for="lote">Número de Lote</label>
+              <select id="lote">
+                <option>Seleccionar</option>
+              </select>
+            </div>
 
-    <div class="columna descripcion">
-      <label for="descripcion">Descripción de herramienta</label>
-      <textarea id="descripcion" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
+            <div class="columna descripcion">
+              <label for="descripcion">Descripción de herramienta</label>
+              <textarea id="descripcion" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
+              <button type="submit">Registrar</button>
+            </div>
+          </form>
+        </div>
+      </div>
 
-      <button type="submit">Registrar</button>
-    </div>
-  </form>
-</div>
+      <!-- Área inferior: herramientas registradas y calendario -->
+      <div class="area-inferior">
+        <!-- Lista herramientas -->
+        <div class="herramientas-hoy">
+          <h3>Herramientas registradas hoy</h3>
+          <ul>
+            <li>
+              <img src="imagenes/motosierra.png" alt="Motosierra" />
+              <span>Motosierra</span><span class="cantidad">15 unidades</span><span class="estado verde">● Funcional</span>
+            </li>
+            <li>
+              <img src="imagenes/pico.png" alt="Picos" />
+              <span>Picos</span><span class="cantidad">50 unidades</span><span class="estado amarillo">● Mantenimiento</span>
+            </li>
+            <li>
+              <img src="imagenes/pala.png" alt="Palas" />
+              <span>Palas</span><span class="cantidad">50 unidades</span><span class="estado verde">● Funcional</span>
+            </li>
+            <li>
+              <img src="imagenes/carretilla.png" alt="Carretillas" />
+              <span>Carretillas</span><span class="cantidad">10 unidades</span><span class="estado rojo">● No disponible</span>
+            </li>
+          </ul>
+        </div>
 
-      
+        <!-- Calendario -->
+        <div class="calendario">
+          <div class="fecha-actual">
+            <h2>14</h2>
+            <p>Miércoles<br><span>Agosto, 2024</span></p>
+          </div>
+          <div class="semana">
+            <div>D<br>11</div>
+            <div>L<br>12</div>
+            <div class="activo">M<br>14</div>
+            <div>J<br>15</div>
+            <div>V<br>16</div>
+            <div>S<br>17</div>
+          </div>
+          <div class="pendientes">
+            <h4>Pendientes</h4>
+            <!-- Campo del calendario funcional -->
+            <input type="text" class="datepicker" placeholder="Selecciona una fecha" />
+
+            <div class="tarea">
+              <span>07:45 pm</span>
+              <p>🛠️ Llevar a mantenimiento las palas</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
   </div>
+
+  <!-- FLATPICKR JS -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    flatpickr(".datepicker", {
+      dateFormat: "d-m-Y",
+      locale: "es"
+    });
+  </script>
 </body>
 </html>
