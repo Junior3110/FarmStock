@@ -109,3 +109,102 @@ body {
   border-radius: 50%;
   margin-right: 10px;
 }
+
+/* formulario de registro */
+/* Formulario tarjeta */
+.formulario-card {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+/* Contenedor grid del formulario */
+.formulario-horizontal {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  gap: 20px;
+  align-items: stretch; /* Asegura altura igual para columnas */
+}
+
+/* Columnas del formulario */
+.columna {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+/* Línea vertical divisoria */
+.borde-derecho::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  background-color: #ccc;
+}
+
+/* Inputs y selects */
+input,
+select,
+textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  resize: none;
+  max-width: 250px;
+}
+
+textarea {
+  height: 120px;
+}
+
+/* Botón */
+button {
+  align-self: flex-start;
+  padding: 10px 20px;
+  background-color: #A4D490;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: auto; 
+}
+
+button:hover {
+  background-color: #8fc87d;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+.descripcion textarea {
+  background-color: white;
+  color: black;
+  font-family: inherit;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid white; 
+  width: 100%;
+  height: 100px;
+  resize: none;
+  outline: none;
+}
+
+.boton-registrar {
+  position: absolute;
+  bottom: 30px; 
+  right: 40px; 
+  width: 130px;
+}
+
+
