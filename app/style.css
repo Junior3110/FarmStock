@@ -93,7 +93,7 @@ body {
 /* Contenido principal */
 .main-content {
   padding: 25px;
-  overflow-y: auto;
+  overflow-y:hidden;
 }
 
 /* Bienvenida */
@@ -207,4 +207,205 @@ label {
   width: 130px;
 }
 
+
+.area-inferior {
+  display: flex;
+  gap: 2rem;
+  margin-top: 30px;
+}
+
+/* CONTENEDOR HERRAMIENTAS */
+.herramientas-hoy {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  flex: 2;
+}
+
+.herramientas-hoy ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.herramientas-hoy li {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.herramientas-hoy li img {
+  width: 35px;
+  margin-right: 15px;
+}
+
+.herramientas-hoy .cantidad {
+  margin-left: auto;
+  margin-right: 10px;
+  color: #777;
+}
+
+.herramientas-hoy .estado {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.estado.verde {
+  color: green;
+}
+
+.estado.amarillo {
+  color: orange;
+}
+
+.estado.rojo {
+  color: red;
+}
+
+/* CONTENEDOR CALENDARIO */
+.calendario {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.fecha-actual {
+  text-align: center;
+}
+
+.fecha-actual h2 {
+  font-size: 3rem;
+  margin: 0;
+}
+
+.semana {
+  display: flex;
+  justify-content: space-between;
+  background: #f4f4f4;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.semana div {
+  flex: 1;
+}
+
+.semana .activo {
+  background: #d1f0d1;
+  border-radius: 8px;
+}
+
+.pendientes h4 {
+  margin-bottom: 10px;
+}
+
+.pendientes .tarea {
+  background: #e0f8e0;
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+}
+/* ========================== */
+/* MEJORAS CALENDARIO ESTILO */
+/* ========================== */
+
+.calendario {
+  max-width: 330px;
+  flex-shrink: 0;
+}
+
+.fecha-actual h2 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #222;
+}
+
+.fecha-actual p {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.2;
+}
+
+.semana {
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px 5px;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.semana div {
+  flex: 1;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #333;
+  padding: 6px 0;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.semana .activo {
+  background-color: #c8edc8;
+  border-radius: 50%;
+  font-weight: bold;
+  width: 48px;
+  height: 48px;
+  margin: -22px auto 0 auto; /* Sale hacia arriba */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #222;
+  z-index: 2;
+  position: relative;
+}
+
+
+.pendientes {
+  margin-top: 10px;
+}
+
+.pendientes h4 {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #444;
+}
+
+.pendientes input.datepicker {
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.85rem;
+  width: 100%;
+  background-color: #f9f9f9;
+}
+
+.pendientes .tarea {
+  background: #d5f2d5;
+  border-left: 4px solid #4CAF50;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.pendientes .tarea span {
+  font-weight: bold;
+  font-size: 0.8rem;
+  color: #222;
+}
 
