@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Estadísticas - FarmStock</title>
+    <link rel="stylesheet" href="estats.css" />
+</head>
+
+<body>
+    <aside>
+        <div class="logo">
+            <img src="cositas/logo.png" alt="Logo" /> FarmStock
+        </div>
+        <nav>
+            <a href="#">Registro Herramientas</a>
+            <a href="#">Historial de herramientas</a>
+            <a href="#">Inventario</a>
+            <a href="#">Notificaciones</a>
+            <a class="inactivo" href="#">Estadísticas</a>
+        </nav>
+        <div class="modo-noche">🌙 Modo noche</div>
+    </aside>
+
+    <main>
+        <div class="top-bar">
+            <div class="user-info">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Usuario" />
+                <span>¡Hola María!</span>
+            </div>
+        </div>
+
+        <h1>Estadísticas</h1>
+
+        <div class="filtros">
+            <input type="text" placeholder="Buscar...">
+            <button>Generar informe</button>
+            <select>
+        <option>ID herramienta</option>
+      </select>
+            <select>
+        <option>Fecha</option>
+      </select>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>ID estadística</th>
+                    <th>Herramienta</th>
+                    <th>Préstamos</th>
+                    <th>Daños</th>
+                    <th>Mantenimientos</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>1002</td>
+                    <td><img class="icon" src="cositas/lapala.png" alt="">Pala</td>
+                    <td><span class="dot green"></span>24</td>
+                    <td><span class="dot red"></span>2</td>
+                    <td><span class="dot orange"></span>10</td>
+                    <td class="acciones">🗑️</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>1002</td>
+                    <td><img class="icon" src="cositas/sisierra.png" alt="">Motosierra</td>
+                    <td><span class="dot green"></span>24</td>
+                    <td><span class="dot red"></span>2</td>
+                    <td><span class="dot orange"></span>10</td>
+                    <td class="acciones">🗑️</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>1003</td>
+                    <td><img class="icon" src="cositas/picaxo.png" alt="">Picos</td>
+                    <td><span class="dot green"></span>24</td>
+                    <td><span class="dot red"></span>2</td>
+                    <td><span class="dot orange"></span>10</td>
+                    <td class="acciones">🗑️</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+
+</html>
