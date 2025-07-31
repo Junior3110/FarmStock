@@ -409,3 +409,6 @@ label {
   color: #222;
 }
 
+html, body {
+  overflow: hidden !important;
+}
