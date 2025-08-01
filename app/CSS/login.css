@@ -1,123 +1,145 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-body, html {
-    height: 100%;
-    width: 100%;
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
 .container {
-    display: flex;
-    height: 100vh;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
 }
 
-.login-form {
-    flex: 1;
-    background: #fff;
-    padding: 60px;
-    display: flex;
-    flex-direction: column;
-}
-
-.image-side {
-    flex: 1;
-    background-image: url('finca_sena.jpg');
-    background-size: cover;
-    background-position: center;
+.left-panel {
+  flex: 0.9;
+  background: #fff;
+  padding: 40px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  z-index: 2; /* ✅ Asegura que esté encima */
+  position: relative;
 }
 
 
 .logo {
-    font-size: 3rem;
-    margin-bottom: 30px;
-    margin-right: 20px;
-    display: flex;
-    align-items: center;
-    gap: 0px; /* Espacio pequeño entre logo e título */
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  font-size: 1.5rem;
 }
 
 .logo img {
-    width: 110px; /* Ajusta el tamaño si es necesario */
-    margin: 0;
+  width: 40px;
+  margin: 0 10px;
 }
 
 .logo-green {
-    color: #7AC675;
-    font-weight: 700;
+  color: #7AC675;
+  font-weight: bold;
+  font-size: 1.8rem;
 }
 
 .logo-black {
-    color: #000;
-    font-weight: 700;
+  color: black;
+  font-weight: bold;
+  font-size: 1.8rem;
 }
 
 h1 {
-    margin-bottom: 50px;
-    font-size: 3.5rem;
-    font-weight: 740;
-    letter-spacing: -2px;
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 350px;
 }
 
 label {
-    font-size: 0.9rem;
-    margin-bottom: 10px ;
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
 .input-group {
-    display: flex;
-    align-items: center;
-    background: #f1f1f1;
-    border-radius: 6px;
-    padding: 10px;
-    margin-bottom: 15px;
-    margin-top: 10px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 6px;
+  background: #f9f9f9;
 }
 
 .input-group i {
-    margin-right: 10px;
-    color: #555;
+  margin-right: 10px;
+  color: #999;
 }
 
 .input-group input,
 .input-group select {
-    border: none;
-    background: transparent;
-    outline: none;
-    flex: 1;
-    font-size: 1rem;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1rem;
+  flex: 1;
 }
 
-.input-group select {
-    flex: 0 0 auto;
-    margin-left: 10px;
+button {
+  background-color: #7AC675;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
 }
 
-.btn {
-    background: #7AC675;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 12px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.3s ease;
+button:hover {
+  background-color: #68b55e;
 }
 
-.btn:hover {
-    background: #27ae60;
+.register {
+  font-size: 0.9rem;
+  margin-top: 10px;
 }
 
-.register-link {
-    margin-top: 15px;
-    font-size: 0.9rem;
+.register a {
+  color: #7AC675;
+  text-decoration: none;
 }
 
-.register-link a {
-    color: #2ecc71;
-    text-decoration: none;
+.image-panel {
+  flex: 1.9;
+  background-image: url('../imagenes/finca_sena.webp');
+  background-size: cover;
+  background-position: center;
+  pointer-events: none; /* ✅ Esto es clave para evitar que bloquee clics */
+  z-index: 1;
+}
+
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .image-panel {
+    display: none;
+  }
+
+  .left-panel {
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+  }
 }

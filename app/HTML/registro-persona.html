@@ -1,54 +1,62 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Registro - FarmStock</title>
-    <link rel="stylesheet" href="registro-persona.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro - FarmStock</title>
+  <link rel="stylesheet" href="../CSS/registro-persona.css" />
 </head>
-
 <body>
+  <div class="container">
     <div class="left">
-        <div class="logo">
-            <img src="cositas/logo.png" alt="FarmStock Logo" />
-            <span>FarmStock</span>
-        </div>
-        <h1>Registro de Usuario</h1>
-        <form id="registroForm">
-            <input type="text" placeholder="Nombres" name="nombres" required />
-            <input type="text" placeholder="Apellidos" name="apellidos" required />
-            <input type="email" placeholder="Correo electrónico" name="correo" class="full" required />
-            <input type="tel" placeholder="Teléfono" name="telefono" required />
-            <select name="rol" required>
-        <option value="">Rol</option>
-        <option value="aprendiz">Aprendiz</option>
-        <option value="instructor">Instructor</option>
-      </select>
-            <select name="tipo_documento" required>
-        <option value="">Tipo de documento</option>
-        <option value="CC">Cédula de ciudadanía</option>
-        <option value="TI">Tarjeta de identidad</option>
-      </select>
-            <input type="text" placeholder="Número de documento" name="numero_documento" class="full" required />
-            <input type="password" placeholder="Contraseña" name="password" required />
-            <input type="password" placeholder="Confirmar contraseña" name="confirm_password" required />
-            <button type="submit">Registrarme</button>
-        </form>
+      <div class="logo">
+        <img src="../imagenes/logo_FarmStock.png" alt="FarmStock Logo" />
+        <span><span style="color: #2e7d32;">Farm</span><span style="color: #000;">Stock</span></span>
+      </div>
+      <h1>Registro de Usuario</h1>
+      <form id="registroForm">
+        <input type="text" placeholder="Nombres" name="nombres" required />
+        <input type="text" placeholder="Apellidos" name="apellidos" required />
+        <input type="email" placeholder="Correo electrónico" name="correo" class="full" required />
+        <input type="tel" placeholder="Teléfono" name="telefono" required />
+        <select name="rol" required>
+          <option value="">Rol</option>
+          <option value="aprendiz">Aprendiz</option>
+          <option value="instructor">Instructor</option>
+        </select>
+        <select name="tipo_documento" class="full" required>
+          <option value="">Tipo de documento</option>
+          <option value="CC">Cédula de ciudadanía</option>
+          <option value="TI">Tarjeta de identidad</option>
+        </select>
+        <input type="text" placeholder="Número de documento" name="numero_documento" class="full" required />
+        <input type="password" placeholder="Contraseña" name="password" required />
+        <input type="password" placeholder="Confirmar contraseña" name="confirm_password" required />
+        <button type="submit">Registrarme</button>
+      </form>
     </div>
-    <div class="right"></div>
+    <div class="right">
+      <img src="../imagenes/finca_sena.webp" alt="Imagen de la finca" />
+    </div>
+  </div>
 
-    <script>
-        const form = document.getElementById('registroForm');
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const datos = new FormData(form);
-            const entrada = Object.fromEntries(datos);
-            console.log("Datos registrados:", entrada);
-            alert("Registro exitoso (aún sin guardar en base de datos).");
-            form.reset();
-        });
-    </script>
+  <script>
+    const form = document.getElementById('registroForm');
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const datos = new FormData(form);
+      const entrada = Object.fromEntries(datos);
+
+      // Validación simple
+      if (entrada.password !== entrada.confirm_password) {
+        alert("Las contraseñas no coinciden.");
+        return;
+      }
+
+      // Simular éxito
+      alert("Registro exitoso.");
+      window.location.href = "../HTML/login.html";
+    });
+  </script>
 </body>
-
 </html>

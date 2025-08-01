@@ -7,13 +7,20 @@ function createWindow() {
   const win = new BrowserWindow({
     width: Math.min(1320, width),
     height: Math.min(900, height),
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
-    }
+    show: false,
+   webPreferences: {
+  preload: path.join(__dirname, 'preload.js')
+}
+
   });
 
-  win.loadFile(path.join(__dirname, 'app', 'registro-salida.html'));
+  win.loadFile(path.join(__dirname, 'app/HTMl', 'login.html'));
+
+  win.once('ready-to-show', () => {
+    win.show();
+    win.focus(); // Esto asegura que puedas escribir inmediatamente
+  });
+
   win.center();
   win.webContents.openDevTools();
 }
