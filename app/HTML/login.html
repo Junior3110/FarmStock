@@ -20,7 +20,6 @@
   <script defer>
     function iniciarSesion(event) {
       event.preventDefault();
-      // Guarda los datos en localStorage para usarlos después
       const documento = document.querySelector('input[placeholder="Número de documento"]').value;
       const password = document.querySelector('input[type="password"]').value;
       const rol = document.querySelectorAll('select')[1].value;
@@ -29,31 +28,28 @@
       localStorage.setItem('password', password);
       localStorage.setItem('rol', rol);
 
-      // Redirige
-      window.location.href = "index.html";
+      if (window.navegacion && window.navegacion.irAInventario) {
+        window.navegacion.irAInventario();
+      } else {
+        window.location.href = "index.html";
+      }
+    }
+
+    function irARegistro() {
+      if (window.navegacion && window.navegacion.irARegistro) {
+        window.navegacion.irARegistro();
+      } else {
+        window.location.href = "registro-persona.html";
+      }
     }
 
     window.addEventListener("DOMContentLoaded", () => {
+      // Limpiar cualquier dato previo guardado
+      localStorage.removeItem('documento');
+      localStorage.removeItem('password');
+      localStorage.removeItem('rol');
+
       const docInput = document.querySelector('input[placeholder="Número de documento"]');
-      const passwordInput = document.querySelector('input[type="password"]');
-      const cargoSelect = document.querySelectorAll('select')[1];
-
-      // Rellenar campos con localStorage si existen
-      const documento = localStorage.getItem('documento');
-      const password = localStorage.getItem('password');
-      const rol = localStorage.getItem('rol');
-
-      if (documento) docInput.value = documento;
-      if (password) passwordInput.value = password;
-      if (rol) {
-        [...cargoSelect.options].forEach(option => {
-          if (option.textContent.toLowerCase() === rol.toLowerCase()) {
-            option.selected = true;
-          }
-        });
-      }
-
-      // Darle focus automático al campo del documento
       setTimeout(() => {
         docInput.focus();
       }, 100);
@@ -101,7 +97,7 @@
         <button type="submit">Iniciar Sesión</button>
 
         <p class="register">
-          ¿No te has registrado? <a href="registro-persona.html">Registrarme aquí</a>
+          ¿No te has registrado? <a href="#" onclick="irARegistro()">Registrarme aquí</a>
         </p>
       </form>
     </div>

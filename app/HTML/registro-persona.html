@@ -47,15 +47,21 @@
       const datos = new FormData(form);
       const entrada = Object.fromEntries(datos);
 
-      // Validación simple
       if (entrada.password !== entrada.confirm_password) {
         alert("Las contraseñas no coinciden.");
         return;
       }
 
-      // Simular éxito
+      // Simulación de éxito
       alert("Registro exitoso.");
-      window.location.href = "../HTML/login.html";
+
+      // Navegación segura hacia login
+      if (window.navegacion && window.navegacion.irALogin) {
+        window.navegacion.irALogin();
+      } else {
+        // fallback para navegador
+        window.location.href = "../HTML/login.html";
+      }
     });
   </script>
 </body>

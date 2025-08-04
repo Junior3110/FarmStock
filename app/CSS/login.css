@@ -123,8 +123,9 @@ button:hover {
   background-image: url('../imagenes/finca_sena.webp');
   background-size: cover;
   background-position: center;
-  pointer-events: none; /* ✅ Esto es clave para evitar que bloquee clics */
+  pointer-events: none; /* ← Esto evita que bloquee el panel izquierdo */
   z-index: 1;
+  position: relative;
 }
 
 
@@ -138,8 +139,7 @@ button:hover {
   }
 
   .left-panel {
-    width: 100%;
-    height: 100%;
-    padding: 30px;
-  }
+  position: relative;
+  z-index: 2;
+}
 }
