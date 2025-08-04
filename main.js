@@ -9,20 +9,37 @@ function createWindow() {
   win = new BrowserWindow({
     width: Math.min(1320, width),
     height: Math.min(900, height),
+    show: false,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false // Solo así puedes usar `require` en el HTML
+      preload: path.join(__dirname, 'preload.js'), 
+      contextIsolation: true,
+      nodeIntegration: false
     }
   });
 
-  win.loadFile(path.join(__dirname, 'app/HTML/login.html'));
+  win.loadFile(path.join(__dirname, 'app/HTML/Estadistica.html'));
+
+  win.once('ready-to-show', () => {
+    win.show();
+    win.focus();
+  });
+
   win.center();
   win.webContents.openDevTools();
 }
 
 app.whenReady().then(createWindow);
 
-// Escucha el mensaje desde el renderer
-ipcMain.on('abrir-login', () => {
+
+ipcMain.on('ir-a-registro', () => {
   win.loadFile(path.join(__dirname, 'app/HTML/registro-persona.html'));
+});
+ipcMain.on('ir-a-login', () => {
+  win.loadFile(path.join(__dirname, 'app/HTML/login.html'));
+});
+ipcMain.on('ir-a-inventario', () => {
+  win.loadFile(path.join(__dirname, 'app/HTML/indexInventario.html'));
+});
+ipcMain.on('ir-a-estats', () => {
+  win.loadFile(path.join(__dirname, 'app/HTML/estats.html'));
 });

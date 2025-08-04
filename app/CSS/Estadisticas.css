@@ -1,0 +1,254 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f2f2f2;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* CONTENEDOR PRINCIPAL */
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  background: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid #ddd;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+.menu a {
+  display: block;
+  margin: 20px 0;
+  color: #000;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.menu .active {
+  color: #2e7d32;
+}
+
+.night-mode {
+  font-size: 14px;
+  color: #333;
+}
+
+/* PANEL PRINCIPAL */
+.main-panel {
+  flex: 1;
+  padding: 20px 30px;
+  overflow-y: auto;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-info img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* BOTONES Y SELECTS */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.actions button,
+.actions select {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.actions button.green {
+  background-color: #a2dba1;
+  color: #fff;
+}
+
+.actions button.green:hover {
+  background-color: #8cc68f;
+}
+
+.actions select {
+  background-color: #f2f2f2;
+}
+
+/* CONTENIDO */
+.content {
+  margin-top: 20px;
+}
+
+.content h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+/* GRÁFICAS */
+.charts {
+  display: flex;
+  justify-content: center; /* Alinea ambas gráficas al centro */
+  align-items: flex-start;
+  gap: 40px;                /* <– Disminuye el espacio entre gráficas */
+  flex-wrap: wrap;          /* Por si se reduce el tamaño de pantalla */
+}
+
+
+.line-chart,
+.donut-chart {
+  width: 320px;      /* Reducido desde 400px o más */
+  padding: 20px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.donut-chart canvas {
+  width: 220px !important;
+  height: 220px !important;
+}
+
+
+.line-chart img,
+.donut img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.month-nav {
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+/* LEYENDA */
+.legend {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.green-dot, .yellow-dot, .red-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.green-dot { background: #8bc34a; }
+.yellow-dot { background: #ffeb3b; }
+.red-dot { background: #f44336; }
+
+/* TABLA */
+table {
+  width: 100%;
+  margin-top: 30px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+thead {
+  background: #f1f1f1;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .charts {
+    flex-direction: column;
+  }
+
+  .header, .actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+.donut {
+  position: relative;
+}
+
+.donut-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+  text-align: center;
+  font-size: 14px;
+}
+
+.usage-graph {
+  width: 380px; /* o 360px si lo quieres más compacto */
+  background: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.05);
+}
+
+.donut-chart {
+  width: 300px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}

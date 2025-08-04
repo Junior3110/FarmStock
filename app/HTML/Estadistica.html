@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FarmStock - Estadísticas</title>
+  <link rel="stylesheet" href="../CSS/Estadisticas.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <h2 class="logo"><span>🌿</span> Farm<span>Stock</span></h2>
+      <nav class="menu">
+        <a href="#">Registro Herramientas</a>
+        <a href="#">Historial de herramientas</a>
+        <a href="#">Inventario</a>
+        <a href="#">Notificaciones</a>
+        <a href="#" class="active">Estadísticas</a>
+      </nav>
+      <div class="night-mode">🌙 Modo noche</div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="header">
+        <div class="user-info">
+          <img src="../imagenes/Maria.png" alt="Perfil" />
+          <span>¡Hola María!</span>
+        </div>
+        <div class="actions">
+          <button class="green">Descargar informe</button>
+          <button class="light">Cambiar proveedor ⌄</button>
+          <button class="light">Día ⌄</button>
+          <button class="light">Mes ⌄</button>
+        </div>
+      </header>
+
+      <section class="content">
+        <h1>Informes</h1>
+        <div class="charts">
+          <div class="line-chart">
+            <h3>Estadística de uso</h3>
+            <canvas id="areaChart"></canvas>
+            <button class="dropdown">Cambiar herramienta ⌄</button>
+          </div>
+          <div class="donut-chart">
+            <div class="month-nav">
+              <span>←</span>
+              <strong>Marzo</strong>
+              <span>→</span>
+            </div>
+            <div class="donut">
+              <canvas id="donutChart"></canvas>
+              <div class="donut-text">
+                <p><strong>Total</strong><br>100 herramientas</p>
+              </div>
+            </div>
+            <div class="legend">
+              <span><span class="green-dot"></span> Buen estado</span>
+              <span><span class="yellow-dot"></span> En mantenimiento</span>
+              <span><span class="red-dot"></span> Mal estado</span>
+            </div>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>ID herramienta</th>
+              <th>Herramienta</th>
+              <th>Préstamos</th>
+              <th>Daños</th>
+              <th>Mantenimientos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td>1002</td>
+              <td>🛠️ Pala</td>
+              <td>23</td>
+              <td>5</td>
+              <td>23</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td>1002</td>
+              <td>🔧 Motosierra</td>
+              <td>24</td>
+              <td>10</td>
+              <td>21</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td>1003</td>
+              <td>⛏️ Picos</td>
+              <td>24</td>
+              <td>4</td>
+              <td>22</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // GRÁFICO DE ÁREA
+    const ctxArea = document.getElementById('areaChart').getContext('2d');
+    new Chart(ctxArea, {
+      type: 'line',
+      data: {
+        labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        datasets: [{
+          label: 'Cantidad',
+          data: [20, 30, 25, 40, 35, 50],
+          fill: true,
+          backgroundColor: 'rgba(129, 199, 132, 0.2)',
+          borderColor: 'rgba(129, 199, 132, 1)',
+          tension: 0.4
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+
+    // GRÁFICO DONUT
+    const ctxDonut = document.getElementById('donutChart').getContext('2d');
+    new Chart(ctxDonut, {
+      type: 'doughnut',
+      data: {
+        labels: ['Buen estado', 'En mantenimiento', 'Mal estado'],
+        datasets: [{
+          data: [70, 20, 10],
+          backgroundColor: ['#8bc34a', '#ffeb3b', '#f44336'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        cutout: '70%',
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
