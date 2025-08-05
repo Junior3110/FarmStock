@@ -29,12 +29,31 @@ body, html {
   border-right: 1px solid #ddd;
 }
 
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: #2e7d32;
+.top-section {
+  display: flex;
+  flex-direction: column;
+}
+.bottom-section {
+  margin-top: auto;
+}
+/* LOGO BOX Y LOGO IMAGE */
+.logo-box {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
+.logo-box img {
+  width: 100%;
+  max-width: 180px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* MENU Y OTROS ELEMENTOS */
 .menu a {
   display: block;
   margin: 20px 0;
@@ -57,6 +76,9 @@ body, html {
   flex: 1;
   padding: 20px 30px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 /* HEADER */
@@ -65,6 +87,7 @@ body, html {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 .user-info {
@@ -112,30 +135,53 @@ body, html {
 /* CONTENIDO */
 .content {
   margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .content h1 {
   font-size: 28px;
   margin-bottom: 10px;
+  text-align: center;
+}
+
+.charts {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 /* GRÁFICAS */
-.charts {
+.line-chart {
+  width: 370px;
+  background: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   display: flex;
-  justify-content: center; /* Alinea ambas gráficas al centro */
-  align-items: flex-start;
-  gap: 40px;                /* <– Disminuye el espacio entre gráficas */
-  flex-wrap: wrap;          /* Por si se reduce el tamaño de pantalla */
+  flex-direction: column;
+  align-items: center;
+  gap: 70px;
 }
 
+.line-chart select {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  background-color: #f2f2f2;
+  font-weight: 600;
+}
 
-.line-chart,
 .donut-chart {
-  width: 320px;      /* Reducido desde 400px o más */
+  width: 400px;
   padding: 20px;
   background: #fff;
   border-radius: 15px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -147,6 +193,9 @@ body, html {
   height: 220px !important;
 }
 
+.donut {
+  position: relative;
+}
 
 .line-chart img,
 .donut img {
@@ -219,9 +268,6 @@ input[type="checkbox"] {
     align-items: flex-start;
   }
 }
-.donut {
-  position: relative;
-}
 
 .donut-text {
   position: absolute;
@@ -234,21 +280,21 @@ input[type="checkbox"] {
 }
 
 .usage-graph {
-  width: 380px; /* o 360px si lo quieres más compacto */
+  width: 380px;
   background: #fff;
   border-radius: 15px;
   padding: 20px;
   box-shadow: 0 0 5px rgba(0,0,0,0.05);
 }
 
-.donut-chart {
-  width: 300px;
-  padding: 20px;
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.05);
+.content-box {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 15px 30px 30px 30px; /* Menos padding arriba */
+  min-height: auto; /* Quitamos el min-height que empujaba */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  justify-content: flex-start;
 }

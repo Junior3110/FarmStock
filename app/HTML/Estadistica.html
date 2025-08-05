@@ -9,18 +9,24 @@
 </head>
 <body>
   <div class="container">
-    <aside class="sidebar">
-      <h2 class="logo"><span>🌿</span> Farm<span>Stock</span></h2>
-      <nav class="menu">
-        <a href="#">Registro Herramientas</a>
-        <a href="#">Historial de herramientas</a>
-        <a href="#">Inventario</a>
-        <a href="#">Notificaciones</a>
-        <a href="#" class="active">Estadísticas</a>
-      </nav>
-      <div class="night-mode">🌙 Modo noche</div>
-    </aside>
+   <aside class="sidebar">
+  <div class="top-section">
+    <div class="logo-box">
+      <img src="../imagenes/Logo.png" alt="Logo del sitio" width="257" height="86" />
+    </div>
+    <nav class="menu">
+      <a href="#">Registro Herramientas</a>
+      <a href="#">Historial de herramientas</a>
+      <a href="#">Inventario</a>
+      <a href="#">Notificaciones</a>
+      <a href="#" class="active">Estadísticas</a>
+    </nav>
+  </div>
+  <div class="night-mode">🌙 Modo noche</div>
+</aside>
 
+
+    <!-- El resto del HTML no cambia -->
     <main class="main-panel">
       <header class="header">
         <div class="user-info">
@@ -36,71 +42,73 @@
       </header>
 
       <section class="content">
-        <h1>Informes</h1>
-        <div class="charts">
-          <div class="line-chart">
-            <h3>Estadística de uso</h3>
-            <canvas id="areaChart"></canvas>
-            <button class="dropdown">Cambiar herramienta ⌄</button>
-          </div>
-          <div class="donut-chart">
-            <div class="month-nav">
-              <span>←</span>
-              <strong>Marzo</strong>
-              <span>→</span>
+        <div class="content-box">
+          <h1>Informes</h1>
+          <div class="charts">
+            <div class="line-chart">
+              <h3>Estadística de uso</h3>
+              <canvas id="areaChart"></canvas>
+              <button class="dropdown">Cambiar herramienta ⌄</button>
             </div>
-            <div class="donut">
-              <canvas id="donutChart"></canvas>
-              <div class="donut-text">
-                <p><strong>Total</strong><br>100 herramientas</p>
+            <div class="donut-chart">
+              <div class="month-nav">
+                <span>←</span>
+                <strong>Marzo</strong>
+                <span>→</span>
+              </div>
+              <div class="donut">
+                <canvas id="donutChart"></canvas>
+                <div class="donut-text">
+                  <p><strong>Total</strong><br>100 herramientas</p>
+                </div>
+              </div>
+              <div class="legend">
+                <span><span class="green-dot"></span> Buen estado</span>
+                <span><span class="yellow-dot"></span> En mantenimiento</span>
+                <span><span class="red-dot"></span> Mal estado</span>
               </div>
             </div>
-            <div class="legend">
-              <span><span class="green-dot"></span> Buen estado</span>
-              <span><span class="yellow-dot"></span> En mantenimiento</span>
-              <span><span class="red-dot"></span> Mal estado</span>
-            </div>
           </div>
-        </div>
 
-        <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th>ID herramienta</th>
-              <th>Herramienta</th>
-              <th>Préstamos</th>
-              <th>Daños</th>
-              <th>Mantenimientos</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><input type="checkbox" /></td>
-              <td>1002</td>
-              <td>🛠️ Pala</td>
-              <td>23</td>
-              <td>5</td>
-              <td>23</td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" /></td>
-              <td>1002</td>
-              <td>🔧 Motosierra</td>
-              <td>24</td>
-              <td>10</td>
-              <td>21</td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" /></td>
-              <td>1003</td>
-              <td>⛏️ Picos</td>
-              <td>24</td>
-              <td>4</td>
-              <td>22</td>
-            </tr>
-          </tbody>
-        </table>
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>ID herramienta</th>
+                <th>Herramienta</th>
+                <th>Préstamos</th>
+                <th>Daños</th>
+                <th>Mantenimientos</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" /></td>
+                <td>1002</td>
+                <td>🛠️ Pala</td>
+                <td>23</td>
+                <td>5</td>
+                <td>23</td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" /></td>
+                <td>1002</td>
+                <td>🔧 Motosierra</td>
+                <td>24</td>
+                <td>10</td>
+                <td>21</td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" /></td>
+                <td>1003</td>
+                <td>⛏️ Picos</td>
+                <td>24</td>
+                <td>4</td>
+                <td>22</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
     </main>
   </div>
