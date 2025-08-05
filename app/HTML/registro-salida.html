@@ -6,12 +6,14 @@
     <title>FarmStock Panel</title>
     <link rel="stylesheet" href="/app/CSS/registro-salida.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/FarmStock/app/CSS/registro-salida.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
     <aside class="sidebar">
         <div class="logo">
-            <img src="imagenes/Logo.png" alt="Logo FarmStock" width="257" height="86" />
+            <img src="/FarmStock/app/imagenes/Logo.png" alt="Logo FarmStock" width="257" height="86" />
         </div>
     <nav>
         <ul>
@@ -65,7 +67,7 @@
     <section class="estadistica">
         <div class="buscador">
             <input type="text" placeholder="Cesar Diaz">
-            <button>🔍</button>
+            <button><img src="/FarmStock/app/imagenes/lupa.png" alt="Buscar"  class="search-icon"></button>
         </div>
 
         <div class="contenido">
@@ -79,12 +81,64 @@
             </div>
 
         <div class="grafico">
-            <h4>Estadística de uso</h4>
-            <div class="placeholder-grafico">[Gráfico aquí]</div>
+            <h2>Horas de Uso Semanal</h2>
+            <canvas id="grafico-uso"></canvas>
         </div>
         </div>
     </section>
     </main>
 </div>
-</body>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('grafico-uso').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+            datasets: [{
+                label: 'Horas de uso',
+                // Placeholder data for demonstration purposes
+                data: [3, 4, 4, 4, 4, 4],
+                borderColor: '#27ae60',
+                backgroundColor: '#27ae60',
+                fill: false,
+                tension: 0.4,
+                pointBackgroundColor: '#fff',
+                pointBorderColor: '#27ae60',
+                pointRadius: 6,
+                pointHoverRadius: 7,
+                borderWidth: 2
+        }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+            legend: { display: false }
+        },
+        scales: {
+            y: {
+            title: { display: true, text: 'Horas' },
+            min: 0,
+            max: 5,
+            ticks: {
+            stepSize: 1,
+            callback: function(value) {
+                return value + 'h';
+                }
+            },
+            grid: {
+                color: '#f0f0f0'
+            }
+            },
+                x: {
+            grid: {
+                color: '#f0f0f0'
+            }
+            }
+        }
+        }
+    });
+    });
+</script>
 </html>
