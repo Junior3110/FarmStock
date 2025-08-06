@@ -214,14 +214,14 @@ height: 100vh;
 
 /* Utilidades */
 .verde {
-    color: #27ae60;
+    color: #84C378;
     font-weight: 600;
 }
 
 .ver {
     margin-top: 10px;
     padding: 6px 12px;
-    background-color: #27ae60;
+    background-color: #84C378;
     color: white;
     border: none;
     border-radius: 5px;
@@ -231,7 +231,7 @@ height: 100vh;
 /* Grafico */
 .grafico {
     max-width: 700px;
-    margin: 40px auto;
+    margin: 0px auto;
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
@@ -240,7 +240,7 @@ height: 100vh;
 }
 
 .grafico h2 {
-    text-align: center;
+    text-align: left;
     margin-bottom: 25px;
     color: #2c3e50;
     font-size: 24px;
