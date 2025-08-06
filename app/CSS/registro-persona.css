@@ -23,19 +23,19 @@ body, html {
   padding: 40px 60px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 /* Logo */
 .logo {
   display: flex;
-  align-items: center;     /* centra verticalmente ambos elementos */
-  gap: 10px;
-  margin-bottom: 30px;
+  justify-content: flex-start; /* ✅ alinea a la izquierda */
+  align-items: flex-start;     /* ✅ lo pega arriba */
+  margin-bottom: 20px;
 }
 
 .logo img {
-  width: 70px;
+  width: 350px;
   height: auto;
   display: block;
 }
