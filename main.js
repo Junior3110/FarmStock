@@ -8,7 +8,7 @@ function createWindow() {
 
   win = new BrowserWindow({
     width: Math.min(1320, width),
-    height: Math.min(900, height),
+    height: Math.min(800, height),
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'), 
@@ -17,7 +17,7 @@ function createWindow() {
     }
   });
 
-  win.loadFile(path.join(__dirname, 'app/HTML/Estadistica.html'));
+  win.loadFile(path.join(__dirname, 'app/HTML/login.html'));
 
   win.once('ready-to-show', () => {
     win.show();
