@@ -30,31 +30,20 @@ html, body {
 
 
 .logo {
-  display: flex;
-  align-items: center;
-  margin-bottom: 30px;
-  font-size: 1.5rem;
+    width: 100%;
+    display: block;
+    align-items: center;
+    justify-content: center;
+    margin-right: 40px;
 }
-
 .logo img {
-  width: 40px;
-  margin: 0 10px;
-}
-
-.logo-green {
-  color: #7AC675;
-  font-weight: bold;
-  font-size: 1.8rem;
-}
-
-.logo-black {
-  color: black;
-  font-weight: bold;
-  font-size: 1.8rem;
+    margin: 0;
+    margin-left: -38px; /* Ajusta según el espacio transparente */
 }
 
 h1 {
-  font-size: 2.5rem;
+  font-size: 4rem;
+  font-weight: bolder;
   margin-bottom: 30px;
 }
 
@@ -67,7 +56,7 @@ form {
 
 label {
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: bold;
 }
 
 .input-group {
