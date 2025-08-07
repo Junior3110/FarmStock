@@ -175,16 +175,19 @@ textarea {
 /* Botón */
 button {
   align-self: flex-start;
-  padding: 10px 20px;
+  padding: 12px 24px;
   background-color: #A4D490;
   color: white;
   border: none;
   border-radius: 8px;
   font-weight: bold;
+  font-size: 16px;
+  min-width: 130px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-top: auto;
 }
+
 
 button:hover {
   background-color: #8fc87d;
@@ -209,10 +212,9 @@ label {
 }
 
 .boton-registrar {
-  position: absolute;
-  bottom: 30px;
-  right: 40px;
-  width: 130px;
+  display: flex;
+  justify-content: flex-end; /* o center si quieres centrar */
+  margin-top: 100px;
 }
 
 .area-inferior {
@@ -447,4 +449,10 @@ html, body {
   background-color: #d1f0d1;
   color: #4CAF50;
   font-weight: bold;
+  border: none !important; /* <-- esto evita el borde amarillo */
+  outline: none !important; /* <-- por si viene del foco del navegador */
+}
+a:focus, a:active {
+  outline: none !important;
+  border: none !important;
 }

@@ -3,7 +3,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body, html {
@@ -23,55 +23,58 @@ body, html {
   padding: 40px 60px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 /* Logo */
 .logo {
   display: flex;
-  justify-content: flex-start; /* ✅ alinea a la izquierda */
-  align-items: flex-start;     /* ✅ lo pega arriba */
-  margin-bottom: 20px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-left: 0; /* asegúrate que no tenga margen innecesario */
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
-
 .logo img {
-  width: 350px;
+  width: 400px;
   height: auto;
-  display: block;
 }
-
-.logo span {
-  display: flex;
-  align-items: center;
-  font-size: 28px;
-  font-weight: bold;
-}
-
 
 /* Título */
 h1 {
-  font-size: 28px;
-  font-weight: bold;
-  margin-bottom: 30px;
+  font-size: 48px;
+  font-weight: 900;
+  margin-bottom: 40px;
 }
+
 
 /* Formulario */
 form {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px 20px;
+  gap: 20px;
 }
 
-/* Inputs y selects */
+/* Estilo para inputs/selects modernos */
 input,
 select {
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid #77c28a;
-  border-radius: 5px;
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  width: 100%;
+  transition: all 0.2s ease;
 }
 
-/* Inputs que van a ocupar las 2 columnas */
+input:focus,
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #77c28a;
+}
+
+/* Campo doble columna */
 .full {
   grid-column: span 2;
 }
@@ -79,18 +82,19 @@ select {
 /* Botón */
 button {
   grid-column: span 2;
-  padding: 12px;
+  padding: 14px;
   background-color: #77c28a;
   color: white;
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: bold;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #77c28a;
+  background-color: #5fab76;
 }
 
 /* Columna derecha */
@@ -103,4 +107,25 @@ button:hover {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+.logo {
+  position: relative;
+  top: -90px; /* Ajusta según lo que necesites */
+  margin-bottom: -70px; /* Opcional para compensar el espacio hacia abajo */
+}
+.volver-login {
+  margin-top: 20px;
+  font-size: 14px;
+  grid-column: span 2;
+  text-align: center;
+}
+
+.volver-login a {
+  color: #77c28a;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.volver-login a:hover {
+  text-decoration: underline;
 }

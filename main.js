@@ -8,7 +8,7 @@ function createWindow() {
 
   win = new BrowserWindow({
     width: Math.min(1320, width),
-    height: Math.min(800, height),
+    height: Math.min(900, height),
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'), 

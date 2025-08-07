@@ -30,20 +30,35 @@ html, body {
 
 
 .logo {
-    width: 100%;
-    display: block;
-    align-items: center;
-    justify-content: center;
-    margin-right: 40px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+  padding-top: 0;
 }
+
 .logo img {
-    margin: 0;
-    margin-left: -38px; /* Ajusta según el espacio transparente */
+  width: 350px;     /* Puedes aumentar/reducir si quieres */
+  max-width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.logo-green {
+  color: #7AC675;
+  font-weight: bold;
+  font-size: 1.8rem;
+}
+
+.logo-black {
+  color: black;
+  font-weight: bold;
+  font-size: 1.8rem;
 }
 
 h1 {
-  font-size: 4rem;
-  font-weight: bolder;
+  font-size: 2.5rem;
   margin-bottom: 30px;
 }
 
@@ -56,7 +71,7 @@ form {
 
 label {
   font-size: 0.95rem;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .input-group {
@@ -128,6 +143,12 @@ button:hover {
   }
 
   .left-panel {
+  flex: 0.9;
+  background: #fff;
+  padding: 20px 60px 40px 60px; /* margen arriba reducido */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   position: relative;
   z-index: 2;
 }
