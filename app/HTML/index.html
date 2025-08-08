@@ -7,33 +7,40 @@
   <link rel="stylesheet" href="../CSS/style.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet" />
+
   <style>
+    /* Lista con scroll siempre visible */
     .lista-tareas {
       max-height: 140px;
-      overflow-y: auto;
+      overflow-y: scroll;
+      scrollbar-width: thin;
+      scrollbar-color: #4CAF50 #f1f1f1;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-bottom: 10px;
       padding-right: 5px;
     }
-
-    .nueva-tarea {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    .lista-tareas::-webkit-scrollbar {
+      width: 8px;
     }
-
-    .nueva-tarea input[type="text"],
-    .nueva-tarea input[type="time"] {
+    .lista-tareas::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    .lista-tareas::-webkit-scrollbar-thumb {
+      background-color: #4CAF50;
+      border-radius: 4px;
+    }
+    /* Inputs y botón */
+    .pendientes input[type="text"] {
       padding: 8px;
       font-size: 0.85rem;
       border-radius: 6px;
       border: 1px solid #ccc;
       background-color: #f9f9f9;
+      margin-bottom: 5px;
+      width: 100%;
     }
-
-    .nueva-tarea button {
+    .pendientes button {
       padding: 8px;
       background-color: #A4D490;
       color: white;
@@ -41,15 +48,30 @@
       border-radius: 6px;
       cursor: pointer;
       font-size: 0.9rem;
+      width: 100%;
     }
-
-    .nueva-tarea button:hover {
+    .pendientes button:hover {
       background-color: #8fc87d;
+    }
+    /* Tarea */
+    .tarea {
+      background: #d5f2d5;
+      border-left: 4px solid #4CAF50;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: #333;
+    }
+    .tarea span {
+      font-weight: bold;
+      font-size: 0.8rem;
+      color: #222;
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="top-section">
         <div class="logo">
@@ -66,12 +88,15 @@
       <div class="night-mode">🌙 Modo noche</div>
     </aside>
 
+    <!-- Contenido principal -->
     <main class="main-content">
+      <!-- Bienvenida -->
       <div class="bienvenida">
         <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
         <p><strong>¡Hola Maria!</strong></p>
       </div>
 
+      <!-- Formulario principal -->
       <div class="area-superior">
         <div class="formulario-card">
           <form class="formulario-horizontal">
@@ -79,25 +104,17 @@
               <label for="nombre">Nombre de herramienta</label>
               <input type="text" id="nombre" placeholder="Escribe el nombre de la herramienta" />
               <label for="estado">Estado</label>
-              <select id="estado">
-                <option>Seleccionar</option>
-              </select>
+              <select id="estado"><option>Seleccionar</option></select>
               <label for="tipo">Tipo</label>
-              <select id="tipo">
-                <option>Seleccionar</option>
-              </select>
+              <select id="tipo"><option>Seleccionar</option></select>
               <label for="ubicacion">Ubicación</label>
-              <select id="ubicacion">
-                <option>Seleccionar</option>
-              </select>
+              <select id="ubicacion"><option>Seleccionar</option></select>
             </div>
             <div class="columna borde-derecho">
               <label for="fecha">Fecha ingreso</label>
               <input type="date" id="fecha" />
               <label for="lote">Número de Lote</label>
-              <select id="lote">
-                <option>Seleccionar</option>
-              </select>
+              <select id="lote"><option>Seleccionar</option></select>
             </div>
             <div class="columna descripcion">
               <label for="descripcion">Descripción de herramienta</label>
@@ -110,35 +127,28 @@
         </div>
       </div>
 
+      <!-- Sección inferior -->
       <div class="area-inferior">
+        <!-- Herramientas -->
         <div class="herramientas-hoy">
           <h3>Herramientas registradas hoy</h3>
           <ul>
-            <li>
-              <img src="../imagenes/motosierra.png" alt="Motosierra" />
-              <span>Motosierra</span><span class="cantidad">15 unidades</span><span class="estado verde">● Funcional</span>
-            </li>
-            <li>
-              <img src="../imagenes/pico.png" alt="Picos" />
-              <span>Picos</span><span class="cantidad">50 unidades</span><span class="estado amarillo">● Mantenimiento</span>
-            </li>
-            <li>
-              <img src="../imagenes/palaa.png" alt="Palas" />
-              <span>Palas</span><span class="cantidad">50 unidades</span><span class="estado verde">● Funcional</span>
-            </li>
-            <li>
-              <img src="../imagenes/carretillaa.jpg" alt="Carretillas" />
-              <span>Carretillas</span><span class="cantidad">10 unidades</span><span class="estado rojo">● No disponible</span>
-            </li>
+            <li><img src="../imagenes/motosierra.png" alt="Motosierra" /><span>Motosierra</span><span class="cantidad">15 unidades</span><span class="estado verde">● Funcional</span></li>
+            <li><img src="../imagenes/pico.png" alt="Picos" /><span>Picos</span><span class="cantidad">50 unidades</span><span class="estado amarillo">● Mantenimiento</span></li>
+            <li><img src="../imagenes/palaa.png" alt="Palas" /><span>Palas</span><span class="cantidad">50 unidades</span><span class="estado verde">● Funcional</span></li>
+            <li><img src="../imagenes/carretillaa.jpg" alt="Carretillas" /><span>Carretillas</span><span class="cantidad">10 unidades</span><span class="estado rojo">● No disponible</span></li>
           </ul>
         </div>
 
+        <!-- Calendario -->
         <div class="calendario">
           <div class="fecha-actual">
-            <h2>14</h2>
-            <p>Miércoles<br><span>Agosto, 2024</span></p>
+            <h2>10</h2>
+            <div class="fecha-texto">
+              <p>Miércoles</p>
+              <span>Septiembre, 2025</span>
+            </div>
           </div>
-
           <div class="semana">
             <div>D<br>11</div>
             <div>L<br>12</div>
@@ -147,71 +157,59 @@
             <div>V<br>16</div>
             <div>S<br>17</div>
           </div>
-
           <div class="pendientes">
-  <h4>Pendientes</h4>
-  <input type="text" class="datepicker" placeholder="Selecciona una fecha" id="fechaTarea" />
-  <input type="text" id="descripcionTarea" placeholder="Escribe tu tarea aquí" />
-  <button onclick="agregarTarea()">Agregar</button>
-
-  <div class="lista-tareas" id="listaTareas">
-    <!-- Las tareas se agregarán aquí dinámicamente -->
-  </div>
-</div>
-
-            <div class="nueva-tarea">
-              <input type="time" id="horaTarea" />
-              <input type="text" id="textoTarea" placeholder="Escribe tu deber" />
-              <button onclick="agregarTarea()">Añadir</button>
-            </div>
+            <h4>Pendientes</h4>
+            <input type="text" id="fechaTarea" placeholder="Selecciona fecha y hora" />
+            <input type="text" id="descripcionTarea" placeholder="Escribe tu tarea aquí" />
+            <button onclick="agregarTarea()">Agregar</button>
+            <div class="lista-tareas" id="listaTareas"></div>
           </div>
         </div>
       </div>
     </main>
   </div>
 
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script>
-  flatpickr(".datepicker", {
-    dateFormat: "Y-m-d",
-    locale: "es"
-  });
+    flatpickr("#fechaTarea", {
+      enableTime: true,
+      dateFormat: "Y-m-d H:i",
+      locale: "es",
+      time_24hr: true
+    });
 
-  function formatearFecha(fechaISO) {
-    const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-    const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
-    const fecha = new Date(fechaISO);
-    const diaSemana = dias[fecha.getDay()];
-    const dia = fecha.getDate();
-    const mes = meses[fecha.getMonth()];
-    return `${diaSemana}, ${dia} de ${mes}`;
-  }
+    function formatearFecha(fechaISO) {
+      const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+      const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+      const fecha = new Date(fechaISO);
+      const diaSemana = dias[fecha.getDay()];
+      const dia = fecha.getDate();
+      const mes = meses[fecha.getMonth()];
+      const hora = fecha.getHours();
+      const minutos = fecha.getMinutes().toString().padStart(2, '0');
+      let horaTexto = (hora === 0 && minutos === "00") ? "" : ` - ${hora}:${minutos}`;
+      return `${diaSemana}, ${dia} de ${mes}${horaTexto}`;
+    }
 
-  function agregarTarea() {
-    const fechaInput = document.getElementById("fechaTarea").value;
-    const descripcion = document.getElementById("descripcionTarea").value.trim();
-    const contenedor = document.getElementById("listaTareas");
+    function agregarTarea() {
+      const fechaInput = document.getElementById("fechaTarea").value;
+      const descripcion = document.getElementById("descripcionTarea").value.trim();
+      const contenedor = document.getElementById("listaTareas");
 
-    if (fechaInput && descripcion) {
+      if (!fechaInput || !descripcion) {
+        alert("Por favor, ingresa al menos la fecha y la descripción.");
+        return;
+      }
+
       const tarea = document.createElement("div");
       tarea.classList.add("tarea");
-
-      const fechaFormateada = formatearFecha(fechaInput);
-
-      tarea.innerHTML = `
-        <span>${fechaFormateada}</span>
-        <p>🛠️ ${descripcion}</p>
-      `;
-
+      tarea.innerHTML = `<span>${formatearFecha(fechaInput)}</span><p>🛠️ ${descripcion}</p>`;
       contenedor.appendChild(tarea);
 
-      // Limpiar campos
       document.getElementById("fechaTarea").value = "";
       document.getElementById("descripcionTarea").value = "";
-    } else {
-      alert("Por favor, escribe la descripción y selecciona una fecha.");
     }
-  }
-</script>
+  </script>
 </body>
 </html>

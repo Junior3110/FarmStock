@@ -1,36 +1,36 @@
-/* Reset */
+/* Reset general - Quito márgenes y rellenos y fijo box-sizing para que las medidas sean más precisas */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Base */
+/* Estilo base del body */
 body {
-  font-family: "Roboto", sans-serif;
-  background-color: #d3d3d3;
-  height: 100vh;
-  overflow: hidden;
+  font-family: "Roboto", sans-serif; /* Fuente general */
+  background-color: #d3d3d3; /* Fondo gris claro */
+  height: 100vh; /* Ocupa toda la pantalla */
+  overflow: hidden; /* Evita scroll general */
 }
 
-/* Grid principal: sidebar + contenido */
+/* Contenedor principal con grid: sidebar y contenido */
 .container {
   display: grid;
-  grid-template-columns: 250px 1fr; /* Sidebar fija, contenido flexible */
+  grid-template-columns: 250px 1fr; /* Sidebar fijo de 250px y el resto para contenido */
   height: 100vh;
 }
 
-/* Sidebar */
+/* Sidebar lateral */
 .sidebar {
   background-color: white;
   padding: 20px 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid #ccc; /* Línea separadora */
 }
 
-/* Logo (mejorado: centrado y escalado) */
+/* Contenedor del logo en el sidebar */
 .logo {
   width: 100%;
   display: flex;
@@ -42,6 +42,7 @@ body {
   text-align: center;
 }
 
+/* Imagen del logo */
 .logo img {
   width: 100%;
   max-width: 180px;
@@ -50,6 +51,7 @@ body {
   object-fit: contain;
 }
 
+/* Texto verde del logo */
 .logo-green {
   color: #4CAF50;
   font-weight: bold;
@@ -57,6 +59,7 @@ body {
   line-height: 1.1;
 }
 
+/* Texto negro del logo */
 .logo-black {
   color: #000;
   font-weight: bold;
@@ -64,12 +67,13 @@ body {
   line-height: 1.1;
 }
 
-/* Menú lateral (compatibilidad, aunque usas .menu-modulos en el HTML) */
+/* Lista del menú lateral */
 .sidebar ul {
   list-style: none;
   padding: 0;
 }
 
+/* Elementos del menú */
 .sidebar li {
   margin-bottom: 20px;
   font-size: 16px;
@@ -79,18 +83,18 @@ body {
   cursor: pointer;
 }
 
-/* Ítem activo (en gris claro) */
+/* Primer elemento del menú */
 .sidebar li:first-child {
   color: #ccc;
   font-weight: 600;
 }
 
-/* Hover */
+/* Hover de elementos del menú */
 .sidebar li:not(:first-child):hover {
   color: #4CAF50;
 }
 
-/* Modo noche */
+/* Texto del modo noche */
 .modo-noche {
   margin-top: auto;
   font-size: 14px;
@@ -98,19 +102,20 @@ body {
   padding-left: 10px;
 }
 
-/* Contenido principal */
+/* Contenedor principal del contenido */
 .main-content {
   padding: 25px;
-  overflow-y: hidden;
+  overflow-y: hidden; /* Sin scroll vertical */
 }
 
-/* Bienvenida */
+/* Sección de bienvenida */
 .bienvenida {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
 }
 
+/* Imagen del usuario en la bienvenida */
 .bienvenida img {
   width: 40px;
   height: 40px;
@@ -118,8 +123,7 @@ body {
   margin-right: 10px;
 }
 
-/* formulario de registro */
-/* Formulario tarjeta */
+/* Tarjeta del formulario */
 .formulario-card {
   background-color: white;
   border-radius: 15px;
@@ -128,15 +132,15 @@ body {
   margin-bottom: 30px;
 }
 
-/* Contenedor grid del formulario */
+/* Formulario con columnas */
 .formulario-horizontal {
   display: grid;
   grid-template-columns: 1fr 1fr 1.2fr;
   gap: 20px;
-  align-items: stretch; /* Asegura altura igual para columnas */
+  align-items: stretch;
 }
 
-/* Columnas del formulario */
+/* Columna del formulario */
 .columna {
   display: flex;
   flex-direction: column;
@@ -144,7 +148,7 @@ body {
   position: relative;
 }
 
-/* Línea vertical divisoria */
+/* Línea divisoria a la derecha de la columna */
 .borde-derecho::after {
   content: "";
   position: absolute;
@@ -168,11 +172,12 @@ textarea {
   max-width: 250px;
 }
 
+/* Textarea altura fija */
 textarea {
   height: 120px;
 }
 
-/* Botón */
+/* Botones */
 button {
   align-self: flex-start;
   padding: 12px 24px;
@@ -188,16 +193,19 @@ button {
   margin-top: auto;
 }
 
-
+/* Hover de botón */
 button:hover {
   background-color: #8fc87d;
 }
 
+/* Labels */
 label {
   font-size: 14px;
   font-weight: 500;
   color: #333;
 }
+
+/* Textarea de descripción */
 .descripcion textarea {
   background-color: white;
   color: black;
@@ -211,12 +219,14 @@ label {
   outline: none;
 }
 
+/* Botón registrar al final del formulario */
 .boton-registrar {
   display: flex;
-  justify-content: flex-end; /* o center si quieres centrar */
+  justify-content: flex-end;
   margin-top: 100px;
 }
 
+/* Área inferior donde están herramientas y calendario */
 .area-inferior {
   display: flex;
   gap: 2rem;
@@ -224,30 +234,52 @@ label {
   align-items: flex-start;
 }
 
-/* CONTENEDOR HERRAMIENTAS */
+/* === CONTENEDOR DE HERRAMIENTAS === */
 .herramientas-hoy {
   background: white;
   padding: 20px;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   flex: 2;
-  max-height: 380px; /* Ajusta según necesidad */
+  max-height: 300px;
+  overflow-y: hidden; /* Sin scroll por defecto */
+}
+
+/* Activa scroll solo si hay 6 o más elementos */
+.herramientas-hoy:has(li:nth-child(n+6)) {
   overflow-y: auto;
 }
+
+/* Scroll personalizado */
+.herramientas-hoy::-webkit-scrollbar {
+  width: 6px;
+}
+
+.herramientas-hoy::-webkit-scrollbar-thumb {
+  background-color: #79f17f;
+  border-radius: 4px;
+}
+
+.herramientas-hoy::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+/* Lista de tareas dentro de herramientas */
 .lista-tareas {
   max-height: 150px;
-  overflow-y: auto;
+  overflow-y: hidden; /* Sin scroll por defecto */
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding-right: 4px;
 }
-.herramientas-hoy ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+
+/* Scroll si hay 6 o más tareas */
+.lista-tareas:has(div:nth-child(n+6)) {
+  overflow-y: auto;
 }
 
+/* Elementos de la lista de herramientas */
 .herramientas-hoy li {
   display: flex;
   align-items: center;
@@ -255,22 +287,26 @@ label {
   border-bottom: 1px solid #eee;
 }
 
+/* Imagen de la herramienta */
 .herramientas-hoy li img {
   width: 35px;
   margin-right: 15px;
 }
 
+/* Cantidad de herramientas */
 .herramientas-hoy .cantidad {
   margin-left: auto;
   margin-right: 10px;
   color: #777;
 }
 
+/* Estado de la herramienta */
 .herramientas-hoy .estado {
   font-size: 14px;
   font-weight: bold;
 }
 
+/* Colores por estado */
 .estado.verde {
   color: green;
 }
@@ -283,10 +319,7 @@ label {
   color: red;
 }
 
-
-html, body {
-  overflow: hidden !important;
-}
+/* Menú de módulos */
 .menu-modulos {
   list-style: none;
   padding: 0;
@@ -307,23 +340,27 @@ html, body {
   transition: background-color 0.2s, color 0.2s;
 }
 
+/* Hover en el menú */
 .menu-modulos li a:hover {
   background-color: #e8f5e9;
   color: #4CAF50;
 }
 
+/* Enlace activo en el menú */
 .menu-modulos li a.active {
   background-color: #d1f0d1;
   color: #4CAF50;
   font-weight: bold;
-  border: none !important; /* <-- esto evita el borde amarillo */
-  outline: none !important; /* <-- por si viene del foco del navegador */
+  border: none !important;
+  outline: none !important;
 }
+
 a:focus, a:active {
   outline: none !important;
   border: none !important;
 }
-/* CALENDARIO */
+
+/* === CALENDARIO === */
 .calendario {
   max-width: 330px;
   flex-shrink: 0;
@@ -334,10 +371,30 @@ a:focus, a:active {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
+/* Scroll del calendario */
+.calendario::-webkit-scrollbar {
+  width: 6px;
+}
+
+.calendario::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+.calendario::-webkit-scrollbar-thumb:hover {
+  background-color: #999;
+}
+
+/* Fecha actual en el calendario */
 .fecha-actual {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-start;
 }
 
 .fecha-actual h2 {
@@ -347,12 +404,19 @@ a:focus, a:active {
   margin: 0;
 }
 
-.fecha-actual p {
-  font-size: 0.9rem;
-  color: #555;
-  line-height: 1.2;
+.fecha-texto p {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
 }
 
+.fecha-texto span {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+/* Semana en el calendario */
 .semana {
   background: #fff;
   border-radius: 12px;
@@ -373,6 +437,7 @@ a:focus, a:active {
   transition: 0.3s;
 }
 
+/* Día activo en la semana */
 .semana .activo {
   background-color: #c8edc8;
   border-radius: 50%;
@@ -390,6 +455,7 @@ a:focus, a:active {
   position: relative;
 }
 
+/* Pendientes del calendario */
 .pendientes {
   margin-top: 10px;
 }
@@ -411,6 +477,7 @@ a:focus, a:active {
   background-color: #f9f9f9;
 }
 
+/* Tareas pendientes */
 .pendientes .tarea {
   background: #d5f2d5;
   border-left: 4px solid #4CAF50;
@@ -425,11 +492,21 @@ a:focus, a:active {
   font-size: 0.8rem;
   color: #222;
 }
+
+/* Lista de tareas en pendientes */
 .lista-tareas {
-  max-height: 150px;  /* Puedes ajustar esta altura */
-  overflow-y: auto;
+  max-height: 140px;
+  overflow-y: hidden; /* Scroll oculto por defecto */
+  scrollbar-width: thin;
+  scrollbar-color: #4CAF50 #f1f1f1;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-right: 4px;
+  padding-right: 5px;
+  margin-top: 10px;
+}
+
+/* Scroll si hay más de 6 tareas */
+.lista-tareas:has(div:nth-child(n+6)) {
+  overflow-y: auto;
 }
