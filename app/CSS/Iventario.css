@@ -42,19 +42,16 @@ html {
 
 /* Logo arriba del nav */
 .logo-encabezado {
-    display: flex;           /* Flexbox en el contenedor */
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center;     /* Centra verticalmente si le das altura al contenedor */
-    padding: 20px 0;         /* Espacio arriba y abajo */
-    height: auto;            /* Opcional: limita la altura si quieres */
+    margin-bottom: 40px;
+    padding: 0;
 }
 
 
 .logo-encabezado img {
-    max-width: 80%;    /* Ajusta el ancho máximo al contenedor */
-    height: auto;      /* Mantiene la proporción */
-    display: block;    /* Para que ocupe correctamente el espacio en flex */
+    display: block;
+    margin-left: -38px; /* Ajusta según el espacio transparente */
 }
+
 /* Menú lateral */
 .menu-lateral ul {
     list-style: none;
