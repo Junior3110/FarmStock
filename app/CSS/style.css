@@ -1,79 +1,67 @@
-/* Reset general - Quito márgenes y rellenos y fijo box-sizing para que las medidas sean más precisas */
+/* -------------------- RESET Y BASE -------------------- */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Estilo base del body */
 body {
-  font-family: "Roboto", sans-serif; /* Fuente general */
-  background-color: #d3d3d3; /* Fondo gris claro */
-  height: 100vh; /* Ocupa toda la pantalla */
-  overflow: hidden; /* Evita scroll general */
+  font-family: "Roboto", sans-serif;
+  background-color: #d3d3d3;
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* Contenedor principal con grid: sidebar y contenido */
+/* -------------------- GRID PRINCIPAL -------------------- */
 .container {
   display: grid;
-  grid-template-columns: 250px 1fr; /* Sidebar fijo de 250px y el resto para contenido */
+  grid-template-columns: 250px 1fr;
   height: 100vh;
 }
 
-/* Sidebar lateral */
+/* -------------------- SIDEBAR -------------------- */
 .sidebar {
   background-color: white;
   padding: 20px 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-right: 1px solid #ccc; /* Línea separadora */
+  border-right: 1px solid #ccc;
 }
 
-/* Contenedor del logo en el sidebar */
 .logo {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 10px;
   margin-bottom: 30px;
   text-align: center;
 }
 
-/* Imagen del logo */
 .logo img {
   width: 100%;
   max-width: 180px;
   height: auto;
-  display: block;
   object-fit: contain;
 }
 
-/* Texto verde del logo */
 .logo-green {
   color: #4CAF50;
   font-weight: bold;
   font-size: 22px;
-  line-height: 1.1;
 }
 
-/* Texto negro del logo */
 .logo-black {
   color: #000;
   font-weight: bold;
   font-size: 22px;
-  line-height: 1.1;
 }
 
-/* Lista del menú lateral */
 .sidebar ul {
   list-style: none;
-  padding: 0;
 }
 
-/* Elementos del menú */
 .sidebar li {
   margin-bottom: 20px;
   font-size: 16px;
@@ -83,246 +71,24 @@ body {
   cursor: pointer;
 }
 
-/* Primer elemento del menú */
 .sidebar li:first-child {
   color: #ccc;
   font-weight: 600;
 }
 
-/* Hover de elementos del menú */
 .sidebar li:not(:first-child):hover {
   color: #4CAF50;
 }
 
-/* Texto del modo noche */
 .modo-noche {
   margin-top: auto;
   font-size: 14px;
-  color: #000;
   padding-left: 10px;
 }
 
-/* Contenedor principal del contenido */
-.main-content {
-  padding: 25px;
-  overflow-y: hidden; /* Sin scroll vertical */
-}
-
-/* Sección de bienvenida */
-.bienvenida {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-/* Imagen del usuario en la bienvenida */
-.bienvenida img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-/* Tarjeta del formulario */
-.formulario-card {
-  background-color: white;
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 25px;
-  margin-bottom: 30px;
-}
-
-/* Formulario con columnas */
-.formulario-horizontal {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.2fr;
-  gap: 20px;
-  align-items: stretch;
-}
-
-/* Columna del formulario */
-.columna {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  position: relative;
-}
-
-/* Línea divisoria a la derecha de la columna */
-.borde-derecho::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 1px;
-  height: 100%;
-  background-color: #ccc;
-}
-
-/* Inputs y selects */
-input,
-select,
-textarea {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
-  background-color: #f9f9f9;
-  resize: none;
-  max-width: 250px;
-}
-
-/* Textarea altura fija */
-textarea {
-  height: 120px;
-}
-
-/* Botones */
-button {
-  align-self: flex-start;
-  padding: 12px 24px;
-  background-color: #A4D490;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 16px;
-  min-width: 130px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: auto;
-}
-
-/* Hover de botón */
-button:hover {
-  background-color: #8fc87d;
-}
-
-/* Labels */
-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
-}
-
-/* Textarea de descripción */
-.descripcion textarea {
-  background-color: white;
-  color: black;
-  font-family: inherit;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid white;
-  width: 100%;
-  height: 100px;
-  resize: none;
-  outline: none;
-}
-
-/* Botón registrar al final del formulario */
-.boton-registrar {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 100px;
-}
-
-/* Área inferior donde están herramientas y calendario */
-.area-inferior {
-  display: flex;
-  gap: 2rem;
-  margin-top: 30px;
-  align-items: flex-start;
-}
-
-/* === CONTENEDOR DE HERRAMIENTAS === */
-.herramientas-hoy {
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  flex: 2;
-  max-height: 300px;
-  overflow-y: hidden; /* Sin scroll por defecto */
-}
-
-/* Activa scroll solo si hay 6 o más elementos */
-.herramientas-hoy:has(li:nth-child(n+6)) {
-  overflow-y: auto;
-}
-
-/* Scroll personalizado */
-.herramientas-hoy::-webkit-scrollbar {
-  width: 6px;
-}
-
-.herramientas-hoy::-webkit-scrollbar-thumb {
-  background-color: #79f17f;
-  border-radius: 4px;
-}
-
-.herramientas-hoy::-webkit-scrollbar-track {
-  background-color: #f5f5f5;
-}
-
-/* Lista de tareas dentro de herramientas */
-.lista-tareas {
-  max-height: 150px;
-  overflow-y: hidden; /* Sin scroll por defecto */
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-right: 4px;
-}
-
-/* Scroll si hay 6 o más tareas */
-.lista-tareas:has(div:nth-child(n+6)) {
-  overflow-y: auto;
-}
-
-/* Elementos de la lista de herramientas */
-.herramientas-hoy li {
-  display: flex;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid #eee;
-}
-
-/* Imagen de la herramienta */
-.herramientas-hoy li img {
-  width: 35px;
-  margin-right: 15px;
-}
-
-/* Cantidad de herramientas */
-.herramientas-hoy .cantidad {
-  margin-left: auto;
-  margin-right: 10px;
-  color: #777;
-}
-
-/* Estado de la herramienta */
-.herramientas-hoy .estado {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-/* Colores por estado */
-.estado.verde {
-  color: green;
-}
-
-.estado.amarillo {
-  color: orange;
-}
-
-.estado.rojo {
-  color: red;
-}
-
-/* Menú de módulos */
+/* -------------------- MENÚ MÓDULOS -------------------- */
 .menu-modulos {
   list-style: none;
-  padding: 0;
 }
 
 .menu-modulos li {
@@ -340,13 +106,11 @@ label {
   transition: background-color 0.2s, color 0.2s;
 }
 
-/* Hover en el menú */
 .menu-modulos li a:hover {
   background-color: #e8f5e9;
   color: #4CAF50;
 }
 
-/* Enlace activo en el menú */
 .menu-modulos li a.active {
   background-color: #d1f0d1;
   color: #4CAF50;
@@ -360,7 +124,200 @@ a:focus, a:active {
   border: none !important;
 }
 
-/* === CALENDARIO === */
+/* -------------------- MAIN CONTENT -------------------- */
+.main-content {
+  padding: 25px;
+  overflow-y: hidden;
+}
+
+/* -------------------- BIENVENIDA -------------------- */
+.bienvenida {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.bienvenida img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+/* -------------------- FORMULARIO -------------------- */
+.formulario-card {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+.formulario-horizontal {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.columna {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+.borde-derecho::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  background-color: #ccc;
+}
+
+input,
+select,
+textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  resize: none;
+  max-width: 250px;
+}
+
+textarea {
+  height: 120px;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.descripcion textarea {
+  background-color: white;
+  color: black;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid white;
+  width: 100%;
+  height: 100px;
+  resize: none;
+  outline: none;
+}
+
+.boton-registrar {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 100px;
+}
+
+/* -------------------- BOTONES -------------------- */
+button {
+  align-self: flex-start;
+  padding: 12px 24px;
+  background-color: #A4D490;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  min-width: 130px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: auto;
+}
+
+button:hover {
+  background-color: #8fc87d;
+}
+
+/* -------------------- ÁREA INFERIOR -------------------- */
+.area-inferior {
+  display: flex;
+  gap: 2rem;
+  margin-top: 30px;
+  align-items: flex-start;
+}
+
+/* -------------------- HERRAMIENTAS HOY -------------------- */
+.herramientas-hoy {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  flex: 2;
+  max-height: 300px;
+  overflow-y: hidden;
+}
+
+.herramientas-hoy:has(li:nth-child(n+6)) {
+  overflow-y: auto;
+}
+
+.herramientas-hoy::-webkit-scrollbar {
+  width: 6px;
+}
+
+.herramientas-hoy::-webkit-scrollbar-thumb {
+  background-color: #79f17f;
+  border-radius: 4px;
+}
+
+.herramientas-hoy::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+.herramientas-hoy ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.herramientas-hoy li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.herramientas-hoy li img {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.herramientas-hoy li span:first-of-type {
+  flex: 1;
+}
+
+.herramientas-hoy .cantidad {
+  flex: 0 0 100px;
+  text-align: right;
+  color: #777;
+  white-space: nowrap;
+}
+
+.herramientas-hoy .estado {
+  flex: 0 0 120px;
+  font-size: 14px;
+  font-weight: bold;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.estado.verde { color: green; }
+.estado.amarillo { color: orange; }
+.estado.rojo { color: red; }
+
+/* -------------------- CALENDARIO -------------------- */
 .calendario {
   max-width: 330px;
   flex-shrink: 0;
@@ -375,21 +332,10 @@ a:focus, a:active {
   overflow-y: auto;
 }
 
-/* Scroll del calendario */
-.calendario::-webkit-scrollbar {
-  width: 6px;
-}
+.calendario::-webkit-scrollbar { width: 6px; }
+.calendario::-webkit-scrollbar-thumb { background-color: #ccc; border-radius: 3px; }
+.calendario::-webkit-scrollbar-thumb:hover { background-color: #999; }
 
-.calendario::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 3px;
-}
-
-.calendario::-webkit-scrollbar-thumb:hover {
-  background-color: #999;
-}
-
-/* Fecha actual en el calendario */
 .fecha-actual {
   display: flex;
   align-items: center;
@@ -401,14 +347,12 @@ a:focus, a:active {
   font-size: 2.8rem;
   font-weight: 800;
   color: #222;
-  margin: 0;
 }
 
 .fecha-texto p {
   font-size: 1rem;
   font-weight: bold;
   color: #333;
-  margin: 0;
 }
 
 .fecha-texto span {
@@ -416,7 +360,6 @@ a:focus, a:active {
   color: #555;
 }
 
-/* Semana en el calendario */
 .semana {
   background: #fff;
   border-radius: 12px;
@@ -434,10 +377,8 @@ a:focus, a:active {
   padding: 6px 0;
   border-radius: 10px;
   text-align: center;
-  transition: 0.3s;
 }
 
-/* Día activo en la semana */
 .semana .activo {
   background-color: #c8edc8;
   border-radius: 50%;
@@ -447,7 +388,6 @@ a:focus, a:active {
   margin: -22px auto 0 auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   color: #222;
@@ -455,7 +395,6 @@ a:focus, a:active {
   position: relative;
 }
 
-/* Pendientes del calendario */
 .pendientes {
   margin-top: 10px;
 }
@@ -477,7 +416,6 @@ a:focus, a:active {
   background-color: #f9f9f9;
 }
 
-/* Tareas pendientes */
 .pendientes .tarea {
   background: #d5f2d5;
   border-left: 4px solid #4CAF50;
@@ -493,10 +431,9 @@ a:focus, a:active {
   color: #222;
 }
 
-/* Lista de tareas en pendientes */
 .lista-tareas {
   max-height: 140px;
-  overflow-y: hidden; /* Scroll oculto por defecto */
+  overflow-y: hidden;
   scrollbar-width: thin;
   scrollbar-color: #4CAF50 #f1f1f1;
   display: flex;
@@ -506,7 +443,6 @@ a:focus, a:active {
   margin-top: 10px;
 }
 
-/* Scroll si hay más de 6 tareas */
 .lista-tareas:has(div:nth-child(n+6)) {
   overflow-y: auto;
 }

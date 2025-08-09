@@ -33,11 +33,40 @@
           <img src="../imagenes/Maria.png" alt="Perfil" />
           <p><strong>¡Hola Maria!</strong></p>
         </div>
+
+        <!-- ACCIONES: reordenado y convertidos Mes/Día en selects -->
         <div class="actions">
           <button class="green">Descargar informe</button>
-          <button class="light">Cambiar proveedor ⌄</button>
-          <button class="light">Día ⌄</button>
-          <button class="light">Mes ⌄</button>
+
+          <!-- Cambiar proveedor (puedes convertirlo en un botón que abra un modal, o dejarlo como select si prefieres) -->
+          <select id="proveedor" class="light">
+            <option value="">Cambiar proveedor</option>
+            <option value="prov1">Proveedor 1</option>
+            <option value="prov2">Proveedor 2</option>
+            <option value="prov3">Proveedor 3</option>
+          </select>
+
+          <!-- Mes -->
+          <select id="mes" class="light" aria-label="Seleccionar mes">
+            <option value="">Mes</option>
+            <option value="1">Enero</option>
+            <option value="2">Febrero</option>
+            <option value="3">Marzo</option>
+            <option value="4">Abril</option>
+            <option value="5">Mayo</option>
+            <option value="6">Junio</option>
+            <option value="7">Julio</option>
+            <option value="8">Agosto</option>
+            <option value="9">Septiembre</option>
+            <option value="10">Octubre</option>
+            <option value="11">Noviembre</option>
+            <option value="12">Diciembre</option>
+          </select>
+
+          <!-- Día (rellenado dinámicamente) -->
+          <select id="dia" class="light" aria-label="Seleccionar día">
+            <option value="">Día</option>
+          </select>
         </div>
       </header>
 
@@ -112,6 +141,45 @@
       </section>
     </main>
   </div>
+
+  <!-- SCRIPT: rellena días según mes seleccionado -->
+  <script>
+    (function() {
+      const mesSelect = document.getElementById('mes');
+      const diaSelect = document.getElementById('dia');
+
+      function rellenarDias() {
+        const mes = parseInt(mesSelect.value, 10);
+        const year = new Date().getFullYear(); // usa año actual (si quieres agregar selector de año, se puede)
+        diaSelect.innerHTML = ''; // limpiar
+
+        // Opción placeholder
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = 'Día';
+        diaSelect.appendChild(placeholder);
+
+        if (!isNaN(mes) && mes >= 1 && mes <= 12) {
+          // new Date(year, mes, 0).getDate() devuelve cantidad de días del mes (mes es 1..12)
+          const diasEnMes = new Date(year, mes, 0).getDate();
+          for (let d = 1; d <= diasEnMes; d++) {
+            const opt = document.createElement('option');
+            opt.value = d;
+            opt.textContent = d;
+            diaSelect.appendChild(opt);
+          }
+        }
+      }
+
+      // Inicializar: seleccionar mes actual y rellenar días automáticamente
+      const mesActual = new Date().getMonth() + 1; // getMonth() devuelve 0-11
+      // Ponemos mes actual seleccionado (si quieres mantener 'Mes' por defecto, comenta la siguiente línea)
+      mesSelect.value = String(mesActual);
+
+      rellenarDias();
+      mesSelect.addEventListener('change', rellenarDias);
+    })();
+  </script>
 
   <script>
     // GRÁFICO DE ÁREA
