@@ -17,7 +17,7 @@ function createWindow() {
     }
   });
 
-  win.loadFile(path.join(__dirname, 'app/HTML/index.html'));
+  win.loadFile(path.join(__dirname, 'app/HTML/estats.html'));
 
   win.once('ready-to-show', () => {
     win.show();

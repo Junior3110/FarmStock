@@ -1,92 +1,93 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Estadísticas - FarmStock</title>
     <link rel="stylesheet" href="../CSS/estats.css" />
 </head>
-
 <body>
     <aside>
         <div class="logo">
-            <img src="cositas/logo.png" alt="Logo" /> FarmStock
+            <img src="../imagenes/Logo.png" alt="Logo" /> 
         </div>
-        <nav>
-            <a href="#">Registro Herramientas</a>
-            <a href="#">Historial de herramientas</a>
-            <a href="#">Inventario</a>
-            <a href="#">Notificaciones</a>
-            <a class="inactivo" href="#">Estadísticas</a>
-        </nav>
+        <ul class="menu-modulos">
+          <li><a href="../HTML/index.html">Registro Herramientas</a></li>
+          <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
+          <li><a href="../HTML/indexInventario.html">Inventario</a></li>
+          <li><a href="notificaciones.html">Notificaciones</a></li>
+          <li><a href="../HTML/estats.html">Estadísticas</a></li>
+        </ul>
         <div class="modo-noche">🌙 Modo noche</div>
     </aside>
 
     <main>
         <div class="top-bar">
             <div class="user-info">
-                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Usuario" />
+                <img src="../imagenes/Maria.png" alt="Usuario" />
                 <span>¡Hola María!</span>
             </div>
         </div>
 
-        <h1>Estadísticas</h1>
+        <!-- Contenedor para el contenido principal -->
+        <div class="content-box">
+            <h1>Estadísticas</h1>
 
-        <div class="filtros">
-            <input type="text" placeholder="Buscar...">
-            <button>Generar informe</button>
-            <select>
+            <div class="filtros">
+    <input type="text" placeholder="Buscar...">
+    <a href="../HTML/Estadistica.html" class="btn-informe">Generar informe</a>
+    <select>
         <option>ID herramienta</option>
-      </select>
-            <select>
+    </select>
+    <select>
         <option>Fecha</option>
-      </select>
-        </div>
+    </select>
+</div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>ID estadística</th>
-                    <th>Herramienta</th>
-                    <th>Préstamos</th>
-                    <th>Daños</th>
-                    <th>Mantenimientos</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><input type="checkbox"></td>
-                    <td>1002</td>
-                    <td><img class="icon" src="cositas/lapala.png" alt="">Pala</td>
-                    <td><span class="dot green"></span>24</td>
-                    <td><span class="dot red"></span>2</td>
-                    <td><span class="dot orange"></span>10</td>
-                    <td class="acciones">🗑️</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox"></td>
-                    <td>1002</td>
-                    <td><img class="icon" src="cositas/sisierra.png" alt="">Motosierra</td>
-                    <td><span class="dot green"></span>24</td>
-                    <td><span class="dot red"></span>2</td>
-                    <td><span class="dot orange"></span>10</td>
-                    <td class="acciones">🗑️</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox"></td>
-                    <td>1003</td>
-                    <td><img class="icon" src="cositas/picaxo.png" alt="">Picos</td>
-                    <td><span class="dot green"></span>24</td>
-                    <td><span class="dot red"></span>2</td>
-                    <td><span class="dot orange"></span>10</td>
-                    <td class="acciones">🗑️</td>
-                </tr>
-            </tbody>
-        </table>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>ID estadística</th>
+                        <th>Herramienta</th>
+                        <th>Préstamos</th>
+                        <th>Daños</th>
+                        <th>Mantenimientos</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>1002</td>
+                        <td><img class="icon" src="cositas/lapala.png" alt="">Pala</td>
+                        <td><span class="dot green"></span>24</td>
+                        <td><span class="dot red"></span>2</td>
+                        <td><span class="dot orange"></span>10</td>
+                        <td class="acciones">🗑️</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>1002</td>
+                        <td><img class="icon" src="cositas/sisierra.png" alt="">Motosierra</td>
+                        <td><span class="dot green"></span>24</td>
+                        <td><span class="dot red"></span>2</td>
+                        <td><span class="dot orange"></span>10</td>
+                        <td class="acciones">🗑️</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>1003</td>
+                        <td><img class="icon" src="cositas/picaxo.png" alt="">Picos</td>
+                        <td><span class="dot green"></span>24</td>
+                        <td><span class="dot red"></span>2</td>
+                        <td><span class="dot orange"></span>10</td>
+                        <td class="acciones">🗑️</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </main>
 </body>
-
 </html>
