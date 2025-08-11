@@ -9,63 +9,121 @@ body {
     height: 100vh;
 }
 
-/* Sidebar */
+/* -------------------- SIDEBAR -------------------- */
 .sidebar {
-    width: 300px; /* 👉 antes tenías 250px, aquí lo aumentamos */
-    background: #fff;
-    padding: 20px 20px 20px 30px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+  background-color: white;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid #ccc;
 }
 
 .logo {
-    display: block;
-    align-items: center;
-    justify-content: center;
-    margin-right: 40px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  gap: 10px;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
 .logo img {
-    margin: 0;
-    margin-left: -38px; /* Ajusta según el espacio transparente */
+  width: 100%;
+  max-width: 180px;
+  height: auto;
+  object-fit: contain;
 }
 
 .logo-green {
-    color: #27ae60;
+  color: #4CAF50;
+  font-weight: bold;
+  font-size: 22px;
 }
 
 .logo-black {
-    color: #000;
+  color: #000;
+  font-weight: bold;
+  font-size: 22px;
 }
 
 .sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin-top: 50px;
+  list-style: none;
 }
 
 .sidebar li {
-    padding: 10px 0;
-    cursor: pointer;
-    font-weight: 700;
-    font-size: clamp(16px, 2vw, 20px); /* Tamaño adaptable */
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  padding-left: 10px;
+  color: #000;
+  cursor: pointer;
 }
 
-/* 🔹 Estilo de enlaces sin color forzado */
-.sidebar li a {
-    text-decoration: none;
-    color: inherit; /* hereda el color del texto padre */
+.sidebar li:first-child {
+  color: #ccc;
+  font-weight: 600;
 }
 
-.sidebar li a:hover {
-    color: #27ae60; /* efecto hover */
+.sidebar li:not(:first-child):hover {
+  color: #4CAF50;
 }
 
-.footer {
-    font-size: 14px;
-    color: #444;
+.modo-noche {
+  margin-top: auto;
+  font-size: 14px;
+  padding-left: 10px;
+}
+
+/* -------------------- MENÚ MÓDULOS -------------------- */
+.menu-modulos {
+  list-style: none;
+display: flex;
+  flex-direction: column; 
+  align-items: left; 
+  letter-spacing: -0.5px;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-modulos li {
+  margin-bottom: 20px;
+}
+
+.menu-modulos li a {
+  display: block;
+  text-decoration: none;
+  color: #000;
+  padding: 8px 10px;
+  font-size: 16px;
+  font-weight: bolder;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.menu-modulos li a:hover {
+  background-color: #e8f5e9;
+  color: #4CAF50;
+}
+
+.menu-modulos li a.active {
+  background-color: #d1f0d1;
+  color: #4CAF50;
+  font-weight: bold;
+  border: none !important;
+  outline: none !important;
+}
+
+a:focus, a:active {
+  outline: none !important;
+  border: none !important;
+}
+
+/* -------------------- MAIN CONTENT -------------------- */
+.main-content {
+  padding: 25px;
+  overflow-y: hidden;
 }
 
 /* Main Content */

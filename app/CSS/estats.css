@@ -21,64 +21,121 @@ body {
     display: flex;
     min-height: 100vh;
 }
-
-/* =========================
-   BARRA LATERAL (aside)
-   ========================= */
-aside {
-    width: 230px;
-    background-color: #ffffff;
-    border-right: 1px solid #ddd;
-    padding: 30px 20px;
-    position: relative;
-    box-sizing: border-box;
-    color: #111;
+/* -------------------- SIDEBAR -------------------- */
+.sidebar {
+  background-color: white;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid #ccc;
 }
 
 .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  gap: 10px;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
 .logo img {
-    height: 70px;
+  width: 100%;
+  max-width: 180px;
+  height: auto;
+  object-fit: contain;
 }
 
-.menu-modulos {
-    margin: 0;
-    padding: 0;
+.logo-green {
+  color: #4CAF50;
+  font-weight: bold;
+  font-size: 22px;
 }
 
-.menu-modulos li {
-    list-style: none;
-    margin: 14px 0;
+.logo-black {
+  color: #000;
+  font-weight: bold;
+  font-size: 22px;
 }
 
-.menu-modulos a,
-aside a,
-nav a {
-    color: inherit;
-    text-decoration: none;
-    font-weight: bold;
-    display: inline-block;
+.sidebar ul {
+  list-style: none;
 }
 
-.menu-modulos a.inactivo,
-nav a.inactivo {
-    color: gray;
+.sidebar li {
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  padding-left: 10px;
+  color: #000;
+  cursor: pointer;
+}
+
+.sidebar li:first-child {
+  color: #ccc;
+}
+
+.sidebar li:not(:first-child):hover {
+  color: #4CAF50;
 }
 
 .modo-noche {
-    position: absolute;
-    bottom: 20px;
-    left: 30px;
-    font-size: 14px;
+  margin-top: auto;
+  font-size: 14px;
+  padding-left: 10px;
 }
 
+/* -------------------- MENÚ MÓDULOS -------------------- */
+.menu-modulos {
+  list-style: none;
+  display: flex;
+  flex-direction: column; 
+  align-items: left; 
+  letter-spacing: -0.5px;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-modulos li {
+  margin-bottom: 20px;
+}
+
+.menu-modulos li a {
+  display: block;
+  text-decoration: none;
+  color: #000;
+  padding: 8px 10px;
+  font-size: 16px;
+  font-weight: bolder;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.menu-modulos li a:hover {
+  background-color: #e8f5e9;
+  color: #4CAF50;
+}
+
+.menu-modulos li a.active {
+  background-color: #d1f0d1;
+  color: #4CAF50;
+  font-weight: bold;
+  border: none !important;
+  outline: none !important;
+}
+
+a:focus, a:active {
+  outline: none !important;
+  border: none !important;
+}
+
+/* -------------------- MAIN CONTENT -------------------- */
+.main-content {
+  padding: 25px;
+  overflow-y: hidden;
+}
 /* =========================
    AREA PRINCIPAL (main)
    ========================= */
