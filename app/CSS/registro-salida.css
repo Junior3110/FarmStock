@@ -12,11 +12,12 @@ body {
 /* -------------------- SIDEBAR -------------------- */
 .sidebar {
   background-color: white;
-  padding: 20px 10px;
+  padding: 20px 6px 19px 14px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   border-right: 1px solid #ccc;
+  margin: 0 0 0 -4px
 }
 
 .logo {
@@ -133,17 +134,25 @@ a:focus, a:active {
     overflow-y: auto;
 }
 
-.header {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding-bottom: 10px;
+.bienvenida {
+  display: flex;
+  align-items: center;
+  margin: -16px 1px 15px 0;
+  width: 99%;
 }
 
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.bienvenida img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.foto-usuario {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
 }
 
 .avatar {

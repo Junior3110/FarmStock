@@ -13,9 +13,7 @@ html, body {
     background-color: #1e1e1e;
 }
 
-html {
-    font-size: clamp(14px, 1.5vw, 18px);
-}
+
 
 .contenedor-principal {
     display: flex;
@@ -169,27 +167,29 @@ a:focus, a:active {
     justify-content: space-between;
     align-items: center;
     /* Sin padding, usa el del panel blanco */
-    margin-bottom: 24px;
     padding: 0 0 0 0; /* Menos padding lateral, más pegado a los bordes */
     margin-top: 0px; /* Opcional: separa del borde superior del panel blanco */
 }
 
-.usuario-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-    padding-left: 0;      /* Sin padding a la izquierda */
-    padding-right: 0;
-    width: 100%; 
-    font-weight: 800;         /* Ocupa todo el ancho */
+.bienvenida {
+  display: flex;
+  align-items: center;
+  margin: -5px 1px 15px 0;
+  width: 99%;
+}
+
+.bienvenida img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
 }
 
 .foto-usuario {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
 }
 
 .menu-verde {

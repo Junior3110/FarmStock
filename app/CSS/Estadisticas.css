@@ -20,14 +20,12 @@ body, html {
 
 /* ================= SIDEBAR ================= */
 .sidebar {
-  width: 250px;
-  background: #fff;
-  padding: 20px;
+  background-color: white;
+  padding: 20px 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-right: none;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+  border-right: 1px solid #ccc;
 }
 
 .top-section {
