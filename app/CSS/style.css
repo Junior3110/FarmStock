@@ -6,7 +6,7 @@
 }
 
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Epilogue', Arial, sans-serif;
   background-color: #f5f5f5;
   height: 100vh;
   overflow: hidden;
@@ -46,6 +46,7 @@ body {
   object-fit: contain;
 }
 
+
 .sidebar ul {
   list-style: none;
 }
@@ -61,7 +62,7 @@ body {
 
 .sidebar li:first-child {
   color: #ccc;
-  font-weight: 600;
+  
 }
 
 .sidebar li:not(:first-child):hover {
@@ -76,10 +77,11 @@ body {
 
 /* -------------------- MENÚ MÓDULOS -------------------- */
 .menu-modulos {
-  list-style: none;
+    list-style: none;
   display: flex;
   flex-direction: column; 
   align-items: left; 
+  letter-spacing: -0.5px;
   padding: 0;
   margin: 0;
 }
@@ -126,11 +128,12 @@ a:focus, a:active {
 
 /* -------------------- BIENVENIDA -------------------- */
 .bienvenida {
+  
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin: 0px 0px 15px 0;
+  width: 99%;
 }
-
 .bienvenida img {
   width: 40px;
   height: 40px;
@@ -140,11 +143,12 @@ a:focus, a:active {
 
 /* -------------------- FORMULARIO -------------------- */
 .formulario-card {
+  margin-top: 20px;
   background-color: white;
   border-radius: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 25px;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 
 .formulario-horizontal {
@@ -189,8 +193,8 @@ textarea {
 
 label {
   font-size: 14px;
-  font-weight: 500;
-  color: #333;
+  font-weight: bold;
+  color: #111;
 }
 
 .descripcion textarea {
@@ -248,6 +252,7 @@ button:hover {
   flex: 2;
   max-height: 300px;
   overflow-y: hidden;
+  margin-top: 20px;
 }
 
 .herramientas-hoy:has(li:nth-child(n+6)) {
@@ -324,6 +329,7 @@ button:hover {
   gap: 15px;
   max-height: 300px;
   overflow-y: auto;
+  margin-top: 20px;
 }
 
 .calendario::-webkit-scrollbar { width: 6px; }
@@ -440,3 +446,9 @@ button:hover {
 .lista-tareas:has(div:nth-child(n+6)) {
   overflow-y: auto;
 }
+
+th {
+  color: #111111; /* O usa #111 o #000 si quieres aún más oscuro */
+  font-weight: bold;
+}
+
