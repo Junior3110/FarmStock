@@ -12,27 +12,28 @@
 <body>
     <div class="container">
 <aside class="sidebar">
-      <div class="top-section">
-        <div class="logo">
-          <img src="../imagenes/Logo.png" alt="Logo del sitio" />
-        </div>
+    <div class="top-section">
+    <div class="logo">
+        <img src="../imagenes/Logo.png" alt="Logo del sitio" />
+    </div>
         <ul class="menu-modulos">
-          <li><a href="../HTML/index.html">Registro Herramientas</a></li>
-          <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
-          <li><a href="../HTML/indexInventario.html">Inventario</a></li>
-          <li><a href="notificaciones.html">Notificaciones</a></li>
-          <li><a href="../HTML/estats.html">Estadísticas</a></li>
+            <li><a href="../HTML/index.html">Registro Herramientas</a></li>
+            <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
+            <li><a href="../HTML/indexInventario.html">Inventario</a></li>
+            <li><a href="notificaciones.html">Notificaciones</a></li>
+            <li><a href="../HTML/estats.html">Estadísticas</a></li>
         </ul>
-      </div>
-      <div class="night-mode">🌙 Modo noche</div>
+    </div>
+
+    <div class="night-mode">🌙 Modo noche</div>
     </aside>
 
     <!-- Main content -->
     <main class="main-content">
-       <div class="bienvenida">
-        <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
-        <p><strong>¡Hola Maria!</strong></p>
-      </div>
+        <div class="bienvenida">
+            <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
+            <p><strong>¡Hola Maria!</strong></p>
+        </div>
 
     <section class="registro">
         <div class="registro-header">
@@ -68,11 +69,18 @@
 
         <div class="contenido">
             <div class="herramientas">
-                <h4>Herramienta</h4>
-            <ul>
-                <li><input type="checkbox" /> Motosierra - <span>2 unidades</span></li>
-                <li><input type="checkbox" checked /> <span class="verde">Picos</span> - <span>5 unidades</span></li>
-            </ul>
+            <table class="tabla_estadisticas">
+                <thead>
+                    <tr>
+                        <th></th><th>Herramienta</th><th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><input type="checkbox" /></td><td>Carretilla</td><td>2</td>
+                    <tr><td><input type="checkbox" /></td><td>Picos</td><td>3</td>
+                </tbody>
+            </table>
+    
                 <button class="ver">Ver</button>
             </div>
 

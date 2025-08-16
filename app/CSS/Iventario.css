@@ -128,7 +128,7 @@ a:focus, a:active {
 .main-content {
   padding: 25px;
   overflow-y: hidden;
-}   
+}
 /* Panel de contenido gris */
 .contenido-central {
     flex-grow: 1;

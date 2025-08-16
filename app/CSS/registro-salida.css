@@ -1,23 +1,31 @@
+/* -------------------- RESET Y BASE -------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background-color: #f5f5f5;
+  font-family: 'Epilogue', Arial, sans-serif;
+  background-color: #f5f5f5;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .container {
-    display: flex;
+    display: grid;
+    grid-template-columns: 231px 1fr;
     height: 100vh;
 }
 
 /* -------------------- SIDEBAR -------------------- */
 .sidebar {
   background-color: white;
-  padding: 20px 6px 19px 14px;
+  padding: 20px 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   border-right: 1px solid #ccc;
-  margin: 0 0 0 -4px
 }
 
 .logo {
@@ -37,17 +45,6 @@ body {
   object-fit: contain;
 }
 
-.logo-green {
-  color: #4CAF50;
-  font-weight: bold;
-  font-size: 22px;
-}
-
-.logo-black {
-  color: #000;
-  font-weight: bold;
-  font-size: 22px;
-}
 
 .sidebar ul {
   list-style: none;
@@ -64,7 +61,7 @@ body {
 
 .sidebar li:first-child {
   color: #ccc;
-  font-weight: 600;
+  
 }
 
 .sidebar li:not(:first-child):hover {
@@ -79,10 +76,10 @@ body {
 
 /* -------------------- MENÚ MÓDULOS -------------------- */
 .menu-modulos {
-    list-style: none;
+  list-style: none;
   display: flex;
-  flex-direction: column; 
-  align-items: left; 
+  flex-direction: column;
+  align-items: left;
   letter-spacing: -0.5px;
   padding: 0;
   margin: 0;
@@ -121,23 +118,21 @@ a:focus, a:active {
 }
 
 /* -------------------- MAIN CONTENT -------------------- */
-.main-content {
-  padding: 25px;
-  overflow-y: hidden;
+main {
+    flex: 1;
+    padding: 10px;
+    min-height: 100vh;
+    overflow: visible; /* sin scroll interno */
+    box-sizing: border-box;
 }
 
-/* Main Content */
-.main-content {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-}
+/* Barra superior */
+
 
 .bienvenida {
   display: flex;
   align-items: center;
-  margin: -16px 1px 15px 0;
-  width: 99%;
+  margin: 0px 0px 15px 10px;
 }
 
 .bienvenida img {
@@ -147,32 +142,21 @@ a:focus, a:active {
   margin-right: 10px;
 }
 
-.foto-usuario {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-.avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
 
 /* Registro */
+
 .registro {
     background-color: white;
     padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-radius: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
 }
 
 .registro-header {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto;
     align-items: center;
     margin-bottom: 10px;
 }
@@ -214,7 +198,7 @@ a:focus, a:active {
 .tabla th,
 .tabla td {
     padding: 10px;
-    text-align: left;
+    text-align: center;
     border-bottom: 1px solid #ddd;
 }
 
@@ -222,8 +206,9 @@ a:focus, a:active {
 .estadistica {
     background-color: white;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
 }
 
 /* Buscador */
@@ -262,38 +247,72 @@ a:focus, a:active {
 /* Contenido */
 .contenido {
     display: flex;
-    gap: 20px;
+    gap: 50px;
 }
 
 /* Herramientas */
 .herramientas {
-    width: 40%;
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  height: 50%;
+}
+.herramientas h4 {
+  gap: 20px;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .herramientas ul {
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 20px;
 }
 
 .herramientas li {
-    margin-bottom: 10px;
-    font-weight: 500;
+  margin-bottom: 30px;
+  font-weight: 500;
+}
+
+.tabla_estadisticas{
+  margin-top: 25px;
+  width: auto;
+  border-collapse: collapse;
+}
+
+.tabla_estadisticas tr {
+  width: 50%;
+  margin-left: 20px;
+
+}
+
+.tabla_estadisticas th{
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.tabla_estadisticas td {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #ffffff;
+
 }
 
 /* Utilidades */
-.verde {
-    color: #84C378;
-    font-weight: 600;
+.ver {
+  align-self: flex-end; 
+  margin-top: 50px;
+  padding: 12px 35px;
+  background-color: #84C378;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.ver {
-    margin-top: 10px;
-    padding: 6px 12px;
-    background-color: #84C378;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.ver:hover {
+  background-color: #76b66c;
 }
 
 /* Grafico */
