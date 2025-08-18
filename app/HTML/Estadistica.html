@@ -8,37 +8,38 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <div class="container">
-   <aside class="sidebar">
-  <div class="top-section">
-    <div class="logo-box">
-      <img src="../imagenes/Logo.png" alt="Logo del sitio" width="257" height="86" />
-    </div>
-    <ul class="menu-modulos">
+  <div class="contenedor-principal">
+    <!-- Menú lateral -->
+    <aside class="sidebar">
+      <div class="top-section">
+        <div class="logo">
+          <img src="../imagenes/Logo.png" alt="Logo del sitio" />
+        </div>
+        <ul class="menu-modulos">
           <li><a href="../HTML/index.html">Registro Herramientas</a></li>
           <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
           <li><a href="../HTML/indexInventario.html">Inventario</a></li>
           <li><a href="notificaciones.html">Notificaciones</a></li>
-          <li><a href="../HTML/estats.html">Estadísticas</a></li>
+          <li><a href="../HTML/estats.html" class="active">Estadísticas</a></li>
         </ul>
-  </div>
-  <div class="night-mode">🌙 Modo noche</div>
-</aside>
+      </div>
+      <div class="night-mode">🌙 Modo noche</div>
+    </aside>
 
-
-    <!-- El resto del HTML no cambia -->
+    <!-- Panel principal -->
     <main class="main-panel">
+      
+      <!-- HEADER -->
       <header class="header">
-        <div class="user-info">
-          <img src="../imagenes/Maria.png" alt="Perfil" />
+        <div class="bienvenida">
+          <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
           <p><strong>¡Hola Maria!</strong></p>
         </div>
 
-        <!-- ACCIONES: reordenado y convertidos Mes/Día en selects -->
         <div class="actions">
           <button class="green">Descargar informe</button>
 
-          <!-- Cambiar proveedor (puedes convertirlo en un botón que abra un modal, o dejarlo como select si prefieres) -->
+          <!-- Select proveedor -->
           <select id="proveedor" class="light">
             <option value="">Cambiar proveedor</option>
             <option value="prov1">Proveedor 1</option>
@@ -46,7 +47,7 @@
             <option value="prov3">Proveedor 3</option>
           </select>
 
-          <!-- Mes -->
+          <!-- Select mes -->
           <select id="mes" class="light" aria-label="Seleccionar mes">
             <option value="">Mes</option>
             <option value="1">Enero</option>
@@ -63,23 +64,30 @@
             <option value="12">Diciembre</option>
           </select>
 
-          <!-- Día (rellenado dinámicamente) -->
+          <!-- Select día -->
           <select id="dia" class="light" aria-label="Seleccionar día">
             <option value="">Día</option>
           </select>
         </div>
       </header>
 
+      <!-- CONTENIDO -->
       <section class="content">
-        <div class="content-box">
+
+        <!-- CONTENEDOR DE INFORMES Y GRÁFICOS -->
+        <div class="content-box charts">
           <h1>Informes</h1>
-          <div class="charts">
-            <div class="line-chart">
+
+          <div class="charts-content">
+            <!-- GRÁFICO DE LÍNEA -->
+            <div class="chart-container line-chart">
               <h3>Estadística de uso</h3>
               <canvas id="areaChart"></canvas>
               <button class="dropdown">Cambiar herramienta ⌄</button>
             </div>
-            <div class="donut-chart">
+
+            <!-- GRÁFICO DONUT -->
+            <div class="chart-container donut-chart">
               <div class="month-nav">
                 <span>←</span>
                 <strong>Marzo</strong>
@@ -98,7 +106,10 @@
               </div>
             </div>
           </div>
+        </div>
 
+        <!-- CONTENEDOR DE TABLA -->
+        <div class="content-box tabla">
           <table>
             <thead>
               <tr>
@@ -138,11 +149,12 @@
             </tbody>
           </table>
         </div>
+
       </section>
     </main>
   </div>
 
-  <!-- SCRIPT: rellena días según mes seleccionado -->
+  <!-- SCRIPTS -->
   <script>
     (function() {
       const mesSelect = document.getElementById('mes');
@@ -150,17 +162,15 @@
 
       function rellenarDias() {
         const mes = parseInt(mesSelect.value, 10);
-        const year = new Date().getFullYear(); // usa año actual (si quieres agregar selector de año, se puede)
-        diaSelect.innerHTML = ''; // limpiar
+        const year = new Date().getFullYear();
+        diaSelect.innerHTML = '';
 
-        // Opción placeholder
         const placeholder = document.createElement('option');
         placeholder.value = '';
         placeholder.textContent = 'Día';
         diaSelect.appendChild(placeholder);
 
         if (!isNaN(mes) && mes >= 1 && mes <= 12) {
-          // new Date(year, mes, 0).getDate() devuelve cantidad de días del mes (mes es 1..12)
           const diasEnMes = new Date(year, mes, 0).getDate();
           for (let d = 1; d <= diasEnMes; d++) {
             const opt = document.createElement('option');
@@ -171,11 +181,8 @@
         }
       }
 
-      // Inicializar: seleccionar mes actual y rellenar días automáticamente
-      const mesActual = new Date().getMonth() + 1; // getMonth() devuelve 0-11
-      // Ponemos mes actual seleccionado (si quieres mantener 'Mes' por defecto, comenta la siguiente línea)
+      const mesActual = new Date().getMonth() + 1;
       mesSelect.value = String(mesActual);
-
       rellenarDias();
       mesSelect.addEventListener('change', rellenarDias);
     })();
@@ -198,12 +205,8 @@
         }]
       },
       options: {
-        plugins: {
-          legend: { display: false }
-        },
-        scales: {
-          y: { beginAtZero: true }
-        }
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
       }
     });
 
@@ -221,9 +224,7 @@
       },
       options: {
         cutout: '70%',
-        plugins: {
-          legend: { display: false }
-        }
+        plugins: { legend: { display: false } }
       }
     });
   </script>

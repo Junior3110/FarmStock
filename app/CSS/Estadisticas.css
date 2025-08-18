@@ -5,74 +5,54 @@
   box-sizing: border-box;
 }
 
-body, html {
-  font-family: 'Inter', sans-serif;
-  background-color: #f0f0f0;
-  height: 100vh;
-  overflow: hidden;
+html, body {
+  height: 100%;
+  font-family: 'Epilogue', Arial, sans-serif;
+  background-color: #f4f4f4;
+  overflow-x: hidden;
 }
 
-/* CONTENEDOR PRINCIPAL */
-.container {
+body {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
+}
+
+/* ================= CONTENEDOR PRINCIPAL ================= */
+.contenedor-principal {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
 }
 
 /* ================= SIDEBAR ================= */
 .sidebar {
   background-color: white;
   padding: 20px 10px;
+  width: 231px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   border-right: 1px solid #ccc;
 }
-
 .top-section {
   display: flex;
   flex-direction: column;
 }
 
-.bottom-section {
-  margin-top: auto;
-}
-
-/* Logo */
-.logo-box {
-  width: 100%;
+.logo {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
 }
 
-.logo-box img {
+.logo img {
   width: 100%;
   max-width: 180px;
   height: auto;
-  display: block;
   object-fit: contain;
 }
 
-/* Menú */
-.menu a {
-  display: block;
-  margin: 20px 0;
-  color: #000;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.menu .active {
-  color: #4CAF50;
-}
-
-.night-mode {
-  font-size: 14px;
-  color: #000;
-}
-
-/* Menú de módulos */
 .menu-modulos {
     list-style: none;
   display: flex;
@@ -82,7 +62,6 @@ body, html {
   padding: 0;
   margin: 0;
 }
-
 .menu-modulos li {
   margin-bottom: 20px;
 }
@@ -93,7 +72,7 @@ body, html {
   color: #000;
   padding: 8px 10px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: bolder;
   border-radius: 6px;
   transition: background-color 0.2s, color 0.2s;
 }
@@ -109,43 +88,53 @@ body, html {
   font-weight: bold;
 }
 
+/* Toggle modo noche */
+.night-mode {
+  margin-top: 20px;
+  padding: 10px;
+  font-weight: 500;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
 /* ================= PANEL PRINCIPAL ================= */
 .main-panel {
   flex: 1;
-  padding: 20px 30px;
+  padding: 30px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
 }
 
-/* Header */
+/* HEADER */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  width: 100%;
+  margin-bottom: 20px;
+  padding-bottom:10px;
+  border-bottom: 1px solid #ddd;
 }
 
-.user-info {
+.bienvenida {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.user-info img {
+.bienvenida img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
 }
 
-/* Acciones */
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 10px;
 }
 
 .actions button,
@@ -174,41 +163,45 @@ body, html {
 
 /* ================= CONTENIDO ================= */
 .content {
-  margin-top: 20px;
+  flex: 1;
   width: 100%;
   display: flex;
-  justify-content: center;
-}
-
-.content h1 {
-  font-size: 28px;
-  margin-bottom: 10px;
-  text-align: center;
+  flex-direction: column;
+  gap: 30px;
 }
 
 .content-box {
-  background: white;
+  width: 100%;
+  background: #fff;
   border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 15px 30px 30px 30px;
-  min-height: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+/* Título dentro de charts */
+.charts h1 {
+  font-size: 28px;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 30px;
 }
 
 /* ================= GRÁFICAS ================= */
 .charts {
+  display: block;
+}
+
+.charts-content {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 20px;
-  flex-wrap: wrap;
+  gap: 40px;
+  flex-wrap: nowrap;
 }
 
-.line-chart {
-  width: 370px;
+/* Estilo base para cada gráfico */
+.chart-container {
   background: #f9f9f9;
   border-radius: 20px;
   padding: 20px;
@@ -216,30 +209,27 @@ body, html {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 70px;
+  gap: 20px;
+  width: 100%;
+  max-width: 500px;
 }
 
-.line-chart select {
-  margin-top: 10px;
+/* GRÁFICO DE LÍNEA */
+.line-chart canvas {
+  width: 100% !important;
+  height: 220px !important;
+}
+
+.line-chart .dropdown {
   padding: 8px 12px;
   border-radius: 10px;
   border: 1px solid #ddd;
   background-color: #fff;
   font-weight: 600;
+  cursor: pointer;
 }
 
-.donut-chart {
-  width: 400px;
-  padding: 20px;
-  background: #f9f9f9;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-
+/* GRÁFICO DONUT */
 .donut-chart canvas {
   width: 220px !important;
   height: 220px !important;
@@ -263,11 +253,17 @@ body, html {
 .month-nav {
   font-weight: bold;
   margin: 10px 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .legend {
   font-size: 14px;
   margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .legend span {
@@ -286,18 +282,9 @@ body, html {
 .yellow-dot { background: #ffeb3b; }
 .red-dot { background: #f44336; }
 
-.usage-graph {
-  width: 380px;
-  background: #fff;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.05);
-}
-
 /* ================= TABLA ================= */
-table {
+.tabla table {
   width: 100%;
-  margin-top: 30px;
   background: white;
   border-radius: 15px;
   overflow: hidden;
@@ -306,28 +293,28 @@ table {
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
-thead {
+.tabla thead {
   background: #fafafa;
 }
 
-th, td {
+.tabla th, .tabla td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
-th {
+.tabla th {
   font-weight: 600;
   font-size: 14px;
   color: #555;
 }
 
-td {
+.tabla td {
   font-size: 14px;
   vertical-align: middle;
 }
 
-tbody tr:nth-child(even) {
+.tabla tbody tr:nth-child(even) {
   background-color: #fafafa;
 }
 
@@ -337,16 +324,20 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
-td img, td svg {
+.tabla td img, .tabla td svg {
   width: 22px;
   height: 22px;
 }
 
 /* ================= RESPONSIVE ================= */
 @media (max-width: 1024px) {
-  .charts {
+  .charts-content {
     flex-direction: column;
-    gap: 20px;
+    align-items: center;
+  }
+
+  .chart-container {
+    max-width: 90%;
   }
 
   .header, .actions {
