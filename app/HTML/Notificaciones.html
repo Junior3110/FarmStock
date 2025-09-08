@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones - FarmStock</title>
+    <link rel="stylesheet" href="../CSS/Iventario.css">
+    <link rel="stylesheet" href="../CSS/Notificaciones.css">
+</head>
+<body>
+    <div class="contenedor-principal">
+        <aside class="sidebar">
+            <div class="top-section">
+                <div class="logo">
+                    <img src="../imagenes/Logo.png" alt="Logo del sitio" />
+                </div>
+                <ul class="menu-modulos">
+                    <li><a href="../HTML/index.html">Registro Herramientas</a></li>
+                    <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
+                    <li><a href="../HTML/indexInventario.html">Inventario</a></li>
+                    <li><a href="notificaciones.html" class="active">Notificaciones</a></li>
+                    <li><a href="../HTML/estats.html">Estadísticas</a></li>
+                </ul>
+            </div>
+            <div class="night-mode">🌙 Modo noche</div>
+        </aside>
+        <main>
+            <div class="bienvenida">
+                <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
+                <p><strong>¡Hola Maria!</strong></p>
+            </div>
+            <div class="content-box">
+                <div class="content-header">
+                    <h1>Notificaciones</h1>
+                    <button id="btn-crear-reporte" class="boton-verde btn-reporte">Crear reporte</button>
+                </div>
+                <!-- Aquí puedes agregar más contenido si lo necesitas -->
+            </div>
+        </main>
+    </div>
+    <div id="modal-reporte">
+        <div class="modal-contenido">
+            <button id="cerrar-modal" class="cerrar-modal">✖</button>
+            <h2>Nuevo reporte</h2>
+            <form>
+                <label>Destinatario:</label>
+                <input type="email" required placeholder="correo@ejemplo.com">
+                <label>Asunto:</label>
+                <input type="text" required>
+                <label>Descripción:</label>
+                <textarea required></textarea>
+                <label>Adjuntar archivos:</label>
+                <input type="file" multiple>
+                <button type="submit" class="boton-verde">Enviar</button>
+            </form>
+        </div>
+    </div>
+    <script src="../../backend/Notificaciones.js"></script>
+</body>
+</html>
