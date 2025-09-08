@@ -13,7 +13,9 @@ html, body {
     background-color: #1e1e1e;
 }
 
-
+h1{
+  font-weight: 800;
+}
 
 .contenedor-principal {
     display: flex;
@@ -70,14 +72,19 @@ html, body {
   color: #ccc;
 }
 
-.sidebar li:not(:first-child):hover {
-  color: #4CAF50;
+
+.night-mode {
+margin-top: 20px;
+padding: 10px;
+font-weight: 500;
+background-color: #f9f9f9;
+border-radius: 10px;
+text-align: center;
+cursor: pointer;
 }
 
-.modo-noche {
-  margin-top: auto;
-  font-size: 14px;
-  padding-left: 10px;
+.night-mode:hover {
+  background-color: #e0e0e0;
 }
 
 /* -------------------- MENÚ MÓDULOS -------------------- */
@@ -107,16 +114,16 @@ html, body {
 }
 
 .menu-modulos li a:hover {
-  background-color: #e8f5e9;
-  color: #4CAF50;
+    background-color: #e8f5e9;
+    color: #4CAF50;
 }
 
 .menu-modulos li a.active {
-  background-color: #d1f0d1;
-  color: #4CAF50;
-  font-weight: bold;
-  border: none !important;
-  outline: none !important;
+    background-color: #d1f0d1;
+    color: #4CAF50;
+    font-weight: bold;
+    border: none !important;
+    outline: none !important;
 }
 
 a:focus, a:active {
@@ -169,6 +176,12 @@ a:focus, a:active {
     /* Sin padding, usa el del panel blanco */
     padding: 0 0 0 0; /* Menos padding lateral, más pegado a los bordes */
     margin-top: 0px; /* Opcional: separa del borde superior del panel blanco */
+}
+
+.encabezado-panel h1{
+    font-size: 1.8rem;
+    letter-spacing: -1px;
+    color: #333;
 }
 
 .bienvenida {

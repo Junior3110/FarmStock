@@ -17,6 +17,11 @@ body {
   min-height: 100vh;
 }
 
+h1{
+    font-weight: 800;
+    font-size: 35px;
+}
+
 /* ================= CONTENEDOR PRINCIPAL ================= */
 .contenedor-principal {
   display: flex;
@@ -28,7 +33,6 @@ body {
 .sidebar {
   background-color: white;
   padding: 20px 10px;
-  width: 231px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -40,10 +44,13 @@ body {
 }
 
 .logo {
+  width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: left;
   gap: 10px;
   margin-bottom: 30px;
+  text-align: center;
 }
 
 .logo img {
@@ -51,6 +58,27 @@ body {
   max-width: 180px;
   height: auto;
   object-fit: contain;
+}
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  padding-left: 10px;
+  color: #000;
+  cursor: pointer;
+}
+
+.sidebar li:first-child {
+  color: #ccc;
+  
+}
+
+.sidebar li:not(:first-child):hover {
+  color: #4CAF50;
 }
 
 .menu-modulos {
@@ -99,6 +127,10 @@ body {
   cursor: pointer;
 }
 
+.night-mode:hover {
+  background-color: #e0e0e0;
+}
+
 /* ================= PANEL PRINCIPAL ================= */
 .main-panel {
   flex: 1;
@@ -111,12 +143,8 @@ body {
 /* HEADER */
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-  padding-bottom:10px;
-  border-bottom: 1px solid #ddd;
+  margin: 0px 0px 15px 10px;
 }
 
 .bienvenida {
@@ -192,6 +220,18 @@ body {
   display: block;
 }
 
+.charts-header h1{
+  font-size: 22px;
+  margin-bottom: 6px;
+  color: #222;
+  text-align: left;
+}
+
+.actions{
+  margin-top: 20px;
+}
+
+
 .charts-content {
   display: flex;
   justify-content: center;
@@ -204,7 +244,8 @@ body {
 .chart-container {
   background: #f9f9f9;
   border-radius: 20px;
-  padding: 20px;
+  margin-top: 30px;
+  padding: 40px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;

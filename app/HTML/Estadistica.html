@@ -35,49 +35,52 @@
           <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
           <p><strong>¡Hola Maria!</strong></p>
         </div>
-
-        <div class="actions">
-          <button class="green">Descargar informe</button>
-
-          <!-- Select proveedor -->
-          <select id="proveedor" class="light">
-            <option value="">Cambiar proveedor</option>
-            <option value="prov1">Proveedor 1</option>
-            <option value="prov2">Proveedor 2</option>
-            <option value="prov3">Proveedor 3</option>
-          </select>
-
-          <!-- Select mes -->
-          <select id="mes" class="light" aria-label="Seleccionar mes">
-            <option value="">Mes</option>
-            <option value="1">Enero</option>
-            <option value="2">Febrero</option>
-            <option value="3">Marzo</option>
-            <option value="4">Abril</option>
-            <option value="5">Mayo</option>
-            <option value="6">Junio</option>
-            <option value="7">Julio</option>
-            <option value="8">Agosto</option>
-            <option value="9">Septiembre</option>
-            <option value="10">Octubre</option>
-            <option value="11">Noviembre</option>
-            <option value="12">Diciembre</option>
-          </select>
-
-          <!-- Select día -->
-          <select id="dia" class="light" aria-label="Seleccionar día">
-            <option value="">Día</option>
-          </select>
-        </div>
       </header>
 
       <!-- CONTENIDO -->
       <section class="content">
-
+        
         <!-- CONTENEDOR DE INFORMES Y GRÁFICOS -->
         <div class="content-box charts">
-          <h1>Informes</h1>
+          <!-- Cabecera de informes -->
+          <div class="charts-header">
+            <h1>Informes</h1>
+            <div class="actions">
+              <button class="green">Descargar informe</button>
 
+              <!-- Select proveedor -->
+              <select id="proveedor" class="light">
+                <option value="">Cambiar proveedor</option>
+                <option value="prov1">Proveedor 1</option>
+                <option value="prov2">Proveedor 2</option>
+                <option value="prov3">Proveedor 3</option>
+              </select>
+
+              <!-- Select mes -->
+              <select id="mes" class="light" aria-label="Seleccionar mes">
+                <option value="">Mes</option>
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+                <option value="7">Julio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
+              </select>
+
+              <!-- Select día -->
+              <select id="dia" class="light" aria-label="Seleccionar día">
+                <option value="">Día</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Gráficos -->
           <div class="charts-content">
             <!-- GRÁFICO DE LÍNEA -->
             <div class="chart-container line-chart">

@@ -68,10 +68,18 @@ body {
   color: #4CAF50;
 }
 
-.modo-noche {
-  margin-top: auto;
-  font-size: 14px;
-  padding-left: 10px;
+.night-mode {
+margin-top: 20px;
+padding: 10px;
+font-weight: 500;
+background-color: #f9f9f9;
+border-radius: 10px;
+text-align: center;
+cursor: pointer;
+}
+
+.night-mode:hover {
+  background-color: #e0e0e0;
 }
 
 /* -------------------- MENÚ MÓDULOS -------------------- */
@@ -100,22 +108,18 @@ body {
 }
 
 .menu-modulos li a:hover {
-  background-color: #e8f5e9;
-  color: #4CAF50;
+    background-color: #e8f5e9;
+    color: #4CAF50;
 }
 
 .menu-modulos li a.active {
-  background-color: #d1f0d1;
-  color: #4CAF50;
-  font-weight: bold;
-  border: none !important;
-  outline: none !important;
+    background-color: #d1f0d1;
+    color: #4CAF50;
+    font-weight: bold;
+    border: none !important;
+    outline: none !important;
 }
 
-a:focus, a:active {
-  outline: none !important;
-  border: none !important;
-}
 
 /* -------------------- MAIN CONTENT -------------------- */
 main {
@@ -153,6 +157,7 @@ main {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 
 }
+
 
 .registro-header {
     display: grid;

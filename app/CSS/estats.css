@@ -17,6 +17,11 @@ body {
     display: flex;
     min-height: 100vh;
 }
+
+h1{
+    font-weight: 800;
+    font-size: 35px;
+}
 /* -------------------- SIDEBAR -------------------- */
 .sidebar {
   background-color: white;
@@ -77,10 +82,18 @@ body {
   color: #4CAF50;
 }
 
-.modo-noche {
-  margin-top: auto;
-  font-size: 14px;
-  padding-left: 10px;
+.night-mode {
+  margin-top: 20px;
+  padding: 10px;
+  font-weight: 500;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.night-mode:hover {
+  background-color: #e0e0e0;
 }
 
 /* -------------------- MENÚ MÓDULOS -------------------- */
@@ -211,8 +224,8 @@ main {
     padding: 10px 18px;
     border-radius: 8px;
     border: 1px solid #ccc;
-    background-color: #e7f0e7;
-    color: black;
+    background-color: #84C378;
+    color: white;
     text-decoration: none;
     font-weight: bold;
     display: inline-block;
@@ -221,6 +234,7 @@ main {
 
 .btn-informe:hover {
     background-color: #cfe0cf;
+    text-decoration: none;;
 }
 
 .filtros select {
