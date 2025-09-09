@@ -1,0 +1,97 @@
+/* Contenido principal */
+.main-content {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.main-content h1 {
+  font-size: 28px;
+  color: #4CAF50;
+  margin-bottom: 15px;
+}
+
+.tabs {
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  background-color: #A4D490;
+  border: none;
+  padding: 10px 20px;
+  margin-right: 10px;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.tabs button:hover {
+  background-color: #8fc87d;
+}
+
+.info {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+
+.foto-seccion {
+  display: flex;             /* activa flexbox */
+  justify-content: space-between; /* separa las imágenes */
+  align-items: center;       /* centra verticalmente */
+  gap: 20px;                 /* espacio entre fotos */
+  margin-top: 30px;
+}
+
+.foto-seccion img {
+  width: 100%;
+  max-width: 48%;            /* cada foto ocupa casi la mitad */
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Botón Quiénes Somos */
+.somos {
+  display: block;
+  padding: 10px;
+  font-weight: 500;
+  background-color: #ffffff;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+  color: #000;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.somos:hover {
+  background-color: #f0f0f0;
+  color: #4CAF50;
+}
+
+/* Estado activo */
+.somos.active {
+  background-color: #d1f0d1; /* verde suave */
+  color: #4CAF50;
+  font-weight: bold;
+}
+/* Botón Modo noche */
+.night-mode {
+  padding: 10px;
+  font-weight: 500;
+  background-color: #ffffff;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.night-mode:hover {
+  background-color: #e0e0e0;
+}

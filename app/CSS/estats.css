@@ -82,20 +82,45 @@ h1{
   color: #4CAF50;
 }
 
-.night-mode {
-  margin-top: 20px;
+/* Botón Quiénes Somos */
+.somos {
+  display: block;
   padding: 10px;
   font-weight: 500;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   border-radius: 10px;
   text-align: center;
   cursor: pointer;
+  text-decoration: none;
+  color: #000;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.somos:hover {
+  background-color: #f0f0f0;
+  color: #4CAF50;
+}
+
+/* Estado activo */
+.somos.active {
+  background-color: #d1f0d1; /* verde suave */
+  color: #4CAF50;
+  font-weight: bold;
+}
+/* Botón Modo noche */
+.night-mode {
+  padding: 10px;
+  font-weight: 500;
+  background-color: #ffffff;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .night-mode:hover {
   background-color: #e0e0e0;
 }
-
 /* -------------------- MENÚ MÓDULOS -------------------- */
 .menu-modulos {
     list-style: none;
