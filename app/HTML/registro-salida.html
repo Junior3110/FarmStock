@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,140 +10,210 @@
     <link rel="stylesheet" href="/FarmStock/app/CSS/registro-salida.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <div class="container">
-<aside class="sidebar">
-    <div class="top-section">
-    <div class="logo">
-        <img src="../imagenes/Logo.png" alt="Logo del sitio" />
-    </div>
-        <ul class="menu-modulos">
-            <li><a href="../HTML/index.html">Registro Herramientas</a></li>
-            <li><a href="../HTML/registro-salida.html" class="active">Historial de herramientas</a></li>
-            <li><a href="../HTML/indexInventario.html">Inventario</a></li>
-            <li><a href="notificaciones.html">Notificaciones</a></li>
-            <li><a href="../HTML/estats.html">Estadísticas</a></li>
-        </ul>
-    </div>
-
-    <div class="night-mode">🌙 Modo noche</div>
-    </aside>
-
-    <!-- Main content -->
-    <main class="main-content">
-        <div class="bienvenida">
-            <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
-            <p><strong>¡Hola Maria!</strong></p>
-        </div>
-
-    <section class="registro">
-        <div class="registro-header">
-            <h2>Registro Salida</h2>
-            <div class="filtros">
-                <select><option>Cédula</option></select>
-                <select><option>Estado</option></select>
-                <select><option>Herramienta</option></select>
-                <button class="registrar">Registrar salida</button>
+        <aside class="sidebar">
+            <div class="top-section">
+                <div class="logo">
+                    <img src="../imagenes/Logo.png" alt="Logo del sitio" />
+                </div>
+                <ul class="menu-modulos">
+                    <li><a href="../HTML/index.html">Registro Herramientas</a></li>
+                    <li><a href="../HTML/registro-salida.html" class="active">Historial de herramientas</a></li>
+                    <li><a href="../HTML/indexInventario.html">Inventario</a></li>
+                    <li><a href="notificaciones.html">Notificaciones</a></li>
+                    <li><a href="../HTML/estats.html">Estadísticas</a></li>
+                </ul>
             </div>
-        </div>
+            <!-- Abajo: quienes somos + modo noche -->
+            <div class="sidebar-bottom">
+                <a href="quienes-somos.html" class="somos active">
+        👥 Quiénes Somos
+    </a>
+                <div class="night-mode">
+                    <span>🌙 Modo noche</span>
+                </div>
+            </div>
+        </aside>
 
-        <table class="tabla">
-            <thead>
-                <tr>
-                    <th></th><th>ID</th><th>Nombre</th><th>Estado</th><th>C.C Aprendiz</th><th>Número Ficha</th><th>Fecha</th><th>Hora salida</th><th>Hora Entrada</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td><input type="checkbox" /></td><td>1001</td><td>Pala</td><td>Bueno</td><td>1092525927</td><td>293007</td><td>14/02/2025</td><td>3:40 PM</td><td>5:30 PM</td></tr>
-                <tr><td><input type="checkbox" /></td><td>1002</td><td>Carretilla</td><td>Bueno</td><td>1091911309</td><td>293007</td><td>14/02/2025</td><td>4:36 PM</td><td>6:37 PM</td></tr>
-                <tr><td><input type="checkbox" /></td><td>1003</td><td>Pala</td><td>Bueno</td><td>1092525927</td><td>293007</td><td>14/02/2025</td><td>3:40 PM</td><td>5:30 PM</td></tr>
-                <tr><td><input type="checkbox" /></td><td>1004</td><td>Carretilla</td><td>Bueno</td><td>1091911309</td><td>293007</td><td>14/02/2025</td><td>4:36 PM</td><td>6:37 PM</td></tr>
-            </tbody>
-        </table>
-    </section>
-
-    <section class="estadistica">
-        <div class="buscador">
-            <input type="text" placeholder="Cesar Diaz">
-            <button><img src="/FarmStock/app/imagenes/lupa.png" alt="Buscar"  class="search-icon"></button>
-        </div>
-
-        <div class="contenido">
-            <div class="herramientas">
-            <table class="tabla_estadisticas">
-                <thead>
-                    <tr>
-                        <th></th><th>Herramienta</th><th>Cantidad</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td><input type="checkbox" /></td><td>Carretilla</td><td>2</td>
-                    <tr><td><input type="checkbox" /></td><td>Picos</td><td>3</td>
-                </tbody>
-            </table>
-    
-                <button class="ver">Ver</button>
+        <!-- Main content -->
+        <main class="main-content">
+            <div class="bienvenida">
+                <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
+                <p><strong>¡Hola Maria!</strong></p>
             </div>
 
-        <div class="grafico">
-            <h2>Estadisticas de uso</h2>
-            <canvas id="grafico-uso"></canvas>
-        </div>
-        </div>
-    </section>
-    </main>
-</div>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('grafico-uso').getContext('2d');
+            <section class="registro">
+                <div class="registro-header">
+                    <h2>Registro Salida</h2>
+                    <div class="filtros">
+                        <select><option>Cédula</option></select>
+                        <select><option>Estado</option></select>
+                        <select><option>Herramienta</option></select>
+                        <button class="registrar">Registrar salida</button>
+                    </div>
+                </div>
 
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
-            datasets: [{
-                label: 'Horas de uso',
-                // Placeholder data for demonstration purposes
-                data: [3, 4, 4, 4, 4, 4],
-                borderColor: '#27ae60',
-                backgroundColor: '#27ae60',
-                fill: false,
-                tension: 0.4,
-                pointBackgroundColor: '#84C378',
-                pointBorderColor: '#84C378',
-                pointRadius: 6,
-                pointHoverRadius: 7,
-                borderWidth: 2
-        }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-            legend: { display: false }
-        },
-        scales: {
-            y: {
-            title: { display: true, text: 'Horas' },
-            min: 0,
-            max: 5,
-            ticks: {
-            stepSize: 1,
-            callback: function(value) {
-                return value + 'h';
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Estado</th>
+                            <th>C.C Aprendiz</th>
+                            <th>Número Ficha</th>
+                            <th>Fecha</th>
+                            <th>Hora salida</th>
+                            <th>Hora Entrada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>1001</td>
+                            <td>Pala</td>
+                            <td>Bueno</td>
+                            <td>1092525927</td>
+                            <td>293007</td>
+                            <td>14/02/2025</td>
+                            <td>3:40 PM</td>
+                            <td>5:30 PM</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>1002</td>
+                            <td>Carretilla</td>
+                            <td>Bueno</td>
+                            <td>1091911309</td>
+                            <td>293007</td>
+                            <td>14/02/2025</td>
+                            <td>4:36 PM</td>
+                            <td>6:37 PM</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>1003</td>
+                            <td>Pala</td>
+                            <td>Bueno</td>
+                            <td>1092525927</td>
+                            <td>293007</td>
+                            <td>14/02/2025</td>
+                            <td>3:40 PM</td>
+                            <td>5:30 PM</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>1004</td>
+                            <td>Carretilla</td>
+                            <td>Bueno</td>
+                            <td>1091911309</td>
+                            <td>293007</td>
+                            <td>14/02/2025</td>
+                            <td>4:36 PM</td>
+                            <td>6:37 PM</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="estadistica">
+                <div class="buscador">
+                    <input type="text" placeholder="Cesar Diaz">
+                    <button><img src="/FarmStock/app/imagenes/lupa.png" alt="Buscar"  class="search-icon"></button>
+                </div>
+
+                <div class="contenido">
+                    <div class="herramientas">
+                        <table class="tabla_estadisticas">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Herramienta</th>
+                                    <th>Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="checkbox" /></td>
+                                    <td>Carretilla</td>
+                                    <td>2</td>
+                                    <tr>
+                                        <td><input type="checkbox" /></td>
+                                        <td>Picos</td>
+                                        <td>3</td>
+                            </tbody>
+                        </table>
+
+                        <button class="ver">Ver</button>
+                    </div>
+
+                    <div class="grafico">
+                        <h2>Estadisticas de uso</h2>
+                        <canvas id="grafico-uso"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('grafico-uso').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+                    datasets: [{
+                        label: 'Horas de uso',
+                        // Placeholder data for demonstration purposes
+                        data: [3, 4, 4, 4, 4, 4],
+                        borderColor: '#27ae60',
+                        backgroundColor: '#27ae60',
+                        fill: false,
+                        tension: 0.4,
+                        pointBackgroundColor: '#84C378',
+                        pointBorderColor: '#84C378',
+                        pointRadius: 6,
+                        pointHoverRadius: 7,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Horas'
+                            },
+                            min: 0,
+                            max: 5,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {
+                                    return value + 'h';
+                                }
+                            },
+                            grid: {
+                                color: '#f0f0f0'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: '#f0f0f0'
+                            }
+                        }
+                    }
                 }
-            },
-            grid: {
-                color: '#f0f0f0'
-            }
-            },
-                x: {
-            grid: {
-                color: '#f0f0f0'
-            }
-            }
-        }
-        }
-    });
-    });
-</script>
+            });
+        });
+    </script>
+
 </html>

@@ -1,458 +1,514 @@
 /* -------------------- RESET Y BASE -------------------- */
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  font-family: 'Epilogue', Arial, sans-serif;
-  background-color: #f5f5f5;
-  height: 100vh;
-  overflow: hidden;
+    font-family: 'Epilogue', Arial, sans-serif;
+    background-color: #f5f5f5;
+    height: 100vh;
+    overflow: hidden;
 }
+
 
 /* -------------------- GRID PRINCIPAL -------------------- */
+
 .container {
-  display: grid;
-  grid-template-columns: 231px 1fr;
-  height: 100vh;
+    display: grid;
+    grid-template-columns: 231px 1fr;
+    height: 100vh;
 }
 
+
 /* -------------------- SIDEBAR -------------------- */
+
 .sidebar {
-  background-color: white;
-  padding: 20px 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border-right: 1px solid #ccc;
+    background-color: white;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid #ccc;
 }
 
 .logo {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: left;
-  gap: 10px;
-  margin-bottom: 30px;
-  text-align: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    gap: 10px;
+    margin-bottom: 30px;
+    text-align: center;
 }
 
 .logo img {
-  width: 100%;
-  max-width: 180px;
-  height: auto;
-  object-fit: contain;
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+    object-fit: contain;
 }
 
-
 .sidebar ul {
-  list-style: none;
+    list-style: none;
 }
 
 .sidebar li {
-  margin-bottom: 20px;
-  font-size: 16px;
-  font-weight: 500;
-  padding-left: 10px;
-  color: #000;
-  cursor: pointer;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    padding-left: 10px;
+    color: #000;
+    cursor: pointer;
 }
 
 .sidebar li:first-child {
-  color: #ccc;
-  
+    color: #ccc;
 }
 
 .sidebar li:not(:first-child):hover {
-  color: #4CAF50;
+    color: #4CAF50;
+}
+
+
+/* Botón Quiénes Somos */
+
+.somos {
+    display: block;
+    padding: 10px;
+    font-weight: 500;
+    background-color: #ffffff;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    color: #000;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.somos:hover {
+    background-color: #f0f0f0;
+    color: #4CAF50;
 }
 
 .night-mode {
-margin-top: 20px;
-padding: 10px;
-font-weight: 500;
-background-color: #f9f9f9;
-border-radius: 10px;
-text-align: center;
-cursor: pointer;
+    margin-top: 20px;
+    padding: 10px;
+    font-weight: 500;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
 }
 
 .night-mode:hover {
-  background-color: #e0e0e0;
+    background-color: #e0e0e0;
 }
 
+
 /* -------------------- MENÚ MÓDULOS -------------------- */
+
 .menu-modulos {
     list-style: none;
-  display: flex;
-  flex-direction: column; 
-  align-items: left; 
-  letter-spacing: -0.5px;
-  padding: 0;
-  margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    letter-spacing: -0.5px;
+    padding: 0;
+    margin: 0;
 }
 
 .menu-modulos li {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .menu-modulos li a {
-  display: block;
-  text-decoration: none;
-  color: #000;
-  padding: 8px 10px;
-  font-size: 16px;
-  font-weight: bolder;
-  border-radius: 6px;
-  transition: background-color 0.2s, color 0.2s;
+    display: block;
+    text-decoration: none;
+    color: #000;
+    padding: 8px 10px;
+    font-size: 16px;
+    font-weight: bolder;
+    border-radius: 6px;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 .menu-modulos li a:hover {
-  background-color: #e8f5e9;
-  color: #4CAF50;
+    background-color: #e8f5e9;
+    color: #4CAF50;
 }
 
 .menu-modulos li a.active {
-  background-color: #d1f0d1;
-  color: #4CAF50;
-  font-weight: bold;
-  border: none !important;
-  outline: none !important;
+    background-color: #d1f0d1;
+    color: #4CAF50;
+    font-weight: bold;
+    border: none !important;
+    outline: none !important;
 }
 
 
 /* -------------------- MAIN CONTENT -------------------- */
+
 .main-content {
-  padding: 10px;
-  overflow-y: hidden;
-  margin: 0px 0px 0px 10px;
+    padding: 10px;
+    overflow-y: hidden;
+    margin: 0px 0px 0px 10px;
 }
+
 
 /* -------------------- BIENVENIDA -------------------- */
+
 .bienvenida {
-  
-  display: flex;
-  align-items: center;
-  margin: 0px 0px 15px 0;
-  width: 99%;
-}
-.bienvenida img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
+    display: flex;
+    align-items: center;
+    margin: 0px 0px 15px 0;
+    width: 99%;
 }
 
+.bienvenida img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+
 /* -------------------- FORMULARIO -------------------- */
+
 .formulario-card {
-  margin-top: 20px;
-  background-color: white;
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 25px;
-  margin-bottom: 40px;
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin-bottom: 40px;
 }
 
 .formulario-horizontal {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.2fr;
-  gap: 20px;
-  align-items: stretch;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.2fr;
+    gap: 20px;
+    align-items: stretch;
 }
 
 .columna {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
 }
 
 .borde-derecho::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 1px;
-  height: 100%;
-  background-color: #ccc;
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background-color: #ccc;
 }
 
 input,
 select,
 textarea {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
-  background-color: #f9f9f9;
-  resize: none;
-  max-width: 250px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #f9f9f9;
+    resize: none;
+    max-width: 250px;
 }
 
 textarea {
-  height: 120px;
+    height: 120px;
 }
 
 label {
-  font-size: 14px;
-  font-weight: bold;
-  color: #111;
+    font-size: 14px;
+    font-weight: bold;
+    color: #111;
 }
 
 .descripcion textarea {
-  background-color: white;
-  color: black;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid white;
-  width: 100%;
-  height: 100px;
-  resize: none;
-  outline: none;
+    background-color: white;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid white;
+    width: 100%;
+    height: 100px;
+    resize: none;
+    outline: none;
 }
 
 .boton-registrar {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 100px;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 100px;
 }
 
+
 /* -------------------- BOTONES -------------------- */
+
 button {
-  align-self: flex-start;
-  padding: 12px 24px;
-  background-color: #A4D490;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 16px;
-  min-width: 130px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: auto;
+    align-self: flex-start;
+    padding: 12px 24px;
+    background-color: #A4D490;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    min-width: 130px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: auto;
 }
 
 button:hover {
-  background-color: #8fc87d;
+    background-color: #8fc87d;
 }
+
 
 /* -------------------- ÁREA INFERIOR -------------------- */
+
 .area-inferior {
-  display: flex;
-  gap: 2rem;
-  margin-top: 30px;
-  align-items: flex-start;
+    display: flex;
+    gap: 2rem;
+    margin-top: 30px;
+    align-items: flex-start;
 }
 
+
 /* -------------------- HERRAMIENTAS HOY -------------------- */
+
 .herramientas-hoy {
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  flex: 2;
-  max-height: 300px;
-  overflow-y: hidden;
-  margin-top: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    flex: 2;
+    max-height: 300px;
+    overflow-y: hidden;
+    margin-top: 20px;
 }
 
 .herramientas-hoy:has(li:nth-child(n+6)) {
-  overflow-y: auto;
+    overflow-y: auto;
 }
 
 .herramientas-hoy::-webkit-scrollbar {
-  width: 6px;
+    width: 6px;
 }
 
 .herramientas-hoy::-webkit-scrollbar-thumb {
-  background-color: #79f17f;
-  border-radius: 4px;
+    background-color: #79f17f;
+    border-radius: 4px;
 }
 
 .herramientas-hoy::-webkit-scrollbar-track {
-  background-color: #f5f5f5;
+    background-color: #f5f5f5;
 }
 
 .herramientas-hoy ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .herramientas-hoy li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
 }
 
 .herramientas-hoy li img {
-  width: 35px;
-  height: 35px;
-  object-fit: contain;
-  flex-shrink: 0;
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
 .herramientas-hoy li span:first-of-type {
-  flex: 1;
+    flex: 1;
 }
 
 .herramientas-hoy .cantidad {
-  flex: 0 0 100px;
-  text-align: right;
-  color: #777;
-  white-space: nowrap;
+    flex: 0 0 100px;
+    text-align: right;
+    color: #777;
+    white-space: nowrap;
 }
 
 .herramientas-hoy .estado {
-  flex: 0 0 120px;
-  font-size: 14px;
-  font-weight: bold;
-  white-space: nowrap;
-  text-align: left;
+    flex: 0 0 120px;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    text-align: left;
 }
 
-.estado.verde { color: green; }
-.estado.amarillo { color: orange; }
-.estado.rojo { color: red; }
+.estado.verde {
+    color: green;
+}
+
+.estado.amarillo {
+    color: orange;
+}
+
+.estado.rojo {
+    color: red;
+}
+
 
 /* -------------------- CALENDARIO -------------------- */
+
 .calendario {
-  max-width: 330px;
-  flex-shrink: 0;
-  background-color: white;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(97, 19, 19, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  max-height: 300px;
-  overflow-y: auto;
-  margin-top: 20px;
+    max-width: 330px;
+    flex-shrink: 0;
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(97, 19, 19, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 20px;
 }
 
-.calendario::-webkit-scrollbar { width: 6px; }
-.calendario::-webkit-scrollbar-thumb { background-color: #ccc; border-radius: 3px; }
-.calendario::-webkit-scrollbar-thumb:hover { background-color: #999; }
+.calendario::-webkit-scrollbar {
+    width: 6px;
+}
+
+.calendario::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+}
+
+.calendario::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
+}
 
 .fecha-actual {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-start;
 }
 
 .fecha-actual h2 {
-  font-size: 2.8rem;
-  font-weight: 800;
-  color: #222;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #222;
 }
 
 .fecha-texto p {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #333;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
 }
 
 .fecha-texto span {
-  font-size: 0.85rem;
-  color: #555;
+    font-size: 0.85rem;
+    color: #555;
 }
 
 .semana {
-  background: #fff;
-  border-radius: 12px;
-  padding: 10px 5px;
-  display: flex;
-  justify-content: space-between;
-  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px 5px;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .semana div {
-  flex: 1;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #333;
-  padding: 6px 0;
-  border-radius: 10px;
-  text-align: center;
+    flex: 1;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #333;
+    padding: 6px 0;
+    border-radius: 10px;
+    text-align: center;
 }
 
 .semana .activo {
-  background-color: #c8edc8;
-  border-radius: 50%;
-  font-weight: bold;
-  width: 48px;
-  height: 48px;
-  margin: -22px auto 0 auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #222;
-  z-index: 2;
-  position: relative;
+    background-color: #c8edc8;
+    border-radius: 50%;
+    font-weight: bold;
+    width: 48px;
+    height: 48px;
+    margin: -22px auto 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #222;
+    z-index: 2;
+    position: relative;
 }
 
 .pendientes {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 
 .pendientes h4 {
-  font-size: 0.95rem;
-  font-weight: bold;
-  color: #444;
-  margin-bottom: 10px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #444;
+    margin-bottom: 10px;
 }
 
 .pendientes input.datepicker {
-  margin-bottom: 10px;
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 0.85rem;
-  width: 100%;
-  background-color: #f9f9f9;
+    margin-bottom: 10px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 0.85rem;
+    width: 100%;
+    background-color: #f9f9f9;
 }
 
 .pendientes .tarea {
-  background: #d5f2d5;
-  border-left: 4px solid #4CAF50;
-  padding: 10px 12px;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  color: #333;
+    background: #d5f2d5;
+    border-left: 4px solid #4CAF50;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #333;
 }
 
 .pendientes .tarea span {
-  font-weight: bold;
-  font-size: 0.8rem;
-  color: #222;
+    font-weight: bold;
+    font-size: 0.8rem;
+    color: #222;
 }
 
 .lista-tareas {
-  max-height: 140px;
-  overflow-y: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: #4CAF50 #f1f1f1;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-right: 5px;
-  margin-top: 10px;
+    max-height: 140px;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #4CAF50 #f1f1f1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 5px;
+    margin-top: 10px;
 }
 
 .lista-tareas:has(div:nth-child(n+6)) {
-  overflow-y: auto;
+    overflow-y: auto;
 }
 
 th {
-  color: #111111; /* O usa #111 o #000 si quieres aún más oscuro */
-  font-weight: bold;
+    color: #111111;
+    /* O usa #111 o #000 si quieres aún más oscuro */
+    font-weight: bold;
 }
-

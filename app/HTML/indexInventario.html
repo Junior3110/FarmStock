@@ -1,58 +1,64 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
-  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
-  <title>FarmStock</title>
-  <link rel="stylesheet" href="../CSS/Iventario.css">
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+    <title>FarmStock</title>
+    <link rel="stylesheet" href="../CSS/Iventario.css">
 </head>
 
 <body>
-  <div class="contenedor-principal">
-    <!-- Menú lateral con logo arriba -->
-    <aside class="sidebar">
-      <div class="top-section">
-        <div class="logo">
-          <img src="../imagenes/Logo.png" alt="Logo del sitio" />
-        </div>
-        <ul class="menu-modulos">
-          <li><a href="../HTML/index.html">Registro Herramientas</a></li>
-          <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
-          <li><a href="../HTML/indexInventario.html" class="active">Inventario</a></li>
-          <li><a href="notificaciones.html">Notificaciones</a></li>
-          <li><a href="../HTML/estats.html">Estadísticas</a></li>
-        </ul>
-      </div>
-        <div class="bottom-section">
-           <a href="quienes-somos.html">👥 Quiénes Somos</a>
-          <div class="modo-noche">🌙 Modo noche</div>
-        </div>
-    </aside>
+    <div class="contenedor-principal">
+        <!-- Menú lateral con logo arriba -->
+        <aside class="sidebar">
+            <div class="top-section">
+                <div class="logo">
+                    <img src="../imagenes/Logo.png" alt="Logo del sitio" />
+                </div>
+                <ul class="menu-modulos">
+                    <li><a href="../HTML/index.html">Registro Herramientas</a></li>
+                    <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
+                    <li><a href="../HTML/indexInventario.html" class="active">Inventario</a></li>
+                    <li><a href="notificaciones.html">Notificaciones</a></li>
+                    <li><a href="../HTML/estats.html">Estadísticas</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-bottom">
+                <a href="quienes-somos.html" class="somos active">
+        👥 Quiénes Somos
+      </a>
+                <div class="night-mode">
+                    <span>🌙 Modo noche</span>
+                </div>
+            </div>
+        </aside>
 
-    <main>
-    <div class="contenido-central">
-      <!-- Usuario arriba del panel gris -->
-      <div class="bienvenida">
-        <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
-        <p><strong>¡Hola Maria!</strong></p>
-      </div>
-      <!-- Panel blanco -->
-      <div class="cuadro-visual">
-        <div class="encabezado-panel">
-          <h1>Inventario</h1>
-          <div class="menu-verde-completo">
-            <span class="menu-verde-label">Ver desde</span>
-            <select class="menu-verde-select">
+        <main>
+            <div class="contenido-central">
+                <!-- Usuario arriba del panel gris -->
+                <div class="bienvenida">
+                    <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
+                    <p><strong>¡Hola Maria!</strong></p>
+                </div>
+                <!-- Panel blanco -->
+                <div class="cuadro-visual">
+                    <div class="encabezado-panel">
+                        <h1>Inventario</h1>
+                        <div class="menu-verde-completo">
+                            <span class="menu-verde-label">Ver desde</span>
+                            <select class="menu-verde-select">
               <option>3 meses</option>
               <!-- más opciones -->
             </select>
-          </div>
-        </div>
-        <p>Contenido del inventario aquí...</p>
-        </div>
-      </div>
-    </main>
-  </div>
+                        </div>
+                    </div>
+                    <p>Contenido del inventario aquí...</p>
+                </div>
+            </div>
+        </main>
+    </div>
 </body>
+
 </html>

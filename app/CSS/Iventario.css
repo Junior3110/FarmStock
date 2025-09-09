@@ -3,18 +3,22 @@
     src: url('recursos/Fonts/Epilogue-ExtraBold.ttf') format('truetype');
 }
 
+
 /* Layout general */
-html, body {
+
+html,
+body {
     margin: 0;
     padding: 0;
     height: 100vh;
-    overflow: hidden; /* Evita scroll global */
+    overflow: hidden;
+    /* Evita scroll global */
     font-family: 'Epilogue', Arial, sans-serif;
     background-color: #1e1e1e;
 }
 
-h1{
-  font-weight: 800;
+h1 {
+    font-weight: 800;
 }
 
 .contenedor-principal {
@@ -25,87 +29,110 @@ h1{
 
 
 /* -------------------- SIDEBAR -------------------- */
+
 .sidebar {
-  background-color: white;
-  padding: 20px 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border-right: 1px solid #ccc;
+    background-color: white;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid #ccc;
 }
 
 .logo {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: left;
-  gap: 10px;
-  margin-bottom: 30px;
-  text-align: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    gap: 10px;
+    margin-bottom: 30px;
+    text-align: center;
 }
 
 .logo img {
-  width: 100%;
-  max-width: 180px;
-  height: auto;
-  object-fit: contain;
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+    object-fit: contain;
 }
 
 .sidebar ul {
-  list-style: none;
+    list-style: none;
 }
 
 .sidebar li {
-  margin-bottom: 20px;
-  font-size: 16px;
-  padding-left: 10px;
-  color: #000;
-  cursor: pointer;
+    margin-bottom: 20px;
+    font-size: 16px;
+    padding-left: 10px;
+    color: #000;
+    cursor: pointer;
 }
 
 .sidebar li:first-child {
-  color: #ccc;
+    color: #ccc;
 }
 
 
+/* Botón Quiénes Somos */
+
+.somos {
+    display: block;
+    padding: 10px;
+    font-weight: 500;
+    background-color: #ffffff;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    color: #000;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.somos:hover {
+    background-color: #f0f0f0;
+    color: #4CAF50;
+}
+
 .night-mode {
-margin-top: 20px;
-padding: 10px;
-font-weight: 500;
-background-color: #f9f9f9;
-border-radius: 10px;
-text-align: center;
-cursor: pointer;
+    margin-top: 20px;
+    padding: 10px;
+    font-weight: 500;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
 }
 
 .night-mode:hover {
-  background-color: #e0e0e0;
+    background-color: #e0e0e0;
 }
 
+
 /* -------------------- MENÚ MÓDULOS -------------------- */
+
 .menu-modulos {
     list-style: none;
-  display: flex;
-  flex-direction: column; 
-  align-items: left; 
-  letter-spacing: -0.5px;
-  padding: 0;
-  margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    letter-spacing: -0.5px;
+    padding: 0;
+    margin: 0;
 }
 
 .menu-modulos li {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .menu-modulos li a {
-  display: block;
-  text-decoration: none;
-  color: #000;
-  padding: 8px 10px;
-  font-size: 16px;
-  font-weight: bolder;
-  border-radius: 6px;
-  transition: background-color 0.2s, color 0.2s;
+    display: block;
+    text-decoration: none;
+    color: #000;
+    padding: 8px 10px;
+    font-size: 16px;
+    font-weight: bolder;
+    border-radius: 6px;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 .menu-modulos li a:hover {
@@ -121,36 +148,45 @@ cursor: pointer;
     outline: none !important;
 }
 
-a:focus, a:active {
-  outline: none !important;
-  border: none !important;
+a:focus,
+a:active {
+    outline: none !important;
+    border: none !important;
 }
 
+
 /* -------------------- MAIN CONTENT -------------------- */
+
 .main-content {
-  padding: 25px;
-  overflow-y: hidden;
+    padding: 25px;
+    overflow-y: hidden;
 }
+
+
 /* Panel de contenido gris */
+
 .contenido-central {
     flex-grow: 1;
     background: #f0f0f0;
     padding: 10px 0 0 10px;
-    /*paddingsoloarribaeizquierda*/height: 100vh;
+    /*paddingsoloarribaeizquierda*/
+    height: 100vh;
     min-height: 0;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     align-items: flex-end;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+
 /* Recuadro blanco */
+
 .cuadro-visual {
     background: #fff;
     border-radius: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: calc(100% - 80px);
     max-width: 100%;
     flex: 1;
@@ -169,30 +205,31 @@ a:focus, a:active {
     justify-content: space-between;
     align-items: center;
     /* Sin padding, usa el del panel blanco */
-    padding: 0 0 0 0; /* Menos padding lateral, más pegado a los bordes */
-    margin-top: 0px; /* Opcional: separa del borde superior del panel blanco */
+    padding: 0 0 0 0;
+    /* Menos padding lateral, más pegado a los bordes */
+    margin-top: 0px;
+    /* Opcional: separa del borde superior del panel blanco */
 }
 
-.encabezado-panel h1{
+.encabezado-panel h1 {
     font-size: 1.8rem;
     letter-spacing: -1px;
     color: #333;
 }
 
 .bienvenida {
-  display: flex;
-  align-items: center;
-  margin: -5px 1px 15px 0;
-  width: 99.5%;
+    display: flex;
+    align-items: center;
+    margin: -5px 1px 15px 0;
+    width: 99.5%;
 }
 
 .bienvenida img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
 }
-
 
 .menu-verde {
     display: flex;

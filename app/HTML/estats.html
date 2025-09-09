@@ -1,57 +1,59 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Estadísticas - FarmStock</title>
     <link rel="stylesheet" href="../CSS/estats.css" />
 </head>
+
 <body>
     <aside class="sidebar">
-      <div class="top-section">
-        <div class="logo">
-          <img src="../imagenes/Logo.png" alt="Logo del sitio" />
+        <div class="top-section">
+            <div class="logo">
+                <img src="../imagenes/Logo.png" alt="Logo del sitio" />
+            </div>
+            <ul class="menu-modulos">
+                <li><a href="../HTML/index.html">Registro Herramientas</a></li>
+                <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
+                <li><a href="../HTML/indexInventario.html">Inventario</a></li>
+                <li><a href="notificaciones.html">Notificaciones</a></li>
+                <li><a href="../HTML/estats.html" class="active">Estadísticas</a></li>
+            </ul>
         </div>
-        <ul class="menu-modulos">
-          <li><a href="../HTML/index.html">Registro Herramientas</a></li>
-          <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
-          <li><a href="../HTML/indexInventario.html">Inventario</a></li>
-          <li><a href="notificaciones.html">Notificaciones</a></li>
-          <li><a href="../HTML/estats.html" class="active">Estadísticas</a></li>
-        </ul>
-      </div>
-  <!-- Abajo: quienes somos + modo noche -->
-  <div class="sidebar-bottom">
-    <a href="quienes-somos.html" class="somos active">
-      👥 Quiénes Somos
-    </a>
-    <div class="night-mode">
-      <span>🌙 Modo noche</span>
-    </div>
-  </div>
+        <!-- Abajo: quienes somos + modo noche -->
+        <div class="sidebar-bottom">
+            <a href="quienes-somos.html" class="somos active">
+            👥 Quiénes Somos
+          </a>
+            <div class="night-mode">
+                <span>🌙 Modo noche</span>
+            </div>
+        </div>
     </aside>
 
 
     <main>
-      <div class="bienvenida">
-        <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
-        <p><strong>¡Hola Maria!</strong></p>
-      </div>
+        <div class="bienvenida">
+            <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
+            <p><strong>¡Hola Maria!</strong></p>
+        </div>
 
         <!-- Contenedor para el contenido principal -->
         <div class="content-box">
             <h1>Estadísticas</h1>
 
             <div class="filtros">
-    <input type="text" placeholder="Buscar...">
-    <a href="../HTML/Estadistica.html" class="btn-informe">Generar informe</a>
-    <select>
+                <input type="text" placeholder="Buscar...">
+                <a href="../HTML/Estadistica.html" class="btn-informe">Generar informe</a>
+                <select>
         <option>ID herramienta</option>
     </select>
-    <select>
+                <select>
         <option>Fecha</option>
     </select>
-</div>
+            </div>
 
 
             <table>
@@ -99,4 +101,5 @@
         </div>
     </main>
 </body>
+
 </html>
