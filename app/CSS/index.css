@@ -512,3 +512,34 @@ th {
     /* O usa #111 o #000 si quieres aún más oscuro */
     font-weight: bold;
 }
+.lista-tarjetas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.tarjeta {
+  background: #f9fdf9;
+  border: 1px solid #cde5cd;
+  border-left: 5px solid #4CAF50;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tarjeta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.tarjeta h4 {
+  margin: 0 0 8px;
+  color: #2d6a4f;
+}
+
+.tarjeta p {
+  margin: 2px 0;
+  font-size: 0.9rem;
+}
