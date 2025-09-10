@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registro - FarmStock</title>
   <link rel="stylesheet" href="../CSS/registro-persona.css" />
-  <!-- Font Awesome opcional para íconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -18,35 +17,36 @@
       <h1>Registro</h1>
 
       <form id="registroForm">
-        <input type="text" placeholder="Nombres" name="nombres" required />
-        <input type="text" placeholder="Apellidos" name="apellidos" required />
+  <input type="text" placeholder="Nombres" name="nombres" required />
+  <input type="text" placeholder="Apellidos" name="apellidos" required />
 
-        <input type="email" placeholder="Correo electrónico" name="correo" class="full" required />
+  <input type="email" placeholder="Correo electrónico" name="correo" required />
 
-        <input type="tel" placeholder="Teléfono" name="telefono" required />
-        <select name="rol" required>
-          <option value="">Cargo</option>
-          <option value="aprendiz">Aprendiz</option>
-          <option value="instructor">Instructor</option>
-        </select>
+  <input type="tel" placeholder="Teléfono" name="telefono" required />
+  
+  <select name="cargo" required>
+    <option value="">Cargo</option>
+    <option value="aprendiz">Aprendiz</option>
+    <option value="instructor">Instructor</option>
+  </select>
 
-        <select name="tipo_documento" required>
-          <option value="">Tipo de documento</option>
-          <option value="CC">Cédula de ciudadanía</option>
-          <option value="TI">Tarjeta de identidad</option>
-        </select>
-        <input type="text" placeholder="Número de documento" name="numero_documento" required />
+  <select name="tipoDocumento" required>
+    <option value="">Tipo de documento</option>
+    <option value="CC">Cédula de ciudadanía</option>
+    <option value="TI">Tarjeta de identidad</option>
+  </select>
 
-        <input type="num_ficha" placeholder="Número de la ficha" name="num_ficha" required />
-        <input type="programa_formacion" placeholder="Programa de Formación" name="programa_formacion" required />
-        <input type="password" placeholder="Contraseña" name="password" required />
-        <input type="password" placeholder="Confirmar contraseña" name="confirm_password" required />
+  <input type="text" placeholder="Número de documento" name="numeroDocumento" required />
 
-        <button type="submit">Registrarme</button>
+  <input type="text" placeholder="Número de la ficha" name="numeroFicha" required />
+  <input type="text" placeholder="Programa de Formación" name="nombreFormacion" required />
 
-        <!-- Enlace para volver al login -->
-        <p class="volver-login">¿Ya tienes cuenta? <a href="../HTML/login.html">Inicia sesión aquí</a></p>
-      </form>
+  <input type="password" placeholder="Contraseña" name="contrasena" required />
+  <input type="password" placeholder="Confirmar contraseña" name="confirm_password" required />
+
+  <button type="submit">Registrarme</button>
+</form>
+
     </div>
 
     <div class="right">
@@ -54,27 +54,6 @@
     </div>
   </div>
 
-  <script>
-    const form = document.getElementById('registroForm');
-    form.addEventListener('submit', function (event) {
-      event.preventDefault();
-      const datos = new FormData(form);
-      const entrada = Object.fromEntries(datos);
-
-      if (entrada.password !== entrada.confirm_password) {
-        alert("Las contraseñas no coinciden.");
-        return;
-      }
-
-      alert("Registro exitoso.");
-
-      if (window.navegacion && window.navegacion.irALogin) {
-        window.navegacion.irALogin();
-      } else {
-        window.location.href = "../HTML/login.html";
-      }
-    });
-  </script>
-  <script src="render.js"></script>
+  <script src="../backend/render.js"></script>
 </body>
 </html>
