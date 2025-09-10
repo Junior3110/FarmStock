@@ -119,6 +119,9 @@ h1 {
     font-weight: bold;
 }
 
+.sidebar-bottom{
+    text-decoration: none;
+}
 
 /* Botón Quiénes Somos */
 
@@ -130,7 +133,6 @@ h1 {
     border-radius: 10px;
     text-align: center;
     cursor: pointer;
-    text-decoration: none;
     color: #000;
     transition: background-color 0.2s, color 0.2s;
 }
@@ -138,6 +140,7 @@ h1 {
 .somos:hover {
     background-color: #e0e0e0;
     color: #4CAF50;
+    text-decoration: none;
 }
 
 
