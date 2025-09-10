@@ -19,25 +19,24 @@
       <form id="registroForm">
   <input type="text" placeholder="Nombres" name="nombres" required />
   <input type="text" placeholder="Apellidos" name="apellidos" required />
-
   <input type="email" placeholder="Correo electrónico" name="correo" required />
-
   <input type="tel" placeholder="Teléfono" name="telefono" required />
-  
+
   <select name="cargo" required>
     <option value="">Cargo</option>
     <option value="aprendiz">Aprendiz</option>
     <option value="instructor">Instructor</option>
+    <option value="administrador">Administrador</option>
   </select>
 
   <select name="tipoDocumento" required>
     <option value="">Tipo de documento</option>
     <option value="CC">Cédula de ciudadanía</option>
     <option value="TI">Tarjeta de identidad</option>
+    <option value="PPT">Permiso de protección temporal</option>
   </select>
 
   <input type="text" placeholder="Número de documento" name="numeroDocumento" required />
-
   <input type="text" placeholder="Número de la ficha" name="numeroFicha" required />
   <input type="text" placeholder="Programa de Formación" name="nombreFormacion" required />
 
@@ -54,6 +53,6 @@
     </div>
   </div>
 
-  <script src="../backend/render.js"></script>
+  <script src="../render.js"></script>
 </body>
 </html>
