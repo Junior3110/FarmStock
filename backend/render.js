@@ -1,7 +1,7 @@
 const API_URL = "http://localhost:8080/usuario";
 
 // Crear usuario
-document.getElementById("btn btn-success").addEventListener("click", async () => {
+document.getElementById("submit").addEventListener("click", async () => {
   const nombre = document.getElementById("nombre").value;
 
   const response = await fetch(API_URL, {
