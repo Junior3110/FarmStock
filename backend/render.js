@@ -1,53 +1,51 @@
 const API_URL = "http://localhost:8080/usuario";
 
-document.getElementById("formRegistro").addEventListener("submit", async (e) => {
-    e.preventDefault(); // evita que se recargue la página
+document.getElementById("submit").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    // Tomar los valores de cada campo
-    const usuario = {
-        nombres: document.getElementById("nombres").value,
-        apellidos: document.getElementById("apellidos").value,
-        correo: document.getElementById("correo").value,
-        telefono: document.getElementById("telefono").value,
-        cargo: document.getElementById("cargo").value,
-        tipoDocumento: document.getElementById("tipoDocumento").value,
-        numeroDocumento: document.getElementById("numeroDocumento").value,
-        ficha: document.getElementById("ficha").value,
-        programaFormacion: document.getElementById("programaFormacion").value,
-        contrasena: document.getElementById("contrasena").value
-    };
+  // Convertir los datos del formulario en objeto
+  const form = e.target;
+  const datos = new FormData(form);
+  const usuario = Object.fromEntries(datos);
 
-    try {
-        const response = await fetch("http://localhost:8080/usuario", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(usuario)
-        });
+  // Validar contraseñas
+  if (usuario.password !== usuario.confirm_password) {
+    alert("Las contraseñas no coinciden ❌");
+    return;
+  }
 
-        if (response.ok) {
-            alert("Usuario registrado con éxito 🚀");
-            document.getElementById("formRegistro").reset();
-        } else {
-            const error = await response.text();
-            alert("Error en el registro ❌: " + error);
-        }
-    } catch (error) {
-        console.error("Error de conexión:", error);
-        alert("No se pudo conectar con el servidor ⚠️");
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(usuario)
+    });
+
+    if (response.ok) {
+      alert("Usuario registrado con éxito 🚀");
+      form.reset();
+      window.location.href = "../HTML/login.html"; // redirige al login
+    } else {
+      const error = await response.text();
+      alert("Error en el registro ❌: " + error);
     }
+  } catch (error) {
+    console.error("Error de conexión:", error);
+    alert("No se pudo conectar con el servidor ⚠️");
+  }
 });
 
 // Listar usuarios
-document.getElementById("btnListar").addEventListener("click", async () => {
+document.getElementById("btnListar")?.addEventListener("click", async () => {
   try {
     const response = await fetch(API_URL);
     if (!response.ok) throw new Error("Error al listar usuarios");
 
     const usuarios = await response.json();
     const lista = document.getElementById("listaUsuarios");
-    lista.innerHTML = ""; // limpiar antes
+    lista.innerHTML = "";
 
     usuarios.forEach(u => {
       const li = document.createElement("li");
@@ -60,7 +58,7 @@ document.getElementById("btnListar").addEventListener("click", async () => {
 });
 
 // Eliminar usuario
-document.getElementById("btnEliminar").addEventListener("click", async () => {
+document.getElementById("btnEliminar")?.addEventListener("click", async () => {
   const id = document.getElementById("usuarioId").value;
 
   try {
@@ -69,8 +67,7 @@ document.getElementById("btnEliminar").addEventListener("click", async () => {
     });
 
     if (response.ok) {
-      // si tu backend devuelve 204 No Content
-      alert("Usuario eliminado con éxito");
+      alert("Usuario eliminado con éxito 🗑️");
     } else {
       throw new Error("No se pudo eliminar el usuario");
     }
