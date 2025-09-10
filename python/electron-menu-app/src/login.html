@@ -1,0 +1,53 @@
+<!-- menu_agenda.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agenda de Registros</title>
+    <link rel="stylesheet" href="stilo.css">
+</head>
+<!-- Agrega esto antes de </body> -->
+<script src="renderer.js"></script>
+<body>
+    <div>
+        <h2>Bienvenido a la agenda</h2>
+        <button id="btn-ingresar">1. Ingresar un registro</button>
+        <button>2. Mostrar los registros</button>
+        <button>3. Borrar registro</button>
+        <button>4. Salir</button>
+    </div>
+    <!-- Formulario oculto al inicio -->
+    <div id="formulario" style="display:none; margin-top:20px;">
+        <h3>Nuevo registro</h3>
+        <input type="text" id="nombre" placeholder="Nombre"><br><br>
+        <input type="text" id="apellido" placeholder="Apellido"><br><br>
+        <input type="text" id="telefono" placeholder="Teléfono"><br><br>
+        <input type="email" id="correo" placeholder="Correo"><br><br>
+        <button id="guardar">Guardar</button>
+        <button id="cancelar">Cancelar</button>
+    </div>
+    <script>
+        const btnIngresar = document.getElementById('btn-ingresar');
+        const formulario = document.getElementById('formulario');
+        const cancelar = document.getElementById('cancelar');
+
+        btnIngresar.onclick = () => {
+            formulario.style.display = 'block';
+        };
+        cancelar.onclick = () => {
+            formulario.style.display = 'none';
+        };
+
+        // Aquí puedes agregar la lógica para guardar el registro
+        document.getElementById('guardar').onclick = () => {
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
+            const telefono = document.getElementById('telefono').value;
+            const correo = document.getElementById('correo').value;
+            // Aquí puedes enviar los datos a tu backend o manejarlos como necesites
+            alert(`Nombre: ${nombre}\nApellido: ${apellido}\nTeléfono: ${telefono}\nCorreo: ${correo}`);
+            formulario.style.display = 'none';
+        };
+    </script>
+</body>
+</html>

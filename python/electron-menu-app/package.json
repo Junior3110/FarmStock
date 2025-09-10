@@ -1,0 +1,25 @@
+{
+  "name": "electron-menu-app",
+  "version": "1.0.0",
+  "description": "An Electron application with a custom menu.",
+  "main": "src/main.ts",
+  "scripts": {
+    "start": "electron .",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "electron": "^25.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "@types/electron": "^25.0.0"
+  },
+  "keywords": [
+    "Electron",
+    "menu",
+    "typescript"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
