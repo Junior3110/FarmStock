@@ -1,41 +1,42 @@
 const API_URL = "http://localhost:8080/usuario";
 
-// Crear usuario
-document.getElementById("sutmid").addEventListener("click", async () => {
-  const usuario = {
-    nombres: document.getElementById("nombres").value,
-    apellidos: document.getElementById("apellidos").value,
-    correo: document.getElementById("correo").value,
-    telefono: document.getElementById("telefono").value,
-    cargo: document.getElementById("cargo").value,
-    tipoDocumento: document.getElementById("tipoDocumento").value,
-    numeroDocumento: document.getElementById("numeroDocumento").value,
-    contrasena: document.getElementById("contrasena").value,
-  };
+document.getElementById("formRegistro").addEventListener("submit", async (e) => {
+    e.preventDefault(); // evita que se recargue la página
 
-  // Validar que las contraseñas coincidan
-  const confirmarContrasena = document.getElementById("confirmarContrasena").value;
-  if (usuario.contrasena !== confirmarContrasena) {
-    alert("Las contraseñas no coinciden");
-    return;
-  }
+    // Tomar los valores de cada campo
+    const usuario = {
+        nombres: document.getElementById("nombres").value,
+        apellidos: document.getElementById("apellidos").value,
+        correo: document.getElementById("correo").value,
+        telefono: document.getElementById("telefono").value,
+        cargo: document.getElementById("cargo").value,
+        tipoDocumento: document.getElementById("tipoDocumento").value,
+        numeroDocumento: document.getElementById("numeroDocumento").value,
+        ficha: document.getElementById("ficha").value,
+        programaFormacion: document.getElementById("programaFormacion").value,
+        contrasena: document.getElementById("contrasena").value
+    };
 
-  try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(usuario),
-    });
+    try {
+        const response = await fetch("http://localhost:8080/usuario", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(usuario)
+        });
 
-    if (!response.ok) {
-      throw new Error("Error al registrar usuario");
+        if (response.ok) {
+            alert("Usuario registrado con éxito 🚀");
+            document.getElementById("formRegistro").reset();
+        } else {
+            const error = await response.text();
+            alert("Error en el registro ❌: " + error);
+        }
+    } catch (error) {
+        console.error("Error de conexión:", error);
+        alert("No se pudo conectar con el servidor ⚠️");
     }
-
-    const data = await response.json();
-    alert("Usuario registrado con éxito: " + JSON.stringify(data));
-  } catch (error) {
-    alert("Error: " + error.message);
-  }
 });
 
 
