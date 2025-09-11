@@ -348,7 +348,7 @@ body {
 }
 
 /* ================= ESTADOS ================= */
-.estado {
+.tarjeta {
   font-weight: bold;
   padding: 4px 8px;
   border-radius: 8px;
@@ -369,4 +369,128 @@ body {
 .estado-dañado {
   background: #ffebee;
   color: #c62828;
+}
+
+/* ===== MODO CLARO (por defecto) ===== */
+body {
+  background-color: #f5f5f5;
+  color: #222;
+  transition: background 0.3s, color 0.3s;
+}
+
+.cuadro-visual,
+.tarjeta,
+.item-inventario,
+.herramienta-card,
+.formulario-card,
+.grafico {
+  background: #ffffff;
+  color: #222;
+  border: 1px solid #ddd;
+  transition: background 0.3s, color 0.3s, border 0.3s;
+}
+
+/* ===== MODO OSCURO ===== */
+body.dark-mode {
+  background-color: #0f1113;
+  color: #e6e6e6;
+}
+body.dark-mode .sidebar {
+  background-color: #1c1f22;
+  border-right: 1px solid #333;
+}
+
+
+body.dark-mode .menu-modulos li a {
+    color: #d7d7d7;
+}
+
+
+body.dark-mode .menu-modulos li a.active {
+    background-color: #333;
+    color: #4CAF50;
+}
+body.dark-mode .sidebar-bottom .somos  {
+    background-color: #A4D490;
+    color: #ffffff;
+    font-weight: 900;
+ }
+
+body.dark-mode .sidebar-bottom .somos:hover  {
+    background-color: #8fc87d;
+    color: #ffffff;
+    font-weight: 900;
+ }
+
+body.dark-mode .night-mode {
+    background-color: #2c2f33;
+    color: #e6e6e6;
+    font-weight: 900;
+ }
+
+body.dark-mode .night-mode:hover {
+    background-color: #444c52;
+    color: #e6e6e6;
+    font-weight: 900;
+}
+
+body.dark-mode .cuadro-visual,
+body.dark-mode .tarjeta,
+body.dark-mode .item-inventario,
+body.dark-mode .herramienta-card,
+body.dark-mode .formulario-card,
+body.dark-mode .grafico {
+  background: #1c1f22;
+  color: #e6e6e6;
+  border: 1px solid #333;
+}
+
+body.dark-mode h1 {
+    color: #e6e6e6;
+    font-weight: 800;
+}
+
+body.dark-mode .menu-verde-completo {
+    border: 2px solid #333;
+    background-color: #1c1f22;
+}
+
+/* Label en modo oscuro */
+body.dark-mode label,
+body.dark-mode .menu-verde-label {
+  background-color: #1c1f22; /* Fondo negro */
+  color: #e6e6e6;        /* Texto claro */
+  font-weight: 600;
+  border: none;          /* Quitar borde si lo tiene */
+  padding: 5px 10px;     /* Ajustar espacio */
+  border-radius: 5px;
+}
+
+/* Select en modo oscuro */
+body.dark-mode select {
+  background-color:#1c1f22; /* Fondo negro */
+  color: #e6e6e6;        /* Texto claro */
+  padding: 5px;
+  border-radius: 5px;
+}
+body.dark-mode .herramienta-card h3 {
+  color: #e6e6e6;
+}
+body.dark-mode .herramienta-card p {
+  color: #b0b0b0;
+}
+body.dark-mode .herramienta-card p strong {
+  color: #e6e6e6;
+}
+body.dark-mode .estado-funcional {
+  background: #2e7d32;
+  color: #e8f5e9;
+}
+body.dark-mode .estado-mantenimiento {
+  background: #ef6c00;
+  color: #fff3e0;
+}
+body.dark-mode .estado-dañado {
+  background: #c62828;
+  color: #ffebee;
 }

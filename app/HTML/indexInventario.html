@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FarmStock - Inventario</title>
   <link rel="stylesheet" href="../CSS/iventario.css" />
+  <link rel="stylesheet" href="/FarmStock/app/CSS/darkmode.css">
+
 </head>
 
 <body>
@@ -63,6 +65,7 @@
   </div>
 
   <!-- Script para mostrar herramientas -->
+   <script src="/FarmStock/app/modo-oscuro.js"></script>
   <script>
     function mostrarInventario(filtro = "3meses") {
       let herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
@@ -100,6 +103,7 @@
               <p><strong>Ubicación:</strong> ${h.ubicacion}</p>
               <p><strong>Fecha ingreso:</strong> ${h.fecha}</p>
               <p><strong>Lote:</strong> ${h.lote}</p>
+              <p><strong>Cantidad:</strong> ${h.cantidad}</p>
               <p><strong>Descripción:</strong> ${h.descripcion}</p>
             </div>
           `;
