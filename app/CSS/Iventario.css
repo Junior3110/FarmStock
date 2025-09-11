@@ -1,27 +1,22 @@
-@font-face {
-    font-family: 'Epilogue';
-    src: url('recursos/Fonts/Epilogue-ExtraBold.ttf') format('truetype');
-}
+/* -------------------- RESET Y BASE -------------------- */
 
-
-/* Layout general */
-
-html,
-body {
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Epilogue', Arial, sans-serif;
+    background-color: #f5f5f5;
     height: 100vh;
     overflow: hidden;
-    /* Evita scroll global */
-    font-family: 'Epilogue', Arial, sans-serif;
-    background-color: #1e1e1e;
 }
 
-h1 {
-    font-weight: 800;
-}
 
-.contenedor-principal {
+/* -------------------- GRID PRINCIPAL -------------------- */
+
+.container {
     display: grid;
     grid-template-columns: 231px 1fr;
     height: 100vh;
@@ -63,6 +58,7 @@ h1 {
 .sidebar li {
     margin-bottom: 20px;
     font-size: 16px;
+    font-weight: 500;
     padding-left: 10px;
     color: #000;
     cursor: pointer;
@@ -70,6 +66,10 @@ h1 {
 
 .sidebar li:first-child {
     color: #ccc;
+}
+
+.sidebar li:not(:first-child):hover {
+    color: #4CAF50;
 }
 
 
@@ -148,12 +148,6 @@ h1 {
     outline: none !important;
 }
 
-a:focus,
-a:active {
-    outline: none !important;
-    border: none !important;
-}
-
 
 /* -------------------- MAIN CONTENT -------------------- */
 
@@ -215,6 +209,7 @@ a:active {
     font-size: 1.8rem;
     letter-spacing: -1px;
     color: #333;
+    margin-top: 20px;
 }
 
 .bienvenida {
@@ -256,6 +251,7 @@ a:active {
     background: #fff;
     gap: 16px;
     height: 38px;
+    margin-top: 20px;
 }
 
 .menu-verde-label {
@@ -283,4 +279,94 @@ a:active {
 
 .menu-verde-completo select::-ms-expand {
     display: none;
+}
+/* ---------------- Tarjetas Inventario ---------------- */
+
+/* ================= VARIABLES ================= */
+:root {
+  --color-fondo: #f5f7fa;
+  --color-card: #ffffff;
+  --color-borde: #e0e0e0;
+  --color-texto: #2c3e50;
+  --color-secundario: #555;
+  --color-acento: #0077ff;
+
+  --sombra-suave: 0 6px 16px rgba(0, 0, 0, 0.08);
+  --sombra-hover: 0 10px 20px rgba(0, 0, 0, 0.12);
+  --radio: 16px;
+  --espaciado: 20px;
+  --transicion: 0.25s ease;
+}
+
+/* ================= CONTENEDOR DE INVENTARIO ================= */
+#inventarioLista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 20px;
+  padding: 10px;
+}
+
+/* ================= TARJETAS ================= */
+.herramienta-card {
+  background: var(--color-card);
+  border-radius: var(--radio);
+  padding: var(--espaciado);
+  box-shadow: var(--sombra-suave);
+  border: 1px solid var(--color-borde);
+  transition: transform var(--transicion), box-shadow var(--transicion);
+}
+
+.herramienta-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--sombra-hover);
+}
+
+/* Encabezado */
+.herramienta-card h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--color-texto);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Texto general */
+.herramienta-card p {
+  margin: 6px 0;
+  font-size: 0.95rem;
+  color: var(--color-secundario);
+  line-height: 1.4;
+}
+
+/* Etiquetas destacadas */
+.herramienta-card p strong {
+  color: var(--color-texto);
+  font-weight: 600;
+}
+
+/* ================= ESTADOS ================= */
+.estado {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 8px;
+  display: inline-block;
+  font-size: 0.85rem;
+}
+
+.estado-funcional {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.estado-mantenimiento {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.estado-dañado {
+  background: #ffebee;
+  color: #c62828;
 }
