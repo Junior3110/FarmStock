@@ -104,38 +104,13 @@
   </div>
   <!-- Script para guardar y renderizar -->
   <script>
-     const btnModo = document.querySelector(".night-mode");
-
-  btnModo.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-
-    // Guardar la preferencia en localStorage
-    if (document.body.classList.contains("dark-mode")) {
-      localStorage.setItem("modo", "oscuro");
-      btnModo.textContent = "☀️ Modo claro";
-    } else {
-      localStorage.setItem("modo", "claro");
-      btnModo.textContent = "🌙 Modo noche";
-    }
-  });
-
-  // Al cargar la página, aplicar la preferencia guardada
-  window.addEventListener("load", () => {
-    const modo = localStorage.getItem("modo");
-    if (modo === "oscuro") {
-      document.body.classList.add("dark-mode");
-      btnModo.textContent = "☀️ Modo claro";
-    }
-  });
     document.getElementById("btnRegistrar").addEventListener("click", function () {
       const nombre = document.getElementById("nombre").value.trim();
       const estado = document.getElementById("estado").value;
       const tipo = document.getElementById("tipo").value;
       const ubicacion = document.getElementById("ubicacion").value;
-      let fecha = document.getElementById("fecha").value;
-        if (!fecha) {
-        fecha = new Date().toISOString().split("T")[0]; // pone la fecha de hoy
-        }
+     let fecha = new Date().toISOString().split("T")[0];
+
       const lote = document.getElementById("lote").value;
       const cantidad = document.getElementById("cantidad").value;
       const descripcion = document.getElementById("descripcion").value.trim();
@@ -184,5 +159,6 @@
 
     renderHoy();
   </script>
+  <script src="../modo-oscuro.js"></script>
 </body>
 </html>
