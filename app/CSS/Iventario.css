@@ -309,17 +309,52 @@ body {
 
 /* ================= TARJETAS ================= */
 .herramienta-card {
-  background: var(--color-card);
-  border-radius: var(--radio);
-  padding: var(--espaciado);
+  position: relative;
+  padding: 15px;
+  border-radius: 8px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  align-items: center;
   box-shadow: var(--sombra-suave);
-  border: 1px solid var(--color-borde);
-  transition: transform var(--transicion), box-shadow var(--transicion);
+  transition: box-shadow var(--transicion), transform var(--transicion);
+}
+.herramienta-card:hover {
+  box-shadow: var(--sombra-hover);
+  transform: translateY(-4px);
 }
 
-.herramienta-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--sombra-hover);
+.herramienta-card .acciones {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.herramienta-card .acciones button {
+  padding: 6px 12px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.herramienta-card .acciones .editar {
+  background: #8ac78c;
+  color: white;
+}
+
+.herramienta-card .acciones .editar:hover {
+  background: #43a047;
+}
+
+.herramienta-card .acciones .eliminar {
+  background: #cf504d;
+  color: white;
+}
+.herramienta-card .acciones .eliminar:hover {
+  background: #d32f2f;
 }
 
 /* Encabezado */

@@ -105,6 +105,11 @@
               <p><strong>Lote:</strong> ${h.lote}</p>
               <p><strong>Cantidad:</strong> ${h.cantidad}</p>
               <p><strong>Descripción:</strong> ${h.descripcion}</p>
+
+              <div class="acciones">
+              <button class="editar" onclick="editarHerramienta('${h.id}')">Editar</button>
+              <button class="eliminar" onclick="eliminarHerramienta('${h.id}')">Eliminar</button>
+              </div>
             </div>
           `;
           contenedor.innerHTML += tarjeta;
