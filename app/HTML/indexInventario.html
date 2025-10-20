@@ -2,100 +2,121 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FarmStock - Inventario</title>
-  <link rel="stylesheet" href="../CSS/iventario.css" />
-  <link rel="stylesheet" href="/FarmStock/app/CSS/darkmode.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FarmStock - Inventario</title>
+    <link rel="stylesheet" href="../CSS/iventario.css" />
+    <link rel="stylesheet" href="/FarmStock/app/CSS/darkmode.css">
 
 </head>
 
 <body>
-  <div class="container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="top-section">
-        <div class="logo">
-          <img src="../imagenes/Logo.png" alt="Logo del sitio" />
-        </div>
-        <ul class="menu-modulos">
-          <li><a href="../HTML/index.html">Registro Herramientas</a></li>
-          <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
-          <li><a href="../HTML/indexInventario.html" class="active">Inventario</a></li>
-          <li><a href="notificaciones.html">Notificaciones</a></li>
-          <li><a href="../HTML/estats.html">Estadísticas</a></li>
-        </ul>
-      </div>
-      <div class="sidebar-bottom">
-        <a href="quienes-somos.html" class="somos">👥 Quiénes Somos</a>
-        <div class="night-mode">
-          <span>🌙 Modo noche</span>
-        </div>
-      </div>
-    </aside>
+    <div class="window-controls">
+        <button id="minimize" title="Minimizar">
+    <svg viewBox="0 0 10 10">
+        <rect x="2" y="6" width="6" height="1" fill="currentColor"/>
+    </svg>
+    </button>
 
-    <!-- Contenido principal -->
-    <main class="main-content">
-      <!-- Usuario arriba -->
-      <div class="bienvenida">
-        <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
-        <p><strong>¡Hola Maria!</strong></p>
-      </div>
+        <button id="maximize" title="Maximizar">
+    <svg viewBox="0 0 10 10">
+        <rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    </button>
 
-      <!-- Panel blanco -->
-      <div class="cuadro-visual">
-        <div class="encabezado-panel">
-          <h1>Inventario</h1>
-          <div class="menu-verde-completo">
-            <span class="menu-verde-label">Ver desde</span>
-            <select id="filtroTiempo" class="menu-verde-select">
+        <button id="close" title="Cerrar">
+    <svg viewBox="0 0 10 10">
+        <line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/>
+    </svg>
+    </button>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="top-section">
+                <div class="logo">
+                    <img src="../imagenes/Logo.png" alt="Logo del sitio" />
+                </div>
+                <ul class="menu-modulos">
+                    <li><a href="../HTML/index.html">Registro Herramientas</a></li>
+                    <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
+                    <li><a href="../HTML/indexInventario.html" class="active">Inventario</a></li>
+                    <li><a href="notificaciones.html">Notificaciones</a></li>
+                    <li><a href="../HTML/estats.html">Estadísticas</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-bottom">
+                <a href="quienes-somos.html" class="somos">👥 Quiénes Somos</a>
+                <div class="night-mode">
+                    <span>🌙 Modo noche</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <!-- Usuario arriba -->
+            <div class="bienvenida">
+                <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
+                <p><strong>¡Hola Maria!</strong></p>
+            </div>
+
+            <!-- Panel blanco -->
+            <div class="cuadro-visual">
+                <div class="encabezado-panel">
+                    <h1>Inventario</h1>
+                    <div class="menu-verde-completo">
+                        <span class="menu-verde-label">Ver desde</span>
+                        <select id="filtroTiempo" class="menu-verde-select">
               <option value="hoy">Hoy</option>
               <option value="semana">Última semana</option>
               <option value="mes">Último mes</option>
               <option value="3meses" selected>3 meses</option>
               <option value="todo">Todo</option>
             </select>
-          </div>
-        </div>
+                    </div>
+                </div>
 
-        <!-- Aquí se insertarán las tarjetas -->
-        <div id="inventarioLista" class="tarjetas-container"></div>
-      </div>
-    </main>
-  </div>
+                <!-- Aquí se insertarán las tarjetas -->
+                <div id="inventarioLista" class="tarjetas-container"></div>
+            </div>
+        </main>
+    </div>
 
-  <!-- Script para mostrar herramientas -->
-   <script src="../modo-oscuro.js"></script>
-  <script>
-    function mostrarInventario(filtro = "3meses") {
-      let herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
-      const contenedor = document.getElementById("inventarioLista");
-      contenedor.innerHTML = "";
+    <!-- Script para mostrar herramientas -->
+    <script src="../modo-oscuro.js"></script>
+    <script>
+        function mostrarInventario(filtro = "3meses") {
+            let herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
+            const contenedor = document.getElementById("inventarioLista");
+            contenedor.innerHTML = "";
 
-      const hoy = new Date();
+            const hoy = new Date();
 
-      herramientas.forEach(h => {
-        let fechaHerramienta = new Date(h.fecha);
-        let mostrar = true;
+            herramientas.forEach(h => {
+                let fechaHerramienta = new Date(h.fecha);
+                let mostrar = true;
 
-        if (filtro === "hoy") {
-          mostrar = fechaHerramienta.toDateString() === hoy.toDateString();
-        } else if (filtro === "semana") {
-          let semanaPasada = new Date();
-          semanaPasada.setDate(hoy.getDate() - 7);
-          mostrar = fechaHerramienta >= semanaPasada;
-        } else if (filtro === "mes") {
-          let mesPasado = new Date();
-          mesPasado.setMonth(hoy.getMonth() - 1);
-          mostrar = fechaHerramienta >= mesPasado;
-        } else if (filtro === "3meses") {
-          let tresMeses = new Date();
-          tresMeses.setMonth(hoy.getMonth() - 3);
-          mostrar = fechaHerramienta >= tresMeses;
-        }
+                if (filtro === "hoy") {
+                    mostrar = fechaHerramienta.toDateString() === hoy.toDateString();
+                } else if (filtro === "semana") {
+                    let semanaPasada = new Date();
+                    semanaPasada.setDate(hoy.getDate() - 7);
+                    mostrar = fechaHerramienta >= semanaPasada;
+                } else if (filtro === "mes") {
+                    let mesPasado = new Date();
+                    mesPasado.setMonth(hoy.getMonth() - 1);
+                    mostrar = fechaHerramienta >= mesPasado;
+                } else if (filtro === "3meses") {
+                    let tresMeses = new Date();
+                    tresMeses.setMonth(hoy.getMonth() - 3);
+                    mostrar = fechaHerramienta >= tresMeses;
+                }
 
-        if (mostrar) {
-          let tarjeta = `
+                if (mostrar) {
+                    let tarjeta = `
             <div class="tarjeta herramienta-card">
               <h3>🛠️ ${h.nombre}</h3>
               <p><strong>Estado:</strong> ${h.estado}</p>
@@ -112,22 +133,24 @@
               </div>
             </div>
           `;
-          contenedor.innerHTML += tarjeta;
+                    contenedor.innerHTML += tarjeta;
+                }
+            });
+
+            if (contenedor.innerHTML === "") {
+                contenedor.innerHTML = "<p>No hay herramientas registradas en este rango de tiempo.</p>";
+            }
         }
-      });
 
-      if (contenedor.innerHTML === "") {
-        contenedor.innerHTML = "<p>No hay herramientas registradas en este rango de tiempo.</p>";
-      }
-    }
+        // Detectar cambios en el filtro
+        document.getElementById("filtroTiempo").addEventListener("change", function() {
+            mostrarInventario(this.value);
+        });
 
-    // Detectar cambios en el filtro
-    document.getElementById("filtroTiempo").addEventListener("change", function () {
-      mostrarInventario(this.value);
-    });
-
-    // Cargar al abrir la página
-    mostrarInventario();
-  </script>
+        // Cargar al abrir la página
+        mostrarInventario();
+    </script>
+    <script src="../render-window.js"></script>
 </body>
+
 </html>

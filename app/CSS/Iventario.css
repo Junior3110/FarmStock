@@ -280,137 +280,156 @@ body {
 .menu-verde-completo select::-ms-expand {
     display: none;
 }
+
+
 /* ---------------- Tarjetas Inventario ---------------- */
 
-/* ================= VARIABLES ================= */
-:root {
-  --color-fondo: #f5f7fa;
-  --color-card: #ffffff;
-  --color-borde: #e0e0e0;
-  --color-texto: #2c3e50;
-  --color-secundario: #555;
-  --color-acento: #0077ff;
 
-  --sombra-suave: 0 6px 16px rgba(0, 0, 0, 0.08);
-  --sombra-hover: 0 10px 20px rgba(0, 0, 0, 0.12);
-  --radio: 16px;
-  --espaciado: 20px;
-  --transicion: 0.25s ease;
+/* ================= VARIABLES ================= */
+
+:root {
+    --color-fondo: #f5f7fa;
+    --color-card: #ffffff;
+    --color-borde: #e0e0e0;
+    --color-texto: #2c3e50;
+    --color-secundario: #555;
+    --color-acento: #0077ff;
+    --sombra-suave: 0 6px 16px rgba(0, 0, 0, 0.08);
+    --sombra-hover: 0 10px 20px rgba(0, 0, 0, 0.12);
+    --radio: 16px;
+    --espaciado: 20px;
+    --transicion: 0.25s ease;
 }
+
 
 /* ================= CONTENEDOR DE INVENTARIO ================= */
+
 #inventarioLista {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-  margin-top: 20px;
-  padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 20px;
+    padding: 10px;
 }
 
+
 /* ================= TARJETAS ================= */
+
 .herramienta-card {
-  position: relative;
-  padding: 15px;
-  border-radius: 8px;
-  background: #f9f9f9;
-  border: 1px solid #ddd;
-  align-items: center;
-  box-shadow: var(--sombra-suave);
-  transition: box-shadow var(--transicion), transform var(--transicion);
+    position: relative;
+    padding: 15px;
+    border-radius: 8px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    align-items: center;
+    box-shadow: var(--sombra-suave);
+    transition: box-shadow var(--transicion), transform var(--transicion);
 }
+
 .herramienta-card:hover {
-  box-shadow: var(--sombra-hover);
-  transform: translateY(-4px);
+    box-shadow: var(--sombra-hover);
+    transform: translateY(-4px);
 }
 
 .herramienta-card .acciones {
-  margin-top: 10px;
-  display: flex;
-  gap: 10px;
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
 }
 
 .herramienta-card .acciones button {
-  padding: 6px 12px;
-  margin-top: 10px;
-  margin-bottom: 15px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: 0.3s;
+    padding: 6px 12px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
 }
 
 .herramienta-card .acciones .editar {
-  background: #8ac78c;
-  color: white;
+    background: #8ac78c;
+    color: white;
 }
 
 .herramienta-card .acciones .editar:hover {
-  background: #43a047;
+    background: #43a047;
 }
 
 .herramienta-card .acciones .eliminar {
-  background: #cf504d;
-  color: white;
+    background: #cf504d;
+    color: white;
 }
+
 .herramienta-card .acciones .eliminar:hover {
-  background: #d32f2f;
+    background: #d32f2f;
 }
+
 
 /* Encabezado */
+
 .herramienta-card h3 {
-  margin: 0 0 12px 0;
-  font-size: 1.3rem;
-  font-weight: bold;
-  color: var(--color-texto);
-  display: flex;
-  align-items: center;
-  gap: 10px;
+    margin: 0 0 12px 0;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--color-texto);
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
+
 
 /* Texto general */
+
 .herramienta-card p {
-  margin: 6px 0;
-  font-size: 0.95rem;
-  color: var(--color-secundario);
-  line-height: 1.4;
+    margin: 6px 0;
+    font-size: 0.95rem;
+    color: var(--color-secundario);
+    line-height: 1.4;
 }
+
 
 /* Etiquetas destacadas */
+
 .herramienta-card p strong {
-  color: var(--color-texto);
-  font-weight: 600;
+    color: var(--color-texto);
+    font-weight: 600;
 }
 
+
 /* ================= ESTADOS ================= */
+
 .tarjeta {
-  font-weight: bold;
-  padding: 4px 8px;
-  border-radius: 8px;
-  display: inline-block;
-  font-size: 0.85rem;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 8px;
+    display: inline-block;
+    font-size: 0.85rem;
 }
 
 .estado-funcional {
-  background: #e8f5e9;
-  color: #2e7d32;
+    background: #e8f5e9;
+    color: #2e7d32;
 }
 
 .estado-mantenimiento {
-  background: #fff3e0;
-  color: #ef6c00;
+    background: #fff3e0;
+    color: #ef6c00;
 }
 
 .estado-dañado {
-  background: #ffebee;
-  color: #c62828;
+    background: #ffebee;
+    color: #c62828;
 }
 
+
 /* ===== MODO CLARO (por defecto) ===== */
+
 body {
-  background-color: #f5f5f5;
-  color: #222;
-  transition: background 0.3s, color 0.3s;
+    background-color: #f5f5f5;
+    color: #222;
+    transition: background 0.3s, color 0.3s;
 }
 
 .cuadro-visual,
@@ -419,49 +438,51 @@ body {
 .herramienta-card,
 .formulario-card,
 .grafico {
-  background: #ffffff;
-  color: #222;
-  border: 1px solid #ddd;
-  transition: background 0.3s, color 0.3s, border 0.3s;
+    background: #ffffff;
+    color: #222;
+    border: 1px solid #ddd;
+    transition: background 0.3s, color 0.3s, border 0.3s;
 }
+
 
 /* ===== MODO OSCURO ===== */
+
 body.dark-mode {
-  background-color: #0f1113;
-  color: #e6e6e6;
-}
-body.dark-mode .sidebar {
-  background-color: #1c1f22;
-  border-right: 1px solid #333;
+    background-color: #0f1113;
+    color: #e6e6e6;
 }
 
+body.dark-mode .sidebar {
+    background-color: #1c1f22;
+    border-right: 1px solid #333;
+}
 
 body.dark-mode .menu-modulos li a {
     color: #d7d7d7;
 }
 
-
 body.dark-mode .menu-modulos li a.active {
     background-color: #333;
     color: #4CAF50;
 }
-body.dark-mode .sidebar-bottom .somos  {
+
+body.dark-mode .sidebar-bottom .somos {
     background-color: #A4D490;
     color: #ffffff;
     font-weight: 900;
- }
+}
 
-body.dark-mode .sidebar-bottom .somos:hover  {
+body.dark-mode .sidebar-bottom .somos:hover {
     background-color: #8fc87d;
     color: #ffffff;
     font-weight: 900;
- }
+}
 
 body.dark-mode .night-mode {
     background-color: #2c2f33;
     color: #e6e6e6;
     font-weight: 900;
- }
+}
 
 body.dark-mode .night-mode:hover {
     background-color: #444c52;
@@ -475,9 +496,9 @@ body.dark-mode .item-inventario,
 body.dark-mode .herramienta-card,
 body.dark-mode .formulario-card,
 body.dark-mode .grafico {
-  background: #1c1f22;
-  color: #e6e6e6;
-  border: 1px solid #333;
+    background: #1c1f22;
+    color: #e6e6e6;
+    border: 1px solid #333;
 }
 
 body.dark-mode h1 {
@@ -490,42 +511,136 @@ body.dark-mode .menu-verde-completo {
     background-color: #1c1f22;
 }
 
+
 /* Label en modo oscuro */
+
 body.dark-mode label,
 body.dark-mode .menu-verde-label {
-  background-color: #1c1f22; /* Fondo negro */
-  color: #e6e6e6;        /* Texto claro */
-  font-weight: 600;
-  border: none;          /* Quitar borde si lo tiene */
-  padding: 5px 10px;     /* Ajustar espacio */
-  border-radius: 5px;
+    background-color: #1c1f22;
+    /* Fondo negro */
+    color: #e6e6e6;
+    /* Texto claro */
+    font-weight: 600;
+    border: none;
+    /* Quitar borde si lo tiene */
+    padding: 5px 10px;
+    /* Ajustar espacio */
+    border-radius: 5px;
 }
 
+
 /* Select en modo oscuro */
+
 body.dark-mode select {
-  background-color:#1c1f22; /* Fondo negro */
-  color: #e6e6e6;        /* Texto claro */
-  padding: 5px;
-  border-radius: 5px;
+    background-color: #1c1f22;
+    /* Fondo negro */
+    color: #e6e6e6;
+    /* Texto claro */
+    padding: 5px;
+    border-radius: 5px;
 }
+
 body.dark-mode .herramienta-card h3 {
-  color: #e6e6e6;
+    color: #e6e6e6;
 }
+
 body.dark-mode .herramienta-card p {
-  color: #b0b0b0;
+    color: #b0b0b0;
 }
+
 body.dark-mode .herramienta-card p strong {
-  color: #e6e6e6;
+    color: #e6e6e6;
 }
+
 body.dark-mode .estado-funcional {
-  background: #2e7d32;
-  color: #e8f5e9;
+    background: #2e7d32;
+    color: #e8f5e9;
 }
+
 body.dark-mode .estado-mantenimiento {
-  background: #ef6c00;
-  color: #fff3e0;
+    background: #ef6c00;
+    color: #fff3e0;
 }
+
 body.dark-mode .estado-dañado {
-  background: #c62828;
-  color: #ffebee;
+    background: #c62828;
+    color: #ffebee;
+}
+
+
+/* =====================================================
+   BOTONES DE CONTROL DE VENTANA — ESTILO FIJO Y LIMPIO
+   ===================================================== */
+
+.window-controls {
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 3000;
+    height: 32px;
+    background: transparent;
+}
+
+
+/* --- Botones --- */
+
+.window-controls button {
+    width: 46px;
+    height: 32px;
+    border: none;
+    outline: none;
+    background: #e6e6e6;
+    color: #111;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    border-radius: 0;
+    /* 👈 cuadrados, sin ovalar */
+}
+
+
+/* --- Hover --- */
+
+.window-controls button:hover {
+    background: #d0d0d0;
+}
+
+.window-controls button#close:hover {
+    background: #e53935;
+    color: #fff;
+}
+
+
+/* --- Íconos SVG o texto --- */
+
+.window-controls svg {
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+}
+
+
+/* =====================================================
+   MODO OSCURO — estilo limpio
+   ===================================================== */
+
+body.dark-mode .window-controls button {
+    background: #1c1f22;
+    color: #fff;
+}
+
+body.dark-mode .window-controls button:hover {
+    background: #2a2d30;
+    color: #fff;
+}
+
+body.dark-mode .window-controls button#close:hover {
+    background: #ff4d4d;
+    color: #fff;
 }

@@ -1,158 +1,235 @@
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-html, body {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
+html,
+body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
 }
 
 h1 {
-  font-size: 48px;
-  font-weight: 900;
-  margin-bottom: 40px;
+    font-size: 48px;
+    font-weight: 900;
+    margin-bottom: 40px;
 }
+
 .container {
-  display: flex;
-  height: 100vh;
-  width: 100vw;
+    display: flex;
+    height: 100vh;
+    width: 100vw;
 }
 
 .left-panel {
-  flex: 0.9;
-  background: #fff;
-  padding: 40px 60px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  z-index: 2; /* ✅ Asegura que esté encima */
-  position: relative;
+    flex: 0.9;
+    background: #fff;
+    padding: 40px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    z-index: 2;
+    /* ✅ Asegura que esté encima */
+    position: relative;
 }
 
-
 .logo {
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  margin-bottom: 20px;
-  padding-top: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    padding-top: 0;
 }
 
 .logo img {
-  width: 350px;     /* Puedes aumentar/reducir si quieres */
-  max-width: 100%;
-  height: auto;
-  display: block;
-  object-fit: contain;
+    width: 350px;
+    /* Puedes aumentar/reducir si quieres */
+    max-width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
 }
 
 .logo-green {
-  color: #7AC675;
-  font-weight: bold;
-  font-size: 1.8rem;
+    color: #7AC675;
+    font-weight: bold;
+    font-size: 1.8rem;
 }
 
 .logo-black {
-  color: black;
-  font-weight: bold;
-  font-size: 1.8rem;
+    color: black;
+    font-weight: bold;
+    font-size: 1.8rem;
 }
 
-
-
 form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 350px;
 }
 
 label {
-  font-size: 0.95rem;
-  font-weight: 600;
+    font-size: 0.95rem;
+    font-weight: 600;
 }
 
 .input-group {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 6px;
-  background: #f9f9f9;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 6px;
+    background: #f9f9f9;
 }
 
 .input-group i {
-  margin-right: 10px;
-  color: #999;
+    margin-right: 10px;
+    color: #999;
 }
 
 .input-group input,
 .input-group select {
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 1rem;
-  flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 1rem;
+    flex: 1;
 }
 
 button {
-  background-color: #7AC675;
-  color: white;
-  border: none;
-  padding: 12px;
-  font-size: 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: 10px;
+    background-color: #7AC675;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
 }
 
 button:hover {
-  background-color: #68b55e;
+    background-color: #68b55e;
 }
 
 .register {
-  font-size: 0.9rem;
-  margin-top: 10px;
+    font-size: 0.9rem;
+    margin-top: 10px;
 }
 
 .register a {
-  color: #7AC675;
-  text-decoration: none;
+    color: #7AC675;
+    text-decoration: none;
 }
 
 .image-panel {
-  flex: 1.9;
-  background-image: url('../imagenes/finca_sena.webp');
-  background-size: cover;
-  background-position: center;
-  pointer-events: none; /* ← Esto evita que bloquee el panel izquierdo */
-  z-index: 1;
-  position: relative;
+    flex: 1.9;
+    background-image: url('../imagenes/finca_sena.webp');
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    /* ← Esto evita que bloquee el panel izquierdo */
+    z-index: 1;
+    position: relative;
 }
-
 
 @media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
-
-  .image-panel {
-    display: none;
-  }
-
-  .left-panel {
-  flex: 0.9;
-  background: #fff;
-  padding: 20px 60px 40px 60px; /* margen arriba reducido */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  position: relative;
-  z-index: 2;
+    .container {
+        flex-direction: column;
+    }
+    .image-panel {
+        display: none;
+    }
+    .left-panel {
+        flex: 0.9;
+        background: #fff;
+        padding: 20px 60px 40px 60px;
+        /* margen arriba reducido */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        position: relative;
+        z-index: 2;
+    }
 }
+
+
+/* =====================================================
+   BOTONES DE CONTROL DE VENTANA — ESTILO FIJO Y LIMPIO
+   ===================================================== */
+
+.window-controls {
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 3000;
+    height: 32px;
+    background: transparent;
 }
 
+
+/* --- Botones --- */
+
+.window-controls button {
+    width: 46px;
+    height: 32px;
+    border: none;
+    outline: none;
+    background: #e6e6e6;
+    color: #111;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    border-radius: 0;
+    /* 👈 cuadrados, sin ovalar */
+}
+
+
+/* --- Hover --- */
+
+.window-controls button:hover {
+    background: #d0d0d0;
+}
+
+.window-controls button#close:hover {
+    background: #e53935;
+    color: #fff;
+}
+
+
+/* --- Íconos SVG o texto --- */
+
+.window-controls svg {
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+}
+
+
+/* =====================================================
+   MODO OSCURO — estilo limpio
+   ===================================================== */
+
+body.dark-mode .window-controls button {
+    background: #1c1f22;
+    color: #fff;
+}
+
+body.dark-mode .window-controls button:hover {
+    background: #2a2d30;
+    color: #fff;
+}
+
+body.dark-mode .window-controls button#close:hover {
+    background: #ff4d4d;
+    color: #fff;
+}

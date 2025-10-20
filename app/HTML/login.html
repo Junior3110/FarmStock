@@ -1,60 +1,84 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FarmStock - Iniciar Sesión</title>
-  <link rel="stylesheet" href="../CSS/login.css" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FarmStock - Iniciar Sesión</title>
+    <link rel="stylesheet" href="../CSS/login.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
-  <div class="container">
-    <div class="left-panel">
-      <div class="logo">
-        <img src="../imagenes/Logo.png" alt="Logo FarmStock"/>
-      </div>
+    <div class="window-controls">
+        <button id="minimize" title="Minimizar">
+    <svg viewBox="0 0 10 10">
+        <rect x="2" y="6" width="6" height="1" fill="currentColor"/>
+    </svg>
+    </button>
 
-      <h1>Iniciar Sesión</h1>
+        <button id="maximize" title="Maximizar">
+    <svg viewBox="0 0 10 10">
+        <rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    </button>
 
-      <form id="loginForm">
-        <label for="documento">Documento de Identidad</label>
-        <div class="input-group">
-          <i class="fa-solid fa-envelope"></i>
-          <input id="documento" type="text" placeholder="Número de documento" required />
-          <select id="tipo-doc" required>
+        <button id="close" title="Cerrar">
+    <svg viewBox="0 0 10 10">
+        <line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/>
+    </svg>
+    </button>
+    </div>
+
+    <div class="container">
+        <div class="left-panel">
+            <div class="logo">
+                <img src="../imagenes/Logo.png" alt="Logo FarmStock" />
+            </div>
+
+            <h1>Iniciar Sesión</h1>
+
+            <form id="loginForm">
+                <label for="documento">Documento de Identidad</label>
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input id="documento" type="text" placeholder="Número de documento" required />
+                    <select id="tipo-doc" required>
             <option value="CC">CC</option>
             <option value="TI">TI</option>
           </select>
-        </div>
+                </div>
 
-        <label for="password">Contraseña</label>
-        <div class="input-group">
-          <i class="fa-solid fa-lock"></i>
-          <input id="password" type="password" placeholder="••••••••" required />
-        </div>
+                <label for="password">Contraseña</label>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input id="password" type="password" placeholder="••••••••" required />
+                </div>
 
-        <label for="rol">Cargo</label>
-        <div class="input-group">
-          <select id="rol" required>
+                <label for="rol">Cargo</label>
+                <div class="input-group">
+                    <select id="rol" required>
             <option disabled selected>Selecciona tu cargo</option>
             <option>Administrador</option>
             <option>Instructor</option>
           </select>
+                </div>
+
+                <button type="submit">Iniciar Sesión</button>
+
+                <p class="register">
+                    ¿No te has registrado? <a href="registro-persona.html">Registrarme aquí</a>
+                </p>
+            </form>
         </div>
 
-        <button type="submit">Iniciar Sesión</button>
-
-        <p class="register">
-          ¿No te has registrado? <a href="registro-persona.html">Registrarme aquí</a>
-        </p>
-      </form>
+        <div class="image-panel"></div>
     </div>
 
-    <div class="image-panel"></div>
-  </div>
-
-  <!-- Conexión al JS externo -->
-  <script src="../render-login.js"></script>
+    <!-- Conexión al JS externo -->
+    <script src="../render-login.js"></script>
+    <script src="../render-window.js"></script>
 </body>
+
 </html>

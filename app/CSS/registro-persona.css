@@ -1,131 +1,234 @@
 /* Reset y estilo base */
+
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body, html {
-  height: 100%;
+body,
+html {
+    height: 100%;
 }
+
 
 /* Contenedor principal */
+
 .container {
-  display: flex;
-  height: 100vh;
+    display: flex;
+    height: 100vh;
 }
+
 
 /* Columna izquierda */
+
 .left {
-  width: 50%;
-  background-color: #ffffff;
-  padding: 40px 60px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+    width: 50%;
+    background-color: #ffffff;
+    padding: 40px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
+
 
 /* Logo */
+
 .logo {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin-left: 0; /* asegúrate que no tenga margen innecesario */
-  margin-top: 0px;
-  margin-bottom: 0px;
-}
-.logo img {
-  width: 400px;
-  height: auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-left: 0;
+    /* asegúrate que no tenga margen innecesario */
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
+.logo img {
+    width: 400px;
+    height: auto;
+}
+
+
 /* Título */
+
 h1 {
-  font-size: 48px;
-  font-weight: 900;
-  margin-bottom: 40px;
+    font-size: 48px;
+    font-weight: 900;
+    margin-bottom: 40px;
 }
 
 
 /* Formulario */
+
 form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
+
 /* Estilo para inputs/selects modernos */
+
 input,
 select {
-  background-color: #f5f5f5;
-  border: none;
-  border-radius: 8px;
-  padding: 14px 16px;
-  font-size: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  width: 100%;
-  transition: all 0.2s ease;
+    background-color: #f5f5f5;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    transition: all 0.2s ease;
 }
 
 input:focus,
 select:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px #77c28a;
+    outline: none;
+    box-shadow: 0 0 0 2px #77c28a;
 }
+
 
 /* Campo doble columna */
+
 .full {
-  grid-column: span 2;
+    grid-column: span 2;
 }
 
+
 /* Botón */
+
 button {
-  grid-column: span 2;
-  padding: 14px;
-  background-color: #77c28a;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    grid-column: span 2;
+    padding: 14px;
+    background-color: #77c28a;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #5fab76;
+    background-color: #5fab76;
 }
 
+
 /* Columna derecha */
+
 .right {
-  width: 50%;
-  overflow: hidden;
+    width: 50%;
+    overflow: hidden;
 }
 
 .right img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
+
 .logo {
-  position: relative;
-  top: -90px; /* Ajusta según lo que necesites */
-  margin-bottom: -70px; /* Opcional para compensar el espacio hacia abajo */
+    position: relative;
+    top: -90px;
+    /* Ajusta según lo que necesites */
+    margin-bottom: -70px;
+    /* Opcional para compensar el espacio hacia abajo */
 }
+
 .volver-login {
-  margin-top: 20px;
-  font-size: 14px;
-  grid-column: span 2;
-  text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    grid-column: span 2;
+    text-align: center;
 }
 
 .volver-login a {
-  color: #77c28a;
-  text-decoration: none;
-  font-weight: bold;
+    color: #77c28a;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 .volver-login a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
+}
+
+
+/* =====================================================
+   BOTONES DE CONTROL DE VENTANA — ESTILO FIJO Y LIMPIO
+   ===================================================== */
+
+.window-controls {
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 3000;
+    height: 32px;
+    background: transparent;
+}
+
+
+/* --- Botones --- */
+
+.window-controls button {
+    width: 46px;
+    height: 32px;
+    border: none;
+    outline: none;
+    background: #e6e6e6;
+    color: #111;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    border-radius: 0;
+    /* 👈 cuadrados, sin ovalar */
+}
+
+
+/* --- Hover --- */
+
+.window-controls button:hover {
+    background: #d0d0d0;
+}
+
+.window-controls button#close:hover {
+    background: #e53935;
+    color: #fff;
+}
+
+
+/* --- Íconos SVG o texto --- */
+
+.window-controls svg {
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+}
+
+
+/* =====================================================
+   MODO OSCURO — estilo limpio
+   ===================================================== */
+
+body.dark-mode .window-controls button {
+    background: #1c1f22;
+    color: #fff;
+}
+
+body.dark-mode .window-controls button:hover {
+    background: #2a2d30;
+    color: #fff;
+}
+
+body.dark-mode .window-controls button#close:hover {
+    background: #ff4d4d;
+    color: #fff;
 }

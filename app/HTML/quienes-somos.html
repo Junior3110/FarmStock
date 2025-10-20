@@ -1,101 +1,133 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Quiénes Somos - FarmStock</title>
-  <link rel="stylesheet" href="../CSS/index.css"> <!-- Reutilizamos index.css -->
-  <link rel="stylesheet" href="../CSS/quienes-somos.css"> <!-- CSS específico -->
-</head>
-<body>
-  <div class="container">
-    <!-- Sidebar -->
-<aside class="sidebar">
-  <!-- Arriba: logo + menú principal -->
-  <div class="top-section">
-    <div class="logo">
-      <img src="../imagenes/Logo.png" alt="Logo FarmStock">
-    </div>
-    <ul class="menu-modulos">
-      <li><a href="index.html">Registro Herramientas</a></li>
-      <li><a href="registro-salida.html">Historial de herramientas</a></li>
-      <li><a href="indexInventario.html">Inventario</a></li>
-      <li><a href="notificaciones.html">Notificaciones</a></li>
-      <li><a href="estats.html">Estadísticas</a></li>
-    </ul>
-  </div>
 
-  <!-- Abajo: quienes somos + modo noche -->
-  <div class="sidebar-bottom">
-    <a href="quienes-somos.html" class="somos active">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiénes Somos - FarmStock</title>
+    <link rel="stylesheet" href="../CSS/index.css">
+    <!-- Reutilizamos index.css -->
+    <link rel="stylesheet" href="../CSS/quienes-somos.css">
+    <!-- CSS específico -->
+</head>
+
+<body>
+    <div class="window-controls">
+        <button id="minimize" title="Minimizar">
+    <svg viewBox="0 0 10 10">
+        <rect x="2" y="6" width="6" height="1" fill="currentColor"/>
+    </svg>
+    </button>
+
+        <button id="maximize" title="Maximizar">
+    <svg viewBox="0 0 10 10">
+        <rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    </button>
+
+        <button id="close" title="Cerrar">
+    <svg viewBox="0 0 10 10">
+        <line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/>
+    </svg>
+    </button>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Arriba: logo + menú principal -->
+            <div class="top-section">
+                <div class="logo">
+                    <img src="../imagenes/Logo.png" alt="Logo FarmStock">
+                </div>
+                <ul class="menu-modulos">
+                    <li><a href="index.html">Registro Herramientas</a></li>
+                    <li><a href="registro-salida.html">Historial de herramientas</a></li>
+                    <li><a href="indexInventario.html">Inventario</a></li>
+                    <li><a href="notificaciones.html">Notificaciones</a></li>
+                    <li><a href="estats.html">Estadísticas</a></li>
+                </ul>
+            </div>
+
+            <!-- Abajo: quienes somos + modo noche -->
+            <div class="sidebar-bottom">
+                <a href="quienes-somos.html" class="somos active">
       👥 Quiénes Somos
     </a>
-    <div class="night-mode">
-      <span>🌙 Modo noche</span>
+                <div class="night-mode">
+                    <span>🌙 Modo noche</span>
+                </div>
+            </div>
+
+        </aside>
+
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <div class="bienvenida">
+                <h1>Quiénes Somos</h1>
+            </div>
+
+            <!-- Botones superiores -->
+            <div class="tabs">
+                <button onclick="mostrarInfo('quienes')">Quiénes Somos</button>
+                <button onclick="mostrarInfo('mision')">Misión</button>
+                <button onclick="mostrarInfo('vision')">Visión</button>
+            </div>
+
+            <!-- Contenido dinámico -->
+            <section class="info" id="info-quienes">
+                <p>
+                    somos un equipo de aprendices del Servicio Nacional de Aprendizaje – SENA, en formación dentro del programa Análisis y Desarrollo de Software. Nuestro compromiso es aplicar los conocimientos adquiridos en el aula para el desarrollo de soluciones tecnológicas
+                    que respondan a necesidades reales del entorno productivo y formativo. El proyecto
+                    <Strong>FarmStock</Strong> nace como una iniciativa orientada a solucionar la problemática existente en la finca del SENA, sede Zulia (Norte de Santander), relacionada con la falta de control eficiente en el ingreso y egreso de herramientas agrícolas. Esta
+                    situación afecta tanto a instructores como a aprendices, dificultando la planeación de las actividades prácticas y el seguimiento del estado de las herramientas. Nuestra propuesta consiste en el diseño y desarrollo de un sistema de
+                    gestión de inventario que permita automatizar procesos, mejorar la organización y garantizar un control más confiable de las herramientas mediante el uso de tecnologías como Electron, JavaScript, HTML, CSS y MySQL. Con este proyecto
+                    productivo buscamos no solo aportar una solución funcional y práctica para el control de inventarios en la sede, sino también fortalecer nuestras competencias en desarrollo de software, trabajo en equipo y metodologías ágiles, preparándonos
+                    para enfrentar los retos del sector tecnológico.
+
+                </p>
+                <div class="foto-seccion">
+                    <img src="../imagenes/quienes.jpeg" alt="Foto de usuario" class="foto-usuario" />
+                    <img src="../imagenes/mision1.png" alt="Foto de usuario" class="foto-usuario" />
+                </div>
+            </section>
+
+            <section class="info" id="info-mision" style="display:none;">
+                <p>
+                    Desarrollar un sistema de gestión de inventario eficiente y confiable que facilite el control del ingreso y salida de herramientas agrícolas en la finca del SENA sede Zulia. Nuestra misión es brindar a aprendices e instructores una herramienta tecnológica
+                    que optimice los procesos formativos, reduzca los errores en los registros, mejore la trazabilidad de los equipos y promueva la responsabilidad en el uso de los recursos. A través de la innovación y el aprendizaje colaborativo, buscamos
+                    contribuir al fortalecimiento de las competencias técnicas y tecnológicas en el área agrícola y de software.
+                </p>
+                <div class="foto-seccion">
+                    <img src="../imagenes/mision.jpeg" alt="Foto de usuario" class="foto-usuario" />
+                    <img src="../imagenes/mision2.jpg" alt="Foto de usuario" class="foto-usuario" />
+                </div>
+            </section>
+
+            <section class="info" id="info-vision" style="display:none;">
+                <p>
+                    Para el año 2027, consolidar a
+                    <Strong>FarmStock</Strong> como una solución tecnológica de referencia dentro del SENA y extender su aplicación a otras sedes y contextos académicos y productivos. Nuestra visión es convertir el sistema en una plataforma escalable y adaptable, que integre tecnologías
+                    modernas como códigos QR, reportes automatizados y análisis estadísticos, contribuyendo a la transformación digital del sector educativo y agrícola. Aspiramos a que FarmStock sea un modelo de innovación creado por aprendices que inspire
+                    futuros proyectos de desarrollo tecnológico en la región.
+                </p>
+                <div class="foto-seccion">
+                    <img src="../imagenes/vision1.jpg_large" alt="Foto de usuario" class="foto-usuario" />
+                    <img src="../imagenes/vision2.jpg" alt="Foto de usuario" class="foto-usuario" />
+                </div>
+            </section>
+        </main>
     </div>
-  </div>
 
-</aside>
-
-
-    <!-- Contenido principal -->
-    <main class="main-content">
-      <div class="bienvenida">
-        <h1>Quiénes Somos</h1>
-      </div>
-
-      <!-- Botones superiores -->
-      <div class="tabs">
-        <button onclick="mostrarInfo('quienes')">Quiénes Somos</button>
-        <button onclick="mostrarInfo('mision')">Misión</button>
-        <button onclick="mostrarInfo('vision')">Visión</button>
-      </div>
-
-      <!-- Contenido dinámico -->
-      <section class="info" id="info-quienes">
-        <p>
-          somos un equipo de aprendices del Servicio Nacional de Aprendizaje – SENA, en formación dentro del programa Análisis y Desarrollo de Software. Nuestro compromiso es aplicar los conocimientos adquiridos en el aula para el desarrollo de soluciones tecnológicas que respondan a necesidades reales del entorno productivo y formativo.
-
-          El proyecto <Strong>FarmStock</Strong> nace como una iniciativa orientada a solucionar la problemática existente en la finca del SENA, sede Zulia (Norte de Santander), relacionada con la falta de control eficiente en el ingreso y egreso de herramientas agrícolas. Esta situación afecta tanto a instructores como a aprendices, dificultando la planeación de las actividades prácticas y el seguimiento del estado de las herramientas.
-
-          Nuestra propuesta consiste en el diseño y desarrollo de un sistema de gestión de inventario que permita automatizar procesos, mejorar la organización y garantizar un control más confiable de las herramientas mediante el uso de tecnologías como Electron, JavaScript, HTML, CSS y MySQL.
-
-          Con este proyecto productivo buscamos no solo aportar una solución funcional y práctica para el control de inventarios en la sede, sino también fortalecer nuestras competencias en desarrollo de software, trabajo en equipo y metodologías ágiles, preparándonos para enfrentar los retos del sector tecnológico.
-
-        </p>
-        <div class="foto-seccion">
-        <img src="../imagenes/quienes.jpeg" alt="Foto de usuario" class="foto-usuario" />
-        <img src="../imagenes/mision1.png" alt="Foto de usuario" class="foto-usuario" />
-        </div>
-      </section>
-
-      <section class="info" id="info-mision" style="display:none;">
-        <p>
-          Desarrollar un sistema de gestión de inventario eficiente y confiable que facilite el control del ingreso y salida de herramientas agrícolas en la finca del SENA sede Zulia. Nuestra misión es brindar a aprendices e instructores una herramienta tecnológica que optimice los procesos formativos, reduzca los errores en los registros, mejore la trazabilidad de los equipos y promueva la responsabilidad en el uso de los recursos. A través de la innovación y el aprendizaje colaborativo, buscamos contribuir al fortalecimiento de las competencias técnicas y tecnológicas en el área agrícola y de software.
-        </p>
-        <div class="foto-seccion">
-          <img src="../imagenes/mision.jpeg" alt="Foto de usuario" class="foto-usuario" />
-          <img src="../imagenes/mision2.jpg" alt="Foto de usuario" class="foto-usuario" />
-        </div>
-      </section>
-
-      <section class="info" id="info-vision" style="display:none;">
-        <p>
-          Para el año 2027, consolidar a <Strong>FarmStock</Strong> como una solución tecnológica de referencia dentro del SENA y extender su aplicación a otras sedes y contextos académicos y productivos. Nuestra visión es convertir el sistema en una plataforma escalable y adaptable, que integre tecnologías modernas como códigos QR, reportes automatizados y análisis estadísticos, contribuyendo a la transformación digital del sector educativo y agrícola. Aspiramos a que FarmStock sea un modelo de innovación creado por aprendices que inspire futuros proyectos de desarrollo tecnológico en la región.
-        </p>
-        <div class="foto-seccion">
-          <img src="../imagenes/vision1.jpg_large" alt="Foto de usuario" class="foto-usuario" />
-          <img src="../imagenes/vision2.jpg" alt="Foto de usuario" class="foto-usuario" />
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <script>
-    function mostrarInfo(seccion) {
-      document.querySelectorAll('.info').forEach(div => div.style.display = 'none');
-      document.getElementById('info-' + seccion).style.display = 'block';
-    }
-  </script>
-  <script src="../modo-oscuro.js"></script>
+    <script>
+        function mostrarInfo(seccion) {
+            document.querySelectorAll('.info').forEach(div => div.style.display = 'none');
+            document.getElementById('info-' + seccion).style.display = 'block';
+        }
+    </script>
+    <script src="../modo-oscuro.js"></script>
+    <script src="../render-window.js"></script>
 </body>
+
 </html>

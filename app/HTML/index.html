@@ -2,147 +2,178 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FarmStock</title>
-  <link rel="stylesheet" href="../CSS/index.css" />
-  <link rel="stylesheet" href="/FarmStock/app/CSS/darkmode.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FarmStock</title>
+    <link rel="stylesheet" href="../CSS/index.css" />
+    <link rel="stylesheet" href="/FarmStock/app/CSS/darkmode.css">
 
 </head>
 
 <body>
-  <div class="container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="top-section">
-        <div class="logo">
-          <img src="../imagenes/Logo.png" alt="Logo del sitio" />
-        </div>
-        <ul class="menu-modulos">
-          <li><a href="../HTML/index.html" class="active">Registro Herramientas</a></li>
-          <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
-          <li><a href="../HTML/indexInventario.html">Inventario</a></li>
-          <li><a href="notificaciones.html">Notificaciones</a></li>
-          <li><a href="../HTML/estats.html">Estadísticas</a></li>
-        </ul>
-      </div>
-      <div class="sidebar-bottom">
-        <a href="quienes-somos.html" class="somos active">👥 Quiénes Somos</a>
-        <div class="night-mode">
-          <span>🌙 Modo noche</span>
-        </div>
-      </div>
-    </aside>
-    
+    <div class="window-controls">
+        <button id="minimize" title="Minimizar">
+    <svg viewBox="0 0 10 10">
+      <rect x="2" y="6" width="6" height="1" fill="currentColor"/>
+    </svg>
+  </button>
 
-    <!-- Contenido principal -->
-    <main class="main-content">
-      <div class="bienvenida">
-        <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
-        <p><strong>¡Hola Maria!</strong></p>
-      </div>
+        <button id="maximize" title="Maximizar">
+    <svg viewBox="0 0 10 10">
+      <rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/>
+    </svg>
+  </button>
 
-      <!-- Formulario principal -->
-      <div class="area-superior">
-        <div class="formulario-card">
-          <form id="formHerramienta" class="formulario-horizontal">
-            <div class="columna borde-derecho">
-              <label for="nombre">Nombre de herramienta</label>
-              <input type="text" id="nombre" placeholder="Escribe el nombre de la herramienta" />
-              <label for="estado">Estado</label>
-              <select id="estado">
+        <button id="close" title="Cerrar">
+    <svg viewBox="0 0 10 10">
+      <line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/>
+    </svg>
+  </button>
+    </div>
+
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="top-section">
+                <div class="logo">
+                    <img src="../imagenes/Logo.png" alt="Logo del sitio" />
+                </div>
+                <ul class="menu-modulos">
+                    <li><a href="../HTML/index.html" class="active">Registro Herramientas</a></li>
+                    <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
+                    <li><a href="../HTML/indexInventario.html">Inventario</a></li>
+                    <li><a href="notificaciones.html">Notificaciones</a></li>
+                    <li><a href="../HTML/estats.html">Estadísticas</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-bottom">
+                <a href="quienes-somos.html" class="somos active">👥 Quiénes Somos</a>
+                <div class="night-mode">
+                    <span>🌙 Modo noche</span>
+                </div>
+            </div>
+        </aside>
+
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <div class="bienvenida">
+                <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
+                <p><strong>¡Hola Maria!</strong></p>
+            </div>
+
+            <!-- Formulario principal -->
+            <div class="area-superior">
+                <div class="formulario-card">
+                    <form id="formHerramienta" class="formulario-horizontal">
+                        <div class="columna borde-derecho">
+                            <label for="nombre">Nombre de herramienta</label>
+                            <input type="text" id="nombre" placeholder="Escribe el nombre de la herramienta" />
+                            <label for="estado">Estado</label>
+                            <select id="estado">
                 <option>Seleccionar</option>
                 <option>Funcional</option>
                 <option>Mantenimiento</option>
                 <option>No disponible</option>
               </select>
-              <label for="tipo">Tipo</label>
-              <select id="tipo">
+                            <label for="tipo">Tipo</label>
+                            <select id="tipo">
                 <option>Seleccionar</option>
                 <option>Manual</option>
                 <option>Eléctrica</option>
               </select>
-              <label for="ubicacion">Ubicación</label>
-              <select id="ubicacion">
+                            <label for="ubicacion">Ubicación</label>
+                            <select id="ubicacion">
                 <option>Seleccionar</option>
                 <option>Bodega</option>
                 <option>Taller</option>
                 <option>Campo</option>
               </select>
-            </div>
-            <div class="columna borde-derecho">
-              <label for="fecha">Fecha ingreso</label>
-              <input type="date" id="fecha" />
-              <label for="lote">Número de Lote</label>
-              <select id="lote">
+                        </div>
+                        <div class="columna borde-derecho">
+                            <label for="fecha">Fecha ingreso</label>
+                            <input type="date" id="fecha" />
+                            <label for="lote">Número de Lote</label>
+                            <select id="lote">
                 <option>Seleccionar</option>
                 <option>Lote 1</option>
                 <option>Lote 2</option>
               </select>
-              <label for="cantidad">Cantidad</label>
-              <input type="number" id="cantidad" name="cantidad" min="0" placeholder="Ejemplo: 10">
+                            <label for="cantidad">Cantidad</label>
+                            <input type="number" id="cantidad" name="cantidad" min="0" placeholder="Ejemplo: 10">
+                        </div>
+                        <div class="columna descripcion">
+                            <label for="descripcion">Descripción de herramienta</label>
+                            <textarea id="descripcion" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
+                            <div class="boton-registrar">
+                                <button type="button" id="btnRegistrar" class="btn btn-success">Registrar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="columna descripcion">
-              <label for="descripcion">Descripción de herramienta</label>
-              <textarea id="descripcion" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
-              <div class="boton-registrar">
-                <button type="button" id="btnRegistrar" class="btn btn-success">Registrar</button>
-              </div>
+
+            <!-- Herramientas de HOY -->
+            <div class="area-inferior">
+                <div class="herramientas-hoy">
+                    <h3>Herramientas registradas hoy</h3>
+                    <div id="listaHoy" class="lista-tarjetas"></div>
+                </div>
             </div>
-          </form>
-        </div>
-      </div>
+        </main>
+    </div>
+    <!-- Script para guardar y renderizar -->
+    <script>
+        document.getElementById("btnRegistrar").addEventListener("click", function() {
+            const nombre = document.getElementById("nombre").value.trim();
+            const estado = document.getElementById("estado").value;
+            const tipo = document.getElementById("tipo").value;
+            const ubicacion = document.getElementById("ubicacion").value;
+            let fecha = new Date().toISOString().split("T")[0];
 
-      <!-- Herramientas de HOY -->
-      <div class="area-inferior">
-        <div class="herramientas-hoy">
-          <h3>Herramientas registradas hoy</h3>
-          <div id="listaHoy" class="lista-tarjetas"></div>
-        </div>
-      </div>
-    </main>
-  </div>
-  <!-- Script para guardar y renderizar -->
-  <script>
-    document.getElementById("btnRegistrar").addEventListener("click", function () {
-      const nombre = document.getElementById("nombre").value.trim();
-      const estado = document.getElementById("estado").value;
-      const tipo = document.getElementById("tipo").value;
-      const ubicacion = document.getElementById("ubicacion").value;
-     let fecha = new Date().toISOString().split("T")[0];
-
-      const lote = document.getElementById("lote").value;
-      const cantidad = document.getElementById("cantidad").value;
-      const descripcion = document.getElementById("descripcion").value.trim();
-      
-
-      if (!nombre || estado === "Seleccionar") {
-        alert("Por favor completa al menos el nombre y el estado.");
-        return;
-      }
+            const lote = document.getElementById("lote").value;
+            const cantidad = document.getElementById("cantidad").value;
+            const descripcion = document.getElementById("descripcion").value.trim();
 
 
-      let herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
-      herramientas.push({ nombre, estado, tipo, ubicacion, fecha, lote, cantidad, descripcion });
-      localStorage.setItem("herramientas", JSON.stringify(herramientas));
+            if (!nombre || estado === "Seleccionar") {
+                alert("Por favor completa al menos el nombre y el estado.");
+                return;
+            }
 
-      alert("✅ Herramienta registrada correctamente");
-      document.getElementById("formHerramienta").reset();
-      renderHoy();
-    });
 
-    function renderHoy() {
-      const lista = document.getElementById("listaHoy");
-      lista.innerHTML = "";
-        
-      const herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
-      const hoy = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+            let herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
+            herramientas.push({
+                nombre,
+                estado,
+                tipo,
+                ubicacion,
+                fecha,
+                lote,
+                cantidad,
+                descripcion
+            });
+            localStorage.setItem("herramientas", JSON.stringify(herramientas));
 
-      herramientas.forEach(h => {
-        if (h.fecha === hoy) {
-          const card = document.createElement("div");
-          card.classList.add("tarjeta");
-          card.innerHTML = `
+            alert("✅ Herramienta registrada correctamente");
+            document.getElementById("formHerramienta").reset();
+            renderHoy();
+        });
+
+        function renderHoy() {
+            const lista = document.getElementById("listaHoy");
+            lista.innerHTML = "";
+
+            const herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
+            const hoy = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+
+            herramientas.forEach(h => {
+                if (h.fecha === hoy) {
+                    const card = document.createElement("div");
+                    card.classList.add("tarjeta");
+                    card.innerHTML = `
             <h4>🛠️ ${h.nombre}</h4>
             <p><strong>Estado:</strong> ${h.estado}</p>
             <p><strong>Tipo:</strong> ${h.tipo}</p>
@@ -152,13 +183,16 @@
             <p><strong>Cantidad:</strong> ${h.cantidad}</p>
             <p><strong>Descripción:</strong> ${h.descripcion}</p>
           `;
-          lista.appendChild(card);
+                    lista.appendChild(card);
+                }
+            });
         }
-      });
-    }
 
-    renderHoy();
-  </script>
-  <script src="../modo-oscuro.js"></script>
+        renderHoy();
+    </script>
+    <script src="../modo-oscuro.js"></script>
+    <script src="../render-window.js"></script>
+
 </body>
+
 </html>

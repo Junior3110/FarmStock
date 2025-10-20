@@ -384,11 +384,13 @@ canvas {
     margin: 0 auto;
 }
 
+
 /* ===== MODO CLARO (por defecto) ===== */
+
 body {
-  background-color: #f5f5f5;
-  color: #222;
-  transition: background 0.3s, color 0.3s;
+    background-color: #f5f5f5;
+    color: #222;
+    transition: background 0.3s, color 0.3s;
 }
 
 .cuadro-visual,
@@ -397,50 +399,51 @@ body {
 .herramienta-card,
 .formulario-card,
 .grafico {
-  background: #ffffff;
-  color: #222;
-  border: 1px solid #ddd;
-  transition: background 0.3s, color 0.3s, border 0.3s;
+    background: #ffffff;
+    color: #222;
+    border: 1px solid #ddd;
+    transition: background 0.3s, color 0.3s, border 0.3s;
 }
 
+
 /* ===== MODO OSCURO ===== */
+
 body.dark-mode {
-  background-color: #0f1113;
-  color: #e6e6e6;
+    background-color: #0f1113;
+    color: #e6e6e6;
 }
 
 body.dark-mode .sidebar {
-  background-color: #1c1f22;
-  border-right: 1px solid #333;
+    background-color: #1c1f22;
+    border-right: 1px solid #333;
 }
-
 
 body.dark-mode .menu-modulos li a {
     color: #d7d7d7;
 }
 
-
 body.dark-mode .menu-modulos li a.active {
     background-color: #333;
     color: #4CAF50;
 }
-body.dark-mode .sidebar-bottom .somos  {
+
+body.dark-mode .sidebar-bottom .somos {
     background-color: #A4D490;
     color: #ffffff;
     font-weight: 900;
- }
+}
 
-body.dark-mode .sidebar-bottom .somos:hover  {
+body.dark-mode .sidebar-bottom .somos:hover {
     background-color: #8fc87d;
     color: #ffffff;
     font-weight: 900;
- }
+}
 
 body.dark-mode .night-mode {
     background-color: #2c2f33;
     color: #e6e6e6;
     font-weight: 900;
- }
+}
 
 body.dark-mode .night-mode:hover {
     background-color: #444c52;
@@ -448,12 +451,11 @@ body.dark-mode .night-mode:hover {
     font-weight: 900;
 }
 
-body.dark-mode section{
+body.dark-mode section {
     background-color: #1c1f22;
     color: #e6e6e6;
     border: 1px solid #333;
 }
-
 
 body.dark-mode .registro {
     background-color: #1c1f22;
@@ -461,18 +463,16 @@ body.dark-mode .registro {
     border: 1px solid #333;
 }
 
-
 body.dark-mode .cuadro-visual,
 body.dark-mode .tarjeta,
 body.dark-mode .item-inventario,
 body.dark-mode .herramienta-card,
 body.dark-mode .formulario-card,
 body.dark-mode .grafico {
-  background: #1c1f22;
-  color: #e6e6e6;
-  border: 1px solid #333;
+    background: #1c1f22;
+    color: #e6e6e6;
+    border: 1px solid #333;
 }
-
 
 body.dark-mode .registro {
     background-color: #1c1f22;
@@ -483,7 +483,6 @@ body.dark-mode .registro {
 body.dark-mode .registro h2 {
     color: #d5d5d5;
 }
-
 
 body.dark-mode .filtros select,
 body.dark-mode .filtros button {
@@ -496,6 +495,7 @@ body.dark-mode .tabla {
     background-color: #1c1f22;
     border: 1px solid #333;
 }
+
 body.dark-mode .tabla thead {
     background-color: #2c2f33;
     font-weight: 600;
@@ -510,11 +510,13 @@ body.dark-mode .buscador {
     background-color: #2c2f33;
     border: 1px solid #333;
 }
+
 body.dark-mode .buscador input {
     background-color: #2c2f33;
     color: #e6e6e6;
     border: 1px solid #333;
 }
+
 body.dark-mode .buscador button {
     background-color: #2c2f33;
     border: 1px solid #333;
@@ -535,18 +537,95 @@ body.dark-mode .ver {
     color: white;
     border: none;
 }
+
 body.dark-mode .ver:hover {
     background-color: #68b55e;
 }
+
 body.dark-mode .grafico {
-  background: #1c1f22;
-  color: #e6e6e6;
-  border: 1px solid #333;
+    background: #1c1f22;
+    color: #e6e6e6;
+    border: 1px solid #333;
 }
+
 body.dark-mode .grafico h2 {
     color: #d5d5d5;
 }
 
 
+/* =====================================================
+   BOTONES DE CONTROL DE VENTANA — ESTILO FIJO Y LIMPIO
+   ===================================================== */
+
+.window-controls {
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 3000;
+    height: 32px;
+    background: transparent;
+}
 
 
+/* --- Botones --- */
+
+.window-controls button {
+    width: 46px;
+    height: 32px;
+    border: none;
+    outline: none;
+    background: #e6e6e6;
+    color: #111;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    border-radius: 0;
+    /* 👈 cuadrados, sin ovalar */
+}
+
+
+/* --- Hover --- */
+
+.window-controls button:hover {
+    background: #d0d0d0;
+}
+
+.window-controls button#close:hover {
+    background: #e53935;
+    color: #fff;
+}
+
+
+/* --- Íconos SVG o texto --- */
+
+.window-controls svg {
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+}
+
+
+/* =====================================================
+   MODO OSCURO — estilo limpio
+   ===================================================== */
+
+body.dark-mode .window-controls button {
+    background: #1c1f22;
+    color: #fff;
+}
+
+body.dark-mode .window-controls button:hover {
+    background: #2a2d30;
+    color: #fff;
+}
+
+body.dark-mode .window-controls button#close:hover {
+    background: #ff4d4d;
+    color: #fff;
+}
