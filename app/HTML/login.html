@@ -5,54 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FarmStock - Iniciar Sesión</title>
   <link rel="stylesheet" href="../CSS/login.css" />
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
-  <script defer>
-    function iniciarSesion(event) {
-      event.preventDefault();
-      const documento = document.getElementById("documento").value;
-      const password = document.getElementById("password").value;
-      const rol = document.getElementById("rol").value;
-
-      localStorage.setItem('documento', documento);
-      localStorage.setItem('password', password);
-      localStorage.setItem('rol', rol);
-
-      if (window.navegacion && window.navegacion.irAInventario) {
-        window.navegacion.irAInventario();
-      } else {
-        window.location.href = "index.html";
-      }
-    }
-
-    function irARegistro() {
-      if (window.navegacion && window.navegacion.irARegistro) {
-        window.navegacion.irARegistro();
-      } else {
-        window.location.href = "registro-persona.html";
-      }
-    }
-
-    window.addEventListener("DOMContentLoaded", () => {
-      localStorage.removeItem('documento');
-      localStorage.removeItem('password');
-      localStorage.removeItem('rol');
-
-      document.getElementById("documento").focus();
-    });
-  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
   <div class="container">
     <div class="left-panel">
-        <div class="logo">
-            <img src="../imagenes/Logo.png" alt="Logo FarmStock"/>
-        </div>
+      <div class="logo">
+        <img src="../imagenes/Logo.png" alt="Logo FarmStock"/>
+      </div>
 
       <h1>Iniciar Sesión</h1>
 
-      <form onsubmit="iniciarSesion(event)">
+      <form id="loginForm">
         <label for="documento">Documento de Identidad</label>
         <div class="input-group">
           <i class="fa-solid fa-envelope"></i>
@@ -73,7 +38,7 @@
         <div class="input-group">
           <select id="rol" required>
             <option disabled selected>Selecciona tu cargo</option>
-            <option>Aprendiz</option>
+            <option>Administrador</option>
             <option>Instructor</option>
           </select>
         </div>
@@ -81,12 +46,15 @@
         <button type="submit">Iniciar Sesión</button>
 
         <p class="register">
-          ¿No te has registrado? <a href="#" onclick="irARegistro()">Registrarme aquí</a>
+          ¿No te has registrado? <a href="registro-persona.html">Registrarme aquí</a>
         </p>
       </form>
     </div>
 
     <div class="image-panel"></div>
   </div>
+
+  <!-- Conexión al JS externo -->
+  <script src="../render-login.js"></script>
 </body>
 </html>

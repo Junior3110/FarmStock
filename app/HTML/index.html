@@ -2,234 +2,163 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FarmStock</title>
-    <link rel="stylesheet" href="../CSS/index.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FarmStock</title>
+  <link rel="stylesheet" href="../CSS/index.css" />
+  <link rel="stylesheet" href="/FarmStock/app/CSS/darkmode.css">
 
-    <style>
-        /* Lista con scroll siempre visible */
-        
-        .lista-tareas {
-            max-height: 140px;
-            overflow-y: scroll;
-            scrollbar-width: thin;
-            scrollbar-color: #4CAF50 #f1f1f1;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding-right: 5px;
-        }
-        
-        .lista-tareas::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .lista-tareas::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        
-        .lista-tareas::-webkit-scrollbar-thumb {
-            background-color: #4CAF50;
-            border-radius: 4px;
-        }
-        /* Inputs y botón */
-        
-        .pendientes input[type="text"] {
-            padding: 8px;
-            font-size: 0.85rem;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            margin-bottom: 5px;
-            width: 100%;
-        }
-        
-        .pendientes button {
-            padding: 8px;
-            background-color: #A4D490;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            width: 100%;
-        }
-        
-        .pendientes button:hover {
-            background-color: #8fc87d;
-        }
-        /* Tarea */
-        
-        .tarea {
-            background: #d5f2d5;
-            border-left: 4px solid #4CAF50;
-            padding: 10px 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            color: #333;
-        }
-        
-        .tarea span {
-            font-weight: bold;
-            font-size: 0.8rem;
-            color: #222;
-        }
-    </style>
 </head>
 
 <body>
-    <div class="container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="top-section">
-                <div class="logo">
-                    <img src="../imagenes/Logo.png" alt="Logo del sitio" />
-                </div>
-                <ul class="menu-modulos">
-                    <li><a href="../HTML/index.html" class="active">Registro Herramientas</a></li>
-                    <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
-                    <li><a href="../HTML/indexInventario.html">Inventario</a></li>
-                    <li><a href="notificaciones.html">Notificaciones</a></li>
-                    <li><a href="../HTML/estats.html">Estadísticas</a></li>
-                </ul>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="top-section">
+        <div class="logo">
+          <img src="../imagenes/Logo.png" alt="Logo del sitio" />
+        </div>
+        <ul class="menu-modulos">
+          <li><a href="../HTML/index.html" class="active">Registro Herramientas</a></li>
+          <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
+          <li><a href="../HTML/indexInventario.html">Inventario</a></li>
+          <li><a href="notificaciones.html">Notificaciones</a></li>
+          <li><a href="../HTML/estats.html">Estadísticas</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-bottom">
+        <a href="quienes-somos.html" class="somos active">👥 Quiénes Somos</a>
+        <div class="night-mode">
+          <span>🌙 Modo noche</span>
+        </div>
+      </div>
+    </aside>
+    
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <div class="bienvenida">
+        <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
+        <p><strong>¡Hola Maria!</strong></p>
+      </div>
+
+      <!-- Formulario principal -->
+      <div class="area-superior">
+        <div class="formulario-card">
+          <form id="formHerramienta" class="formulario-horizontal">
+            <div class="columna borde-derecho">
+              <label for="nombre">Nombre de herramienta</label>
+              <input type="text" id="nombre" placeholder="Escribe el nombre de la herramienta" />
+              <label for="estado">Estado</label>
+              <select id="estado">
+                <option>Seleccionar</option>
+                <option>Funcional</option>
+                <option>Mantenimiento</option>
+                <option>No disponible</option>
+              </select>
+              <label for="tipo">Tipo</label>
+              <select id="tipo">
+                <option>Seleccionar</option>
+                <option>Manual</option>
+                <option>Eléctrica</option>
+              </select>
+              <label for="ubicacion">Ubicación</label>
+              <select id="ubicacion">
+                <option>Seleccionar</option>
+                <option>Bodega</option>
+                <option>Taller</option>
+                <option>Campo</option>
+              </select>
             </div>
-            <!-- Abajo: quienes somos + modo noche -->
-            <div class="sidebar-bottom">
-                <a href="quienes-somos.html" class="somos active">
-            👥 Quiénes Somos
-          </a>
-                <div class="night-mode">
-                    <span>🌙 Modo noche</span>
-                </div>
+            <div class="columna borde-derecho">
+              <label for="fecha">Fecha ingreso</label>
+              <input type="date" id="fecha" />
+              <label for="lote">Número de Lote</label>
+              <select id="lote">
+                <option>Seleccionar</option>
+                <option>Lote 1</option>
+                <option>Lote 2</option>
+              </select>
+              <label for="cantidad">Cantidad</label>
+              <input type="number" id="cantidad" name="cantidad" min="0" placeholder="Ejemplo: 10">
             </div>
-        </aside>
-
-        <!-- Contenido principal -->
-        <main class="main-content">
-            <!-- Bienvenida -->
-            <div class="bienvenida">
-                <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
-                <p><strong>¡Hola Maria!</strong></p>
+            <div class="columna descripcion">
+              <label for="descripcion">Descripción de herramienta</label>
+              <textarea id="descripcion" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
+              <div class="boton-registrar">
+                <button type="button" id="btnRegistrar" class="btn btn-success">Registrar</button>
+              </div>
             </div>
+          </form>
+        </div>
+      </div>
 
-            <!-- Formulario principal -->
-            <div class="area-superior">
-                <div class="formulario-card">
-                    <form class="formulario-horizontal">
-                        <div class="columna borde-derecho">
-                            <label for="nombre">Nombre de herramienta</label>
-                            <input type="text" id="nombre" placeholder="Escribe el nombre de la herramienta" />
-                            <label for="estado">Estado</label>
-                            <select id="estado"><option>Seleccionar</option></select>
-                            <label for="tipo">Tipo</label>
-                            <select id="tipo"><option>Seleccionar</option></select>
-                            <label for="ubicacion">Ubicación</label>
-                            <select id="ubicacion"><option>Seleccionar</option></select>
-                        </div>
-                        <div class="columna borde-derecho">
-                            <label for="fecha">Fecha ingreso</label>
-                            <input type="date" id="fecha" />
-                            <label for="lote">Número de Lote</label>
-                            <select id="lote"><option>Seleccionar</option></select>
-                        </div>
-                        <div class="columna descripcion">
-                            <label for="descripcion">Descripción de herramienta</label>
-                            <textarea id="descripcion" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
-                            <div class="boton-registrar">
-                                <button class="btn btn-success">Registrar</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+      <!-- Herramientas de HOY -->
+      <div class="area-inferior">
+        <div class="herramientas-hoy">
+          <h3>Herramientas registradas hoy</h3>
+          <div id="listaHoy" class="lista-tarjetas"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <!-- Script para guardar y renderizar -->
+  <script>
+    document.getElementById("btnRegistrar").addEventListener("click", function () {
+      const nombre = document.getElementById("nombre").value.trim();
+      const estado = document.getElementById("estado").value;
+      const tipo = document.getElementById("tipo").value;
+      const ubicacion = document.getElementById("ubicacion").value;
+     let fecha = new Date().toISOString().split("T")[0];
 
-            <!-- Sección inferior -->
-            <div class="area-inferior">
-                <!-- Herramientas -->
-                <div class="herramientas-hoy">
-                    <h3>Herramientas registradas hoy</h3>
-                    <ul>
-                        <li><img src="../imagenes/motosierra.png" alt="Motosierra" /><span>Motosierra</span><span class="cantidad">15 unidades</span><span class="estado verde">● Funcional</span></li>
-                        <li><img src="../imagenes/pico.png" alt="Picos" /><span>Picos</span><span class="cantidad">50 unidades</span><span class="estado amarillo">● Mantenimiento</span></li>
-                        <li><img src="../imagenes/palaa.png" alt="Palas" /><span>Palas</span><span class="cantidad">50 unidades</span><span class="estado verde">● Funcional</span></li>
-                        <li><img src="../imagenes/carretillaa.jpg" alt="Carretillas" /><span>Carretillas</span><span class="cantidad">10 unidades</span><span class="estado rojo">● No disponible</span></li>
-                    </ul>
-                </div>
+      const lote = document.getElementById("lote").value;
+      const cantidad = document.getElementById("cantidad").value;
+      const descripcion = document.getElementById("descripcion").value.trim();
+      
 
-                <!-- Calendario -->
-                <div class="calendario">
-                    <div class="fecha-actual">
-                        <h2>10</h2>
-                        <div class="fecha-texto">
-                            <p>Miércoles</p>
-                            <span>Septiembre, 2025</span>
-                        </div>
-                    </div>
-                    <div class="semana">
-                        <div>D<br>11</div>
-                        <div>L<br>12</div>
-                        <div class="activo">M<br>14</div>
-                        <div>J<br>15</div>
-                        <div>V<br>16</div>
-                        <div>S<br>17</div>
-                    </div>
-                    <div class="pendientes">
-                        <h4>Pendientes</h4>
-                        <input type="text" id="fechaTarea" placeholder="Selecciona fecha y hora" />
-                        <input type="text" id="descripcionTarea" placeholder="Escribe tu tarea aquí" />
-                        <button onclick="agregarTarea()">Agregar</button>
-                        <div class="lista-tareas" id="listaTareas"></div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
+      if (!nombre || estado === "Seleccionar") {
+        alert("Por favor completa al menos el nombre y el estado.");
+        return;
+      }
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
-        flatpickr("#fechaTarea", {
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
-            locale: "es",
-            time_24hr: true
-        });
 
-        function formatearFecha(fechaISO) {
-            const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-            const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
-            const fecha = new Date(fechaISO);
-            const diaSemana = dias[fecha.getDay()];
-            const dia = fecha.getDate();
-            const mes = meses[fecha.getMonth()];
-            const hora = fecha.getHours();
-            const minutos = fecha.getMinutes().toString().padStart(2, '0');
-            let horaTexto = (hora === 0 && minutos === "00") ? "" : ` - ${hora}:${minutos}`;
-            return `${diaSemana}, ${dia} de ${mes}${horaTexto}`;
+      let herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
+      herramientas.push({ nombre, estado, tipo, ubicacion, fecha, lote, cantidad, descripcion });
+      localStorage.setItem("herramientas", JSON.stringify(herramientas));
+
+      alert("✅ Herramienta registrada correctamente");
+      document.getElementById("formHerramienta").reset();
+      renderHoy();
+    });
+
+    function renderHoy() {
+      const lista = document.getElementById("listaHoy");
+      lista.innerHTML = "";
+        
+      const herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
+      const hoy = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+
+      herramientas.forEach(h => {
+        if (h.fecha === hoy) {
+          const card = document.createElement("div");
+          card.classList.add("tarjeta");
+          card.innerHTML = `
+            <h4>🛠️ ${h.nombre}</h4>
+            <p><strong>Estado:</strong> ${h.estado}</p>
+            <p><strong>Tipo:</strong> ${h.tipo}</p>
+            <p><strong>Ubicación:</strong> ${h.ubicacion}</p>
+            <p><strong>Fecha ingreso:</strong> ${h.fecha}</p>
+            <p><strong>Lote:</strong> ${h.lote}</p>
+            <p><strong>Cantidad:</strong> ${h.cantidad}</p>
+            <p><strong>Descripción:</strong> ${h.descripcion}</p>
+          `;
+          lista.appendChild(card);
         }
+      });
+    }
 
-        function agregarTarea() {
-            const fechaInput = document.getElementById("fechaTarea").value;
-            const descripcion = document.getElementById("descripcionTarea").value.trim();
-            const contenedor = document.getElementById("listaTareas");
-
-            if (!fechaInput || !descripcion) {
-                alert("Por favor, ingresa al menos la fecha y la descripción.");
-                return;
-            }
-
-            const tarea = document.createElement("div");
-            tarea.classList.add("tarea");
-            tarea.innerHTML = `<span>${formatearFecha(fechaInput)}</span><p>🛠️ ${descripcion}</p>`;
-            contenedor.appendChild(tarea);
-
-            document.getElementById("fechaTarea").value = "";
-            document.getElementById("descripcionTarea").value = "";
-        }
-    </script>
+    renderHoy();
+  </script>
+  <script src="../modo-oscuro.js"></script>
 </body>
-
 </html>

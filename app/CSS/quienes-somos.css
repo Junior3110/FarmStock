@@ -95,3 +95,7 @@
 .night-mode:hover {
   background-color: #e0e0e0;
 }
+
+body.dark-mode .info{
+  background-color: #1c1f22;
+}

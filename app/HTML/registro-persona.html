@@ -1,81 +1,98 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Registro - FarmStock</title>
-  <link rel="stylesheet" href="../CSS/registro-persona.css" />
-  <!-- Font Awesome opcional para íconos -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro - FarmStock</title>
+    <link rel="stylesheet" href="../CSS/registro-persona.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
-  <div class="container">
-    <div class="left">
-      <div class="logo">
-        <img src="../imagenes/Logo.png" alt="FarmStock Logo" />
-      </div>
+    <div class="window-controls">
+        <button id="minimize" title="Minimizar">
+    <svg viewBox="0 0 10 10">
+        <rect x="2" y="6" width="6" height="1" fill="currentColor"/>
+    </svg>
+    </button>
 
-      <h1>Registro</h1>
+        <button id="maximize" title="Maximizar">
+    <svg viewBox="0 0 10 10">
+        <rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    </button>
 
-      <form id="registroForm">
-        <input type="text" placeholder="Nombres" name="nombres" required />
-        <input type="text" placeholder="Apellidos" name="apellidos" required />
-
-        <input type="email" placeholder="Correo electrónico" name="correo" class="full" required />
-
-        <input type="tel" placeholder="Teléfono" name="telefono" required />
-        <select name="rol" required>
-          <option value="">Cargo</option>
-          <option value="aprendiz">Aprendiz</option>
-          <option value="instructor">Instructor</option>
-        </select>
-
-        <select name="tipo_documento" required>
-          <option value="">Tipo de documento</option>
-          <option value="CC">Cédula de ciudadanía</option>
-          <option value="TI">Tarjeta de identidad</option>
-          <option value="PPT">PPT</option>
-        </select>
-        <input type="text" placeholder="Número de documento" name="numero_documento" required />
-        
-        <input type="nombre_formacion" placeholder="Nombre de la Formación" name="nombre_formacion" required />
-        <input type="num_ficha" placeholder="Número de la ficha" name="num_ficha" required />
-        <input type="password" placeholder="Contraseña" name="password" required />
-        <input type="password" placeholder="Confirmar contraseña" name="confirm_password" required />
-
-
-        <button type="submit">Registrarme</button>
-
-        <!-- Enlace para volver al login -->
-        <p class="volver-login">¿Ya tienes cuenta? <a href="../HTML/login.html">Inicia sesión aquí</a></p>
-      </form>
+        <button id="close" title="Cerrar">
+    <svg viewBox="0 0 10 10">
+        <line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/>
+    </svg>
+    </button>
     </div>
 
-    <div class="right">
-      <img src="../imagenes/finca_sena.webp" alt="Imagen de la finca" />
+    <div class="container">
+        <div class="left">
+            <div class="logo">
+                <img src="../imagenes/Logo.png" alt="FarmStock Logo" />
+            </div>
+
+            <h1>Registro</h1>
+
+            <form id="registroForm">
+                <input type="text" placeholder="Nombres" name="nombres" required />
+                <input type="text" placeholder="Apellidos" name="apellidos" required />
+                <input type="email" placeholder="Correo electrónico" name="correo" required />
+                <input type="tel" placeholder="Teléfono" name="telefono" required />
+
+                <select name="cargo" required>
+    <option value="">Cargo</option>
+    <option value="aprendiz">Aprendiz</option>
+    <option value="instructor">Instructor</option>
+    <option value="administrador">Administrador</option>
+  </select>
+
+                <select name="tipoDocumento" required>
+    <option value="">Tipo de documento</option>
+    <option value="CC">Cédula de ciudadanía</option>
+    <option value="TI">Tarjeta de identidad</option>
+    <option value="PPT">Permiso de protección temporal</option>
+  </select>
+
+                <<<<<<< HEAD <select name="tipo_documento" required>
+                    <option value="">Tipo de documento</option>
+                    <option value="CC">Cédula de ciudadanía</option>
+                    <option value="TI">Tarjeta de identidad</option>
+                    <option value="PPT">PPT</option>
+                    </select>
+                    <input type="text" placeholder="Número de documento" name="numero_documento" required />
+
+                    <input type="nombre_formacion" placeholder="Nombre de la Formación" name="nombre_formacion" required />
+                    <input type="num_ficha" placeholder="Número de la ficha" name="num_ficha" required />
+                    <input type="password" placeholder="Contraseña" name="password" required />
+                    <input type="password" placeholder="Confirmar contraseña" name="confirm_password" required />
+
+
+                    <button type="submit">Registrarme</button> =======
+                    <input type="text" placeholder="Número de documento" name="numeroDocumento" required />
+                    <input type="text" placeholder="Número de la ficha" name="numeroFicha" required />
+                    <input type="text" placeholder="Programa de Formación" name="nombreFormacion" required />
+
+                    <input type="password" placeholder="Contraseña" name="contrasena" required />
+                    <input type="password" placeholder="Confirmar contraseña" name="confirm_password" required />
+
+                    <button type="submit">Registrarme</button>
+            </form>
+            >>>>>>> 82b69955c2e878700f8017c1937fa7965d445549
+
+        </div>
+
+        <div class="right">
+            <img src="../imagenes/finca_sena.webp" alt="Imagen de la finca" />
+        </div>
     </div>
-  </div>
 
-  <script>
-    const form = document.getElementById('registroForm');
-    form.addEventListener('submit', function (event) {
-      event.preventDefault();
-      const datos = new FormData(form);
-      const entrada = Object.fromEntries(datos);
-
-      if (entrada.password !== entrada.confirm_password) {
-        alert("Las contraseñas no coinciden.");
-        return;
-      }
-
-      alert("Registro exitoso.");
-
-      if (window.navegacion && window.navegacion.irALogin) {
-        window.navegacion.irALogin();
-      } else {
-        window.location.href = "../HTML/login.html";
-      }
-    });
-  </script>
+    <script src="../render.js"></script>
 </body>
+
 </html>
