@@ -120,55 +120,47 @@ body.dark-mode .info {
 
 .window-controls {
     position: fixed;
-    top: 0;
-    right: 0;
+    top: 0px;
+    right: 0px;
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    gap: 0px;
     z-index: 3000;
-    height: 32px;
-    background: transparent;
+    transform: none;
 }
-
-
-/* --- Botones --- */
 
 .window-controls button {
-    width: 46px;
-    height: 32px;
-    border: none;
-    outline: none;
-    background: #e6e6e6;
-    color: #111;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease;
-    border-radius: 0;
-    /* 👈 cuadrados, sin ovalar */
+min-width: 46px !important;
+min-height: 32px !important;
+max-width: 18px !important;
+max-height: 18px !important;
+padding: 0 !important;
+line-height: 0 !important;
+font-size: 10px !important;
+border: none !important;
+outline: none !important;
+background: #2c2c2c !important;
+color: #fff !important;
+display: flex !important;
+align-items: center !important;
+justify-content: center !important;
+cursor: pointer !important;
+border-radius: 0px !important;
 }
 
-
-/* --- Hover --- */
-
 .window-controls button:hover {
-    background: #d0d0d0;
+    background: #3a3a3a !important;
 }
 
 .window-controls button#close:hover {
-    background: #e53935;
-    color: #fff;
+    background: #e53935 !important;
 }
 
-
-/* --- Íconos SVG o texto --- */
-
 .window-controls svg {
-    width: 12px;
-    height: 12px;
-    pointer-events: none;
+    width: 9px !important;
+    height: 9px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    flex-shrink: 0;
 }
 
 

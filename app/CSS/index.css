@@ -1,9 +1,11 @@
-/* -------------------- RESET Y BASE -------------------- */
-
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+box-sizing: border-box;
+}
+
+body, .window-controls, .window-controls * {
+transform: none !important;
+zoom: 1 !important;
+font-size: 12px !important;
 }
 
 body {
@@ -662,55 +664,58 @@ body.dark-mode .pendientes .tarea {
 
 .window-controls {
     position: fixed;
-    top: 6px;
-    right: 8px;
+    top: 0px;
+    right: 0px;
     display: flex;
-    gap: 4px;
+    gap: 0px; /* separación entre botones */
     z-index: 3000;
-    user-select: none;
+}
+
+/* --- Botones compactos --- */
+.window-controls {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    display: flex;
+    gap: 0px;
+    z-index: 3000;
+    transform: none;
 }
 
 .window-controls button {
-    width: 18px;
-    /* 🔹 solo se reduce el ancho */
-    height: 24px;
-    /* 🔹 altura se mantiene EXACTA */
-    border: none;
-    border-radius: 0;
-    /* cuadrados */
-    background-color: #e9e9e9;
-    color: #111;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease-in-out;
+min-width: 46px !important;
+min-height: 32px !important;
+max-width: 18px !important;
+max-height: 18px !important;
+padding: 0 !important;
+line-height: 0 !important;
+font-size: 10px !important;
+border: none !important;
+outline: none !important;
+background: #2c2c2c !important;
+color: #fff !important;
+display: flex !important;
+align-items: center !important;
+justify-content: center !important;
+cursor: pointer !important;
+border-radius: 0px !important;
 }
-
-
-/* Efecto hover */
 
 .window-controls button:hover {
-    background-color: #d0d0d0;
+    background: #3a3a3a !important;
 }
-
-
-/* Botón cerrar */
 
 .window-controls button#close:hover {
-    background-color: #e53935;
-    color: #fff;
+    background: #e53935 !important;
 }
-
-
-/* SVG iconos */
 
 .window-controls svg {
-    pointer-events: none;
-    width: 12px;
-    height: 12px;
+    width: 9px !important;
+    height: 9px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    flex-shrink: 0;
 }
-
 
 /* =====================================================
    MODO OSCURO
