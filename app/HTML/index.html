@@ -9,17 +9,14 @@
 </head>
 
 <body>
+  <!-- Botones de control del sistema -->
   <div class="window-controls">
     <button id="minimize" title="Minimizar">
-      <svg viewBox="0 0 10 10">
-        <rect x="2" y="6" width="6" height="1" fill="currentColor"/>
-      </svg>
+      <svg viewBox="0 0 10 10"><rect x="2" y="6" width="6" height="1" fill="currentColor"/></svg>
     </button>
 
     <button id="maximize" title="Maximizar">
-      <svg viewBox="0 0 10 10">
-        <rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/>
-      </svg>
+      <svg viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/></svg>
     </button>
 
     <button id="close" title="Cerrar">
@@ -32,13 +29,10 @@
 
   <!-- Contenedor general -->
   <div class="container">
-
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="top-section">
-        <div class="logo">
-          <img src="../imagenes/Logo.png" alt="Logo del sitio" />
-        </div>
+        <div class="logo"><img src="../imagenes/Logo.png" alt="Logo del sitio" /></div>
         <ul class="menu-modulos">
           <li><a href="../HTML/index.html" class="active">Registro Herramientas</a></li>
           <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
@@ -48,10 +42,8 @@
         </ul>
       </div>
       <div class="sidebar-bottom">
-        <a href="../HTML/quienes-somos.html" class="somos active">👥 Quiénes Somos</a>
-        <div class="night-mode">
-          <span>🌙 Modo noche</span>
-        </div>
+        <a href="../HTML/quienes-somos.html" class="somos">👥 Quiénes Somos</a>
+        <div class="night-mode"><span>🌙 Modo noche</span></div>
       </div>
     </aside>
 
@@ -119,7 +111,7 @@
         </div>
       </div>
 
-      <!-- Herramientas de HOY -->
+      <!-- Herramientas registradas -->
       <div class="area-inferior">
         <div class="herramientas-hoy">
           <h3>Herramientas registradas</h3>
@@ -129,23 +121,45 @@
     </main>
   </div>
 
-  <!-- Script conexión con backend -->
+  <!-- Scripts -->
+  <script>
+    // IPC: intenta enviar vía preload (electron) o muestra advertencia si no está disponible
+    function sendWindowIPC(channel) {
+      try {
+        if (window.electronAPI && typeof window.electronAPI.send === 'function') {
+          window.electronAPI.send(channel);
+          return;
+        }
+        if (window.api && typeof window.api.send === 'function') {
+          window.api.send(channel);
+          return;
+        }
+        // Si require está disponible (contextIsolation false)
+        if (typeof require === 'function') {
+          const { ipcRenderer } = require('electron');
+          ipcRenderer.send(channel);
+          return;
+        }
+      } catch (e) {
+        console.warn('IPC no disponible:', e);
+      }
+      console.warn('No se pudo enviar IPC. Asegura preload.js exponga electronAPI.send o api.send');
+    }
+
+    document.getElementById('minimize').addEventListener('click', () => sendWindowIPC('window-minimize'));
+    document.getElementById('maximize').addEventListener('click', () => sendWindowIPC('window-maximize'));
+    document.getElementById('close').addEventListener('click', () => sendWindowIPC('window-close'));
+  </script>
+
   <script>
     const API_URL = "http://localhost:8080/herramienta";
 
     // Registrar herramienta
     document.getElementById("formHerramienta").addEventListener("submit", async (e) => {
       e.preventDefault();
-
       const datos = Object.fromEntries(new FormData(e.target).entries());
-
-      // Asegurar formato correcto
-      if (!datos.fecha_registro) {
-        datos.fecha_registro = new Date().toISOString().split("T")[0];
-      }
-
-      // Convertir cantidad a número
-      datos.cantidad = parseInt(datos.cantidad);
+      if (!datos.fecha_registro) datos.fecha_registro = new Date().toISOString().split("T")[0];
+      datos.cantidad = parseInt(datos.cantidad) || 0;
 
       try {
         const response = await fetch(API_URL, {
@@ -157,7 +171,7 @@
         if (response.ok) {
           alert("✅ Herramienta registrada correctamente");
           e.target.reset();
-          obtenerHerramientas();
+          obtenerHerramientas(); // recarga la lista completa
         } else {
           const error = await response.text();
           console.error("Error del servidor:", error);
@@ -169,30 +183,61 @@
       }
     });
 
-    // Obtener herramientas
+    // Obtener y mostrar todas las herramientas registradas
     async function obtenerHerramientas() {
       const lista = document.getElementById("listaHoy");
       lista.innerHTML = "";
       try {
-        const res = await fetch(API_URL + "/hoy");
+        const res = await fetch(API_URL); // GET /herramienta (devuelve todas)
         if (!res.ok) throw new Error("No se pudieron obtener las herramientas");
         const herramientas = await res.json();
+
+        if (!Array.isArray(herramientas) || herramientas.length === 0) {
+          lista.innerHTML = "<p>No hay herramientas registradas.</p>";
+          return;
+        }
 
         herramientas.forEach((h) => {
           const card = document.createElement("div");
           card.classList.add("tarjeta");
           card.innerHTML = `
-            <h4>🛠 ${h.nombre}</h4>
-            <p><strong>Estado:</strong> ${h.estado}</p>
-            <p><strong>Tipo:</strong> ${h.tipo}</p>
-            <p><strong>Ubicación:</strong> ${h.ubicacion}</p>
-            <p><strong>Fecha registro:</strong> ${h.fecha_registro}</p>
-            <p><strong>Lote:</strong> ${h.numero_lote}</p>
-            <p><strong>Cantidad:</strong> ${h.cantidad}</p>
-            <p><strong>Descripción:</strong> ${h.descripcion || "Sin descripción"}</p>
+            <h4>🛠 ${h.nombre ?? h.nombreHerramienta ?? 'Sin nombre'}</h4>
+            <p><strong>Estado:</strong> ${h.estado ?? '—'}</p>
+            <p><strong>Tipo:</strong> ${h.tipo ?? '—'}</p>
+            <p><strong>Ubicación:</strong> ${h.ubicacion ?? '—'}</p>
+            <p><strong>Fecha registro:</strong> ${h.fecha_registro ?? h.fecha ?? '—'}</p>
+            <p><strong>Lote:</strong> ${h.numero_lote ?? h.lote ?? '—'}</p>
+            <p><strong>Cantidad:</strong> ${h.cantidad ?? 0}</p>
+            <p><strong>Descripción:</strong> ${h.descripcion ?? 'Sin descripción'}</p>
+            <div class="acciones">
+              <button class="editar" data-id="${h.id ?? h.id_herramienta ?? ''}">Editar</button>
+              <button class="eliminar" data-id="${h.id ?? h.id_herramienta ?? ''}">Eliminar</button>
+            </div>
           `;
           lista.appendChild(card);
         });
+
+        // Delegación: manejar click en Editar/Eliminar
+        lista.addEventListener('click', async (ev) => {
+          const btn = ev.target.closest('button');
+          if (!btn) return;
+          const id = btn.getAttribute('data-id');
+          if (btn.classList.contains('eliminar')) {
+            if (!confirm('¿Eliminar herramienta id ' + id + '?')) return;
+            try {
+              const r = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+              if (!r.ok) throw new Error(await r.text());
+              obtenerHerramientas();
+            } catch (err) {
+              console.error('Error eliminando:', err);
+              alert('No se pudo eliminar en el servidor.');
+            }
+          } else if (btn.classList.contains('editar')) {
+            alert('Función editar no implementada. ID: ' + id);
+            // Aquí puedes abrir modal con datos para editar y luego PUT /herramienta/:id
+          }
+        }, { once: false });
+
       } catch (error) {
         console.error("Error cargando herramientas:", error);
         lista.innerHTML = "<p>No se pudieron cargar las herramientas</p>";
