@@ -88,58 +88,113 @@
     <!-- Script para mostrar herramientas -->
     <script src="../modo-oscuro.js"></script>
     <script>
-        function mostrarInventario(filtro = "3meses") {
-            let herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
+        const API_HERRAMIENTAS = "http://localhost:8080/herramienta";
+
+        async function obtenerHerramientasBackend() {
+            try {
+                const res = await fetch(API_HERRAMIENTAS);
+                if (!res.ok) throw new Error("respuesta no ok");
+                const datos = await res.json();
+                if (!Array.isArray(datos)) return [];
+                return datos;
+            } catch (err) {
+                console.warn("No se pudo obtener del backend, usando localStorage:", err);
+                return null; // indica fallo para usar fallback
+            }
+        }
+
+        function normalizar(h) {
+            return {
+                id: h.id_herramienta ?? h.id ?? h.Id ?? h._id ?? "",
+                nombre: h.nombre ?? h.nombreHerramienta ?? "Sin nombre",
+                estado: h.estado ?? h.estadoHerramienta ?? "Desconocido",
+                tipo: h.tipo ?? h.tipoHerramienta ?? "",
+                ubicacion: h.ubicacion ?? h.ubicacionHerramienta ?? "",
+                fecha: h.fecha_registro ?? h.fecha ?? h.fechaIngreso ?? "",
+                lote: h.numero_lote ?? h.lote ?? h.loteHerramienta ?? "",
+                cantidad: h.cantidad ?? h.cant ?? 0,
+                descripcion: h.descripcion ?? h.desc ?? ""
+            };
+        }
+
+        async function mostrarInventario(filtro = "3meses") {
+            let herramientas = await obtenerHerramientasBackend();
+            if (herramientas === null) {
+                // fallback a localStorage si el backend no responde
+                herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
+            }
+
+            // normalizar arreglo
+            herramientas = herramientas.map(normalizar);
+
             const contenedor = document.getElementById("inventarioLista");
             contenedor.innerHTML = "";
 
             const hoy = new Date();
 
-            herramientas.forEach(h => {
-                let fechaHerramienta = new Date(h.fecha);
-                let mostrar = true;
-
+            const tarjetas = herramientas.filter(h => {
+                if (!h.fecha) return true;
+                const fechaHerramienta = new Date(h.fecha);
                 if (filtro === "hoy") {
-                    mostrar = fechaHerramienta.toDateString() === hoy.toDateString();
+                    return fechaHerramienta.toDateString() === hoy.toDateString();
                 } else if (filtro === "semana") {
-                    let semanaPasada = new Date();
-                    semanaPasada.setDate(hoy.getDate() - 7);
-                    mostrar = fechaHerramienta >= semanaPasada;
+                    const semanaPasada = new Date(); semanaPasada.setDate(hoy.getDate() - 7);
+                    return fechaHerramienta >= semanaPasada;
                 } else if (filtro === "mes") {
-                    let mesPasado = new Date();
-                    mesPasado.setMonth(hoy.getMonth() - 1);
-                    mostrar = fechaHerramienta >= mesPasado;
+                    const mesPasado = new Date(); mesPasado.setMonth(hoy.getMonth() - 1);
+                    return fechaHerramienta >= mesPasado;
                 } else if (filtro === "3meses") {
-                    let tresMeses = new Date();
-                    tresMeses.setMonth(hoy.getMonth() - 3);
-                    mostrar = fechaHerramienta >= tresMeses;
+                    const tresMeses = new Date(); tresMeses.setMonth(hoy.getMonth() - 3);
+                    return fechaHerramienta >= tresMeses;
                 }
-
-                if (mostrar) {
-                    let tarjeta = `
+                return true;
+            }).map(h => {
+                return `
             <div class="tarjeta herramienta-card">
               <h3>🛠️ ${h.nombre}</h3>
               <p><strong>Estado:</strong> ${h.estado}</p>
               <p><strong>Tipo:</strong> ${h.tipo}</p>
               <p><strong>Ubicación:</strong> ${h.ubicacion}</p>
-              <p><strong>Fecha ingreso:</strong> ${h.fecha}</p>
-              <p><strong>Lote:</strong> ${h.lote}</p>
+              <p><strong>Fecha ingreso:</strong> ${h.fecha || "—"}</p>
+              <p><strong>Lote:</strong> ${h.lote || "—"}</p>
               <p><strong>Cantidad:</strong> ${h.cantidad}</p>
-              <p><strong>Descripción:</strong> ${h.descripcion}</p>
+              <p><strong>Descripción:</strong> ${h.descripcion || "Sin descripción"}</p>
 
               <div class="acciones">
-              <button class="editar" onclick="editarHerramienta('${h.id}')">Editar</button>
-              <button class="eliminar" onclick="eliminarHerramienta('${h.id}')">Eliminar</button>
+                <button class="editar" onclick="editarHerramienta('${h.id}')">Editar</button>
+                <button class="eliminar" onclick="eliminarHerramienta('${h.id}')">Eliminar</button>
               </div>
-            </div>
-          `;
-                    contenedor.innerHTML += tarjeta;
-                }
+            </div>`;
             });
+
+            contenedor.innerHTML = tarjetas.join("");
 
             if (contenedor.innerHTML === "") {
                 contenedor.innerHTML = "<p>No hay herramientas registradas en este rango de tiempo.</p>";
             }
+        }
+
+        // funciones stub para editar/eliminar (implementa según backend)
+        function editarHerramienta(id) {
+            alert("Editar herramienta: " + id);
+            // TODO: abrir modal o navegar a formulario de edición
+        }
+
+        function eliminarHerramienta(id) {
+            if (!confirm("¿Eliminar herramienta id " + id + "?")) return;
+            // Intentar eliminar por API; si falla, avisar y recargar lista
+            fetch(`${API_HERRAMIENTAS}/${id}`, { method: "DELETE" })
+                .then(r => {
+                    if (r.ok) {
+                        mostrarInventario(document.getElementById("filtroTiempo").value);
+                    } else {
+                        return r.text().then(t => Promise.reject(t));
+                    }
+                })
+                .catch(err => {
+                    console.warn("No se pudo eliminar en backend:", err);
+                    alert("No se pudo eliminar en el servidor. (Revisa backend)");
+                });
         }
 
         // Detectar cambios en el filtro

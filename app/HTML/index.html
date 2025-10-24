@@ -1,198 +1,209 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FarmStock</title>
-    <link rel="stylesheet" href="../CSS/index.css" />
-    <link rel="stylesheet" href="/FarmStock/app/CSS/darkmode.css">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FarmStock</title>
+  <link rel="stylesheet" href="../CSS/index.css" />
+  <link rel="stylesheet" href="/FarmStock/app/CSS/darkmode.css" />
 </head>
 
 <body>
-    <div class="window-controls">
-        <button id="minimize" title="Minimizar">
-    <svg viewBox="0 0 10 10">
-      <rect x="2" y="6" width="6" height="1" fill="currentColor"/>
-    </svg>
-  </button>
+  <div class="window-controls">
+    <button id="minimize" title="Minimizar">
+      <svg viewBox="0 0 10 10">
+        <rect x="2" y="6" width="6" height="1" fill="currentColor"/>
+      </svg>
+    </button>
 
-        <button id="maximize" title="Maximizar">
-    <svg viewBox="0 0 10 10">
-      <rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/>
-    </svg>
-  </button>
+    <button id="maximize" title="Maximizar">
+      <svg viewBox="0 0 10 10">
+        <rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/>
+      </svg>
+    </button>
 
-        <button id="close" title="Cerrar">
-    <svg viewBox="0 0 10 10">
-      <line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/>
-      <line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/>
-    </svg>
-  </button>
-    </div>
+    <button id="close" title="Cerrar">
+      <svg viewBox="0 0 10 10">
+        <line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+    </button>
+  </div>
 
+  <!-- Contenedor general -->
+  <div class="container">
 
-    <div class="container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="top-section">
-                <div class="logo">
-                    <img src="../imagenes/Logo.png" alt="Logo del sitio" />
-                </div>
-                <ul class="menu-modulos">
-                    <li><a href="../HTML/index.html" class="active">Registro Herramientas</a></li>
-                    <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
-                    <li><a href="../HTML/indexInventario.html">Inventario</a></li>
-                    <li><a href="notificaciones.html">Notificaciones</a></li>
-                    <li><a href="../HTML/estats.html">Estadísticas</a></li>
-                </ul>
-            </div>
-            <div class="sidebar-bottom">
-                <a href="quienes-somos.html" class="somos active">👥 Quiénes Somos</a>
-                <div class="night-mode">
-                    <span>🌙 Modo noche</span>
-                </div>
-            </div>
-        </aside>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="top-section">
+        <div class="logo">
+          <img src="../imagenes/Logo.png" alt="Logo del sitio" />
+        </div>
+        <ul class="menu-modulos">
+          <li><a href="../HTML/index.html" class="active">Registro Herramientas</a></li>
+          <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
+          <li><a href="../HTML/indexInventario.html">Inventario</a></li>
+          <li><a href="../HTML/Notificaciones.html">Notificaciones</a></li>
+          <li><a href="../HTML/estats.html">Estadísticas</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-bottom">
+        <a href="../HTML/quienes-somos.html" class="somos active">👥 Quiénes Somos</a>
+        <div class="night-mode">
+          <span>🌙 Modo noche</span>
+        </div>
+      </div>
+    </aside>
 
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <div class="bienvenida">
+        <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
+        <p><strong>¡Hola Maria!</strong></p>
+      </div>
 
-        <!-- Contenido principal -->
-        <main class="main-content">
-            <div class="bienvenida">
-                <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
-                <p><strong>¡Hola Maria!</strong></p>
-            </div>
+      <!-- Formulario principal -->
+      <div class="area-superior">
+        <div class="formulario-card">
+          <form id="formHerramienta" class="formulario-horizontal">
+            <div class="columna borde-derecho">
+              <label for="nombre">Nombre de herramienta</label>
+              <input type="text" id="nombre" name="nombre" placeholder="Escribe el nombre de la herramienta" required>
 
-            <!-- Formulario principal -->
-            <div class="area-superior">
-                <div class="formulario-card">
-                    <form id="formHerramienta" class="formulario-horizontal">
-                        <div class="columna borde-derecho">
-                            <label for="nombre">Nombre de herramienta</label>
-                            <input type="text" id="nombre" placeholder="Escribe el nombre de la herramienta" />
-                            <label for="estado">Estado</label>
-                            <select id="estado">
-                <option>Seleccionar</option>
-                <option>Funcional</option>
-                <option>Mantenimiento</option>
-                <option>No disponible</option>
+              <label for="estado">Estado</label>
+              <select id="estado" name="estado" required>
+                <option value="">Seleccionar</option>
+                <option value="Disponible">Disponible</option>
+                <option value="Mantenimiento">Mantenimiento</option>
+                <option value="No_disponible">No disponible</option>
               </select>
-                            <label for="tipo">Tipo</label>
-                            <select id="tipo">
-                <option>Seleccionar</option>
-                <option>Manual</option>
-                <option>Eléctrica</option>
+
+              <label for="tipo">Tipo</label>
+              <select id="tipo" name="tipo" required>
+                <option value="">Seleccionar</option>
+                <option value="Manual">Manual</option>
+                <option value="Electrica">Eléctrica</option>
               </select>
-                            <label for="ubicacion">Ubicación</label>
-                            <select id="ubicacion">
-                <option>Seleccionar</option>
-                <option>Bodega</option>
-                <option>Taller</option>
-                <option>Campo</option>
+
+              <label for="ubicacion">Ubicación</label>
+              <select id="ubicacion" name="ubicacion" required>
+                <option value="">Seleccionar</option>
+                <option value="Bodega">Bodega</option>
+                <option value="Taller">Taller</option>
               </select>
-                        </div>
-                        <div class="columna borde-derecho">
-                            <label for="fecha">Fecha ingreso</label>
-                            <input type="date" id="fecha" />
-                            <label for="lote">Número de Lote</label>
-                            <select id="lote">
-                <option>Seleccionar</option>
-                <option>Lote 1</option>
-                <option>Lote 2</option>
-              </select>
-                            <label for="cantidad">Cantidad</label>
-                            <input type="number" id="cantidad" name="cantidad" min="0" placeholder="Ejemplo: 10">
-                        </div>
-                        <div class="columna descripcion">
-                            <label for="descripcion">Descripción de herramienta</label>
-                            <textarea id="descripcion" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
-                            <div class="boton-registrar">
-                                <button type="button" id="btnRegistrar" class="btn btn-success">Registrar</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
             </div>
 
-            <!-- Herramientas de HOY -->
-            <div class="area-inferior">
-                <div class="herramientas-hoy">
-                    <h3>Herramientas registradas hoy</h3>
-                    <div id="listaHoy" class="lista-tarjetas"></div>
-                </div>
+            <div class="columna borde-derecho">
+              <label for="fecha_registro">Fecha de registro</label>
+              <input type="date" id="fecha_registro" name="fecha_registro" required>
+
+              <label for="numero_lote">Número de Lote</label>
+              <select id="numero_lote" name="numero_lote" required>
+                <option value="">Seleccionar</option>
+                <option value="Lote 1">Lote 1</option>
+                <option value="Lote 2">Lote 2</option>
+              </select>
+
+              <label for="cantidad">Cantidad</label>
+              <input type="number" id="cantidad" name="cantidad" min="1" placeholder="Ejemplo: 10" required>
             </div>
-        </main>
-    </div>
-    <!-- Script para guardar y renderizar -->
-    <script>
-        document.getElementById("btnRegistrar").addEventListener("click", function() {
-            const nombre = document.getElementById("nombre").value.trim();
-            const estado = document.getElementById("estado").value;
-            const tipo = document.getElementById("tipo").value;
-            const ubicacion = document.getElementById("ubicacion").value;
-            let fecha = new Date().toISOString().split("T")[0];
 
-            const lote = document.getElementById("lote").value;
-            const cantidad = document.getElementById("cantidad").value;
-            const descripcion = document.getElementById("descripcion").value.trim();
+            <div class="columna descripcion">
+              <label for="descripcion">Descripción de herramienta</label>
+              <textarea id="descripcion" name="descripcion" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
+              <div class="boton-registrar">
+                <button type="submit" id="btnRegistrar" class="btn btn-success">Registrar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
 
+      <!-- Herramientas de HOY -->
+      <div class="area-inferior">
+        <div class="herramientas-hoy">
+          <h3>Herramientas registradas</h3>
+          <div id="listaHoy" class="lista-tarjetas"></div>
+        </div>
+      </div>
+    </main>
+  </div>
 
-            if (!nombre || estado === "Seleccionar") {
-                alert("Por favor completa al menos el nombre y el estado.");
-                return;
-            }
+  <!-- Script conexión con backend -->
+  <script>
+    const API_URL = "http://localhost:8080/herramienta";
 
+    // Registrar herramienta
+    document.getElementById("formHerramienta").addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-            let herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
-            herramientas.push({
-                nombre,
-                estado,
-                tipo,
-                ubicacion,
-                fecha,
-                lote,
-                cantidad,
-                descripcion
-            });
-            localStorage.setItem("herramientas", JSON.stringify(herramientas));
+      const datos = Object.fromEntries(new FormData(e.target).entries());
 
-            alert("✅ Herramienta registrada correctamente");
-            document.getElementById("formHerramienta").reset();
-            renderHoy();
+      // Asegurar formato correcto
+      if (!datos.fecha_registro) {
+        datos.fecha_registro = new Date().toISOString().split("T")[0];
+      }
+
+      // Convertir cantidad a número
+      datos.cantidad = parseInt(datos.cantidad);
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(datos),
         });
 
-        function renderHoy() {
-            const lista = document.getElementById("listaHoy");
-            lista.innerHTML = "";
+        if (response.ok) {
+          alert("✅ Herramienta registrada correctamente");
+          e.target.reset();
+          obtenerHerramientas();
+        } else {
+          const error = await response.text();
+          console.error("Error del servidor:", error);
+          alert("❌ Error al registrar herramienta: " + error);
+        }
+      } catch (err) {
+        console.error("Error de conexión:", err);
+        alert("⚠ No se pudo conectar con el servidor.");
+      }
+    });
 
-            const herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
-            const hoy = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+    // Obtener herramientas
+    async function obtenerHerramientas() {
+      const lista = document.getElementById("listaHoy");
+      lista.innerHTML = "";
+      try {
+        const res = await fetch(API_URL + "/hoy");
+        if (!res.ok) throw new Error("No se pudieron obtener las herramientas");
+        const herramientas = await res.json();
 
-            herramientas.forEach(h => {
-                if (h.fecha === hoy) {
-                    const card = document.createElement("div");
-                    card.classList.add("tarjeta");
-                    card.innerHTML = `
-            <h4>🛠️ ${h.nombre}</h4>
+        herramientas.forEach((h) => {
+          const card = document.createElement("div");
+          card.classList.add("tarjeta");
+          card.innerHTML = `
+            <h4>🛠 ${h.nombre}</h4>
             <p><strong>Estado:</strong> ${h.estado}</p>
             <p><strong>Tipo:</strong> ${h.tipo}</p>
             <p><strong>Ubicación:</strong> ${h.ubicacion}</p>
-            <p><strong>Fecha ingreso:</strong> ${h.fecha}</p>
-            <p><strong>Lote:</strong> ${h.lote}</p>
+            <p><strong>Fecha registro:</strong> ${h.fecha_registro}</p>
+            <p><strong>Lote:</strong> ${h.numero_lote}</p>
             <p><strong>Cantidad:</strong> ${h.cantidad}</p>
-            <p><strong>Descripción:</strong> ${h.descripcion}</p>
+            <p><strong>Descripción:</strong> ${h.descripcion || "Sin descripción"}</p>
           `;
-                    lista.appendChild(card);
-                }
-            });
-        }
+          lista.appendChild(card);
+        });
+      } catch (error) {
+        console.error("Error cargando herramientas:", error);
+        lista.innerHTML = "<p>No se pudieron cargar las herramientas</p>";
+      }
+    }
 
-        renderHoy();
-    </script>
-    <script src="../modo-oscuro.js"></script>
-    <script src="../render-window.js"></script>
+    // Cargar al iniciar
+    obtenerHerramientas();
+  </script>
 
+  <script src="../modo-oscuro.js"></script>
+  <script src="../render-window.js"></script>
 </body>
-
 </html>
