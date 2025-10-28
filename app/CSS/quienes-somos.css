@@ -114,6 +114,17 @@ body.dark-mode .info {
 }
 
 
+/* NUEVO: adaptar el recuadro de fotos y su contenido al modo noche */
+
+body.dark-mode .foto-seccion {
+    background-color: #1c1f22;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 16px;
+    gap: 18px;
+}
+
+
 /* =====================================================
    BOTONES DE CONTROL DE VENTANA — ESTILO FIJO Y LIMPIO
    ===================================================== */
@@ -129,22 +140,22 @@ body.dark-mode .info {
 }
 
 .window-controls button {
-min-width: 46px !important;
-min-height: 32px !important;
-max-width: 18px !important;
-max-height: 18px !important;
-padding: 0 !important;
-line-height: 0 !important;
-font-size: 10px !important;
-border: none !important;
-outline: none !important;
-background: #2c2c2c !important;
-color: #fff !important;
-display: flex !important;
-align-items: center !important;
-justify-content: center !important;
-cursor: pointer !important;
-border-radius: 0px !important;
+    min-width: 46px !important;
+    min-height: 32px !important;
+    max-width: 18px !important;
+    max-height: 18px !important;
+    padding: 0 !important;
+    line-height: 0 !important;
+    font-size: 10px !important;
+    border: none !important;
+    outline: none !important;
+    background: #2c2c2c !important;
+    color: #fff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    border-radius: 0px !important;
 }
 
 .window-controls button:hover {

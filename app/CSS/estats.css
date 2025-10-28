@@ -1,3 +1,20 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+
+/* Solo mueve el frame en index.html */
+
+body.index-page {
+    position: relative;
+    top: -4px;
+    left: -4px;
+}
+
+
 /* Reset básico */
 
 * {

@@ -6,18 +6,18 @@ let win;
 function createWindow() {
     const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
-  win = new BrowserWindow({
-    width: Math.min(1320, width),
-    height: Math.min(900, height),
-    show: false,
-    frame: false, // ⚠️ muy importante → quita los botones nativos
-    titleBarStyle: "hidden", // 👈 también oculta la barra de título
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-      contextIsolation: true,
-      nodeIntegration: false
-    }
-  });
+    win = new BrowserWindow({
+        width: Math.min(1320, width),
+        height: Math.min(900, height),
+        show: false,
+        frame: false, // ⚠️ muy importante → quita los botones nativos
+        titleBarStyle: "hidden", // 👈 también oculta la barra de título
+        webPreferences: {
+            preload: path.join(__dirname, "preload.js"),
+            contextIsolation: true,
+            nodeIntegration: false
+        }
+    });
 
 
     // 👇 Página inicial (puedes cambiarla si lo deseas)
