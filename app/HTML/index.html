@@ -5,31 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FarmStock</title>
   <link rel="stylesheet" href="../CSS/index.css" />
-  <link rel="stylesheet" href="/FarmStock/app/CSS/darkmode.css" />
+  <link rel="stylesheet" href="../CSS/darkmode.css" />
+  <style>
+    .btn-small { padding: 6px 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; color: white; background-color: #4CAF50; font-size: 13px; margin-left: 8px; }
+    .btn-small.delete { background-color: #e53935; }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none; justify-content: center; align-items: center; z-index: 4000; padding: 20px; }
+    .modal { background: var(--modal-bg,#fff); width: 780px; max-width: calc(100% - 40px); border-radius: 10px; padding: 16px; max-height: 85vh; overflow-y: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+    .modal .modal-list { display:flex; flex-direction:column; gap:12px; margin-top:8px; }
+    .edit-panel { display:none; background:#fff; border:1px solid #e0e0e0; padding:10px; border-radius:8px; margin-top:8px; }
+    .acciones { margin-top:8px; display:flex; gap:8px; }
+    #errorMsg { color:#d32f2f; margin-top:10px; display:none; }
+  </style>
 </head>
-
 <body>
-  <!-- Botones de control del sistema -->
   <div class="window-controls">
-    <button id="minimize" title="Minimizar">
-      <svg viewBox="0 0 10 10"><rect x="2" y="6" width="6" height="1" fill="currentColor"/></svg>
-    </button>
-
-    <button id="maximize" title="Maximizar">
-      <svg viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/></svg>
-    </button>
-
-    <button id="close" title="Cerrar">
-      <svg viewBox="0 0 10 10">
-        <line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/>
-        <line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/>
-      </svg>
-    </button>
+    <button id="minimize" title="Minimizar" type="button"> <svg viewBox="0 0 10 10"><rect x="2" y="6" width="6" height="1" fill="currentColor"/></svg></button>
+    <button id="maximize" title="Maximizar" type="button"><svg viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/></svg></button>
+    <button id="close" title="Cerrar" type="button"><svg viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/></svg></button>
   </div>
 
-  <!-- Contenedor general -->
   <div class="container">
-    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="top-section">
         <div class="logo"><img src="../imagenes/Logo.png" alt="Logo del sitio" /></div>
@@ -47,55 +42,39 @@
       </div>
     </aside>
 
-    <!-- Contenido principal -->
     <main class="main-content">
       <div class="bienvenida">
         <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
         <p><strong>¡Hola Maria!</strong></p>
       </div>
 
-      <!-- Formulario principal -->
       <div class="area-superior">
         <div class="formulario-card">
-          <form id="formHerramienta" class="formulario-horizontal">
+          <form id="formHerramienta" class="formulario-horizontal" novalidate>
             <div class="columna borde-derecho">
               <label for="nombre">Nombre de herramienta</label>
               <input type="text" id="nombre" name="nombre" placeholder="Escribe el nombre de la herramienta" required>
-
               <label for="estado">Estado</label>
               <select id="estado" name="estado" required>
-                <option value="">Seleccionar</option>
-                <option value="Disponible">Disponible</option>
-                <option value="Mantenimiento">Mantenimiento</option>
-                <option value="No_disponible">No disponible</option>
+                <option value="">Seleccionar</option><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option><option value="No_disponible">No disponible</option>
               </select>
-
               <label for="tipo">Tipo</label>
               <select id="tipo" name="tipo" required>
-                <option value="">Seleccionar</option>
-                <option value="Manual">Manual</option>
-                <option value="Electrica">Eléctrica</option>
+                <option value="">Seleccionar</option><option value="Manual">Manual</option><option value="Electrica">Eléctrica</option>
               </select>
-
               <label for="ubicacion">Ubicación</label>
               <select id="ubicacion" name="ubicacion" required>
-                <option value="">Seleccionar</option>
-                <option value="Bodega">Bodega</option>
-                <option value="Taller">Taller</option>
+                <option value="">Seleccionar</option><option value="Bodega">Bodega</option><option value="Taller">Taller</option>
               </select>
             </div>
 
             <div class="columna borde-derecho">
               <label for="fecha_registro">Fecha de registro</label>
               <input type="date" id="fecha_registro" name="fecha_registro" required>
-
               <label for="numero_lote">Número de Lote</label>
               <select id="numero_lote" name="numero_lote" required>
-                <option value="">Seleccionar</option>
-                <option value="Lote 1">Lote 1</option>
-                <option value="Lote 2">Lote 2</option>
+                <option value="">Seleccionar</option><option value="Lote 1">Lote 1</option><option value="Lote 2">Lote 2</option>
               </select>
-
               <label for="cantidad">Cantidad</label>
               <input type="number" id="cantidad" name="cantidad" min="1" placeholder="Ejemplo: 10" required>
             </div>
@@ -103,149 +82,694 @@
             <div class="columna descripcion">
               <label for="descripcion">Descripción de herramienta</label>
               <textarea id="descripcion" name="descripcion" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
-              <div class="boton-registrar">
-                <button type="submit" id="btnRegistrar" class="btn btn-success">Registrar</button>
-              </div>
+              <div class="boton-registrar"><button type="submit" id="btnRegistrar" class="btn btn-success">Registrar</button></div>
             </div>
           </form>
         </div>
       </div>
 
-      <!-- Herramientas registradas -->
       <div class="area-inferior">
         <div class="herramientas-hoy">
-          <h3>Herramientas registradas</h3>
-          <div id="listaHoy" class="lista-tarjetas"></div>
+          <h3>Herramientas registradas hoy</h3>
+          <div id="listaHoy" class="lista-tarjetas" aria-live="polite"></div>
+          <div id="errorMsg">Hubo un error al obtener las herramientas.</div>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- Scripts -->
+  <div id="modalBackdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+      <div class="modal-header" style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 id="modalTitle">Registro</h3>
+        <div><button id="closeModal" class="btn-small" style="background:#9e9e9e;color:#111;" type="button">Cerrar</button></div>
+      </div>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
   <script>
-    // IPC: intenta enviar vía preload (electron) o muestra advertencia si no está disponible
-    function sendWindowIPC(channel) {
+  (function () {
+  // Endpoints backend (si existen)
+  var API_BASE = 'http://localhost:8080';
+  var HERR_URL = API_BASE + '/herramienta';
+  var DETALLE_URL_BASE = API_BASE + '/api/herramienta-detalle';
+
+  // Elementos UI
+  var form = document.getElementById('formHerramienta');
+  var listaHoy = document.getElementById('listaHoy');
+  var modalBackdrop = document.getElementById('modalBackdrop');
+  var modalContent = document.getElementById('modalContent');
+  var modalTitle = document.getElementById('modalTitle');
+  var closeModalBtn = document.getElementById('closeModal');
+  var fechaInput = document.getElementById('fecha_registro');
+  var errorMsg = document.getElementById('errorMsg');
+
+  // Local storage key
+  var LS_KEY = 'fs_local_tools_v1';
+
+  // Helpers ---------------------------------------------------------
+  function showError(msg) { if (errorMsg) { errorMsg.textContent = msg; errorMsg.style.display = 'block'; } }
+  function hideError(){ if (errorMsg) { errorMsg.textContent=''; errorMsg.style.display='none'; } }
+  function escapeHtml(str) { return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function nowIsoDate() { return new Date().toISOString().split('T')[0]; }
+
+  function readErrorMessage(res) {
+    return res.text().then(function(text){
       try {
-        if (window.electronAPI && typeof window.electronAPI.send === 'function') {
-          window.electronAPI.send(channel);
-          return;
-        }
-        if (window.api && typeof window.api.send === 'function') {
-          window.api.send(channel);
-          return;
-        }
-        // Si require está disponible (contextIsolation false)
-        if (typeof require === 'function') {
-          const { ipcRenderer } = require('electron');
-          ipcRenderer.send(channel);
-          return;
-        }
-      } catch (e) {
-        console.warn('IPC no disponible:', e);
-      }
-      console.warn('No se pudo enviar IPC. Asegura preload.js exponga electronAPI.send o api.send');
+        var json = JSON.parse(text);
+        if (json && json.message) return json.message;
+        if (json && json.error) return (json.error + (json.message ? ': ' + json.message : ''));
+      } catch(e) {}
+      return text || ('Error ' + res.status);
+    });
+  }
+
+  // Local storage management ---------------------------------------
+  function loadLocalTools() {
+    try {
+      var raw = localStorage.getItem(LS_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      console.error('Error parseando localStorage', e);
+      return [];
+    }
+  }
+
+  function saveLocalTools(list) {
+    localStorage.setItem(LS_KEY, JSON.stringify(list || []));
+  }
+
+  function pushLocalTool(tool) {
+    var list = loadLocalTools();
+    list.unshift(tool);
+    saveLocalTools(list);
+  }
+
+  function updateLocalToolById(id, updater) {
+    var list = loadLocalTools();
+    var idx = list.findIndex(function(t){ return String(t.idHerramienta) === String(id); });
+    if (idx === -1) return false;
+    list[idx] = updater(list[idx]);
+    saveLocalTools(list);
+    return true;
+  }
+
+  function removeLocalToolById(id) {
+    var list = loadLocalTools();
+    var newList = list.filter(function(t){ return String(t.idHerramienta) !== String(id); });
+    saveLocalTools(newList);
+    return list.length !== newList.length;
+  }
+
+  function findLocalToolById(id) {
+    var list = loadLocalTools();
+    return list.find(function(t){ return String(t.idHerramienta) === String(id); }) || null;
+  }
+
+  // Generate local ids and detail codes
+  var localIdCounter = (function(){
+    // Start with timestamp to avoid collisions
+    var base = Date.now();
+    return function(){ base -= 1; return 'local-' + base; };
+  })();
+
+  function genDetalleCodes(tool) {
+    var detalles = [];
+    var cantidad = tool.cantidad || 0;
+    for (var i = 1; i <= cantidad; i++) {
+      var idDetalle = 'ld-' + (Date.now()) + '-' + i + '-' + Math.floor(Math.random()*1000);
+      var codigoUnico = (tool.nombre || 'LOCAL').toUpperCase().replace(/\s+/g,'_') + '-' + (tool.idHerramienta) + '-' + String(i).padStart(3,'0');
+      detalles.push({
+        idDetalle: idDetalle,
+        codigoUnico: codigoUnico,
+        estado: 'Disponible',
+        disponible: true,
+        fechaIngreso: tool.fecha_registro || nowIsoDate(),
+        herramienta: { idHerramienta: tool.idHerramienta, nombre: tool.nombre }
+      });
+    }
+    return detalles;
+  }
+
+  // Detect backend availability (simple ping)
+  function isBackendAvailable() {
+    // Try a quick HEAD to /herramienta/hoy (some servers don't support HEAD, so use GET with small timeout)
+    // We'll implement timeouts with Promise.race
+    var controller = null;
+    try {
+      // Use fetch with timeout
+      var timeout = new Promise(function(_, reject){ setTimeout(function(){ reject(new Error('timeout')); }, 800); });
+      var req = fetch(HERR_URL + '/hoy', { method: 'GET' });
+      return Promise.race([req, timeout])
+        .then(function(res){ return !!res && res.ok; })
+        .catch(function(){ return false; });
+    } catch (e) {
+      return Promise.resolve(false);
+    }
+  }
+
+  // UI rendering ---------------------------------------------------
+  function renderToolsListFromArray(herramientas) {
+    listaHoy.innerHTML = '';
+    if (!Array.isArray(herramientas) || herramientas.length === 0) {
+      listaHoy.innerHTML = '<p>No hay registros para hoy.</p>';
+      return;
     }
 
-    document.getElementById('minimize').addEventListener('click', () => sendWindowIPC('window-minimize'));
-    document.getElementById('maximize').addEventListener('click', () => sendWindowIPC('window-maximize'));
-    document.getElementById('close').addEventListener('click', () => sendWindowIPC('window-close'));
-  </script>
+    herramientas.forEach(function (h) {
+      var id = h.idHerramienta || h.id || h.id_herramienta || '';
+      var nombre = h.nombre || 'Sin nombre';
+      var estado = h.estado || '—';
+      var tipo = h.tipo || '—';
+      var ubicacion = h.ubicacion || '—';
+      var fecha = h.fechaRegistro || h.fecha_registro || h.fecha || '—';
+      var lote = h.numeroLote || h.numero_lote || h.lote || '—';
+      var cantidad = (h.cantidad != null) ? h.cantidad : 0;
+      var descripcion = h.descripcion || 'Sin descripción';
 
-  <script>
-    const API_URL = "http://localhost:8080/herramienta";
+      var card = document.createElement('div');
+      card.className = 'tarjeta';
 
-    // Registrar herramienta
-    document.getElementById("formHerramienta").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const datos = Object.fromEntries(new FormData(e.target).entries());
-      if (!datos.fecha_registro) datos.fecha_registro = new Date().toISOString().split("T")[0];
-      datos.cantidad = parseInt(datos.cantidad) || 0;
+      var inner = '<h4>🛠 ' + escapeHtml(nombre) + '</h4>' +
+                  '<p><strong>Estado:</strong> ' + escapeHtml(estado) + '</p>' +
+                  '<p><strong>Tipo:</strong> ' + escapeHtml(tipo) + '</p>' +
+                  '<p><strong>Ubicación:</strong> ' + escapeHtml(ubicacion) + '</p>' +
+                  '<p><strong>Fecha registro:</strong> ' + escapeHtml(String(fecha)) + '</p>' +
+                  '<p><strong>Lote:</strong> ' + escapeHtml(lote) + '</p>' +
+                  '<p><strong>Cantidad:</strong> ' + escapeHtml(String(cantidad)) + '</p>' +
+                  '<p><strong>Descripción:</strong> ' + escapeHtml(descripcion) + '</p>';
 
-      try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(datos),
+      card.innerHTML = inner;
+
+      var acciones = document.createElement('div');
+      acciones.className = 'acciones';
+
+      var btnEdit = document.createElement('button'); btnEdit.type = 'button'; btnEdit.className = 'btn-small'; btnEdit.textContent = 'Editar';
+      btnEdit.addEventListener('click', function () { openEditLoteModal(id); });
+
+      var btnDetails = document.createElement('button'); btnDetails.type = 'button'; btnDetails.className = 'btn-small';
+      btnDetails.style.background = '#1976d2'; btnDetails.textContent = 'Ver detalles';
+      btnDetails.addEventListener('click', function () { openDetallesModal(id, nombre); });
+
+      var btnDelete = document.createElement('button'); btnDelete.type = 'button'; btnDelete.className = 'btn-small delete';
+      btnDelete.textContent = 'Eliminar';
+      btnDelete.addEventListener('click', function () { eliminarLote(id); });
+
+      acciones.appendChild(btnEdit);
+      acciones.appendChild(btnDetails);
+      acciones.appendChild(btnDelete);
+
+      card.appendChild(acciones);
+      // Mark local items visually
+      if (h._local) {
+        var badge = document.createElement('div');
+        badge.style.fontSize = '12px';
+        badge.style.color = '#555';
+        badge.style.marginTop = '6px';
+        badge.textContent = 'Guardado localmente (offline)';
+        card.appendChild(badge);
+      }
+
+      listaHoy.appendChild(card);
+    });
+  }
+
+  // Obtén herramientas de hoy — intenta backend, si falla usa local
+  function obtenerHerramientasHoy() {
+    hideError();
+    listaHoy.innerHTML = '<p>Cargando...</p>';
+
+    fetch(HERR_URL + '/hoy')
+      .then(function (res) {
+        if (!res.ok) return readErrorMessage(res).then(function(msg){ throw new Error(msg); });
+        return res.json();
+      })
+      .then(function (herramientas) {
+        // Merge local tools for today on top of backend tools (so you can see offline entries too)
+        var local = loadLocalTools().filter(function(t){
+          // Only include local items with today's date (or optionally include all)
+          try {
+            return (t.fecha_registro === nowIsoDate());
+          } catch(e){ return false; }
+        }).map(function(t){ t._local = true; return t; });
+
+        // Show local ones first, then backend ones — avoid duplicates by id
+        var ids = new Set(local.map(function(x){ return String(x.idHerramienta); }));
+        var merged = local.concat((herramientas || []).filter(function(h){ return !ids.has(String(h.idHerramienta)); }));
+
+        renderToolsListFromArray(merged);
+      })
+      .catch(function (err) {
+        console.warn('Backend unavailable, using local data:', err);
+        // show local-only
+        var localAll = loadLocalTools().map(function(t){ t._local = true; return t; });
+        renderToolsListFromArray(localAll);
+        showError('Backend no disponible. Trabajando en modo local/offline.');
+      });
+  }
+
+  // Create: try backend, on failure save locally
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    hideError();
+
+    var fd = new FormData(form);
+    var data = {};
+    fd.forEach(function (v,k){ data[k] = v; });
+
+    if (!data.fecha_registro) data.fecha_registro = nowIsoDate();
+    data.cantidad = parseInt(data.cantidad, 10) || 0;
+
+    if (!data.nombre || !data.estado) { alert('Por favor completa al menos el nombre y el estado.'); return; }
+
+    fetch(HERR_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) })
+      .then(function (res) {
+        if (res.status === 201 || res.ok) return res.json().catch(function(){ return null; });
+        return readErrorMessage(res).then(function(msg){ throw new Error(msg); });
+      })
+      .then(function (created) {
+        // If backend created successfully, refresh list. Also remove any local duplicate by name+date optionally.
+        obtenerHerramientasHoy();
+        alert('✅ Herramienta registrada en servidor');
+        form.reset();
+        if (fechaInput) fechaInput.value = nowIsoDate();
+      })
+      .catch(function (err) {
+        // Save locally
+        var localId = localIdCounter();
+        var localTool = {
+          idHerramienta: localId,
+          nombre: data.nombre,
+          descripcion: data.descripcion || '',
+          estado: data.estado,
+          tipo: data.tipo || 'Manual',
+          ubicacion: data.ubicacion || 'Bodega',
+          numero_lote: data.numero_lote || data.numeroLote || 'Lote 1',
+          cantidad: data.cantidad || 0,
+          fecha_registro: data.fecha_registro,
+          _local: true
+        };
+        // create detalles locally
+        localTool.detalles = genDetalleCodes(localTool);
+
+        pushLocalTool(localTool);
+        obtenerHerramientasHoy();
+        alert('Guardado localmente. Backend no disponible. (Modo offline)');
+        form.reset();
+        if (fechaInput) fechaInput.value = nowIsoDate();
+      });
+  });
+
+  // Delete: try backend, fallback to local
+  function eliminarLote(id) {
+    if (!id) { alert('ID inválido'); return; }
+    if (!confirm('¿Eliminar registro id ' + id + '?')) return;
+
+    // If ID is local (starts with 'local-') delete local immediately
+    if (String(id).startsWith('local-')) {
+      removeLocalToolById(id);
+      obtenerHerramientasHoy();
+      alert('Registro local eliminado');
+      return;
+    }
+
+    fetch(HERR_URL + '/' + encodeURIComponent(id), { method: 'DELETE' })
+      .then(function (res) {
+        if (!res.ok) return readErrorMessage(res).then(function(msg){ throw new Error(msg); });
+        obtenerHerramientasHoy();
+      })
+      .catch(function (err) {
+        console.warn('DELETE failed, trying local delete if exists', err);
+        // try local delete as last resort
+        if (removeLocalToolById(id)) {
+          obtenerHerramientasHoy();
+          alert('Registro eliminado localmente');
+        } else {
+          alert('No se pudo eliminar: ' + (err && err.message ? err.message : 'error'));
+        }
+      });
+  }
+
+  // Open edit modal: if backend returns 500 or not found, try local
+  function openEditLoteModal(id) {
+    if (!id) return;
+    hideError();
+    modalTitle.textContent = 'Editar registro';
+    modalContent.innerHTML = '<p>Cargando...</p>';
+    modalBackdrop.style.display = 'flex';
+    modalBackdrop.setAttribute('aria-hidden','false');
+
+    // If local id, directly load from local storage
+    if (String(id).startsWith('local-')) {
+      var foundLocal = findLocalToolById(id);
+      if (!foundLocal) { closeModal(); alert('No se encontró el registro local'); return; }
+      buildEditModalFromFound(foundLocal, true);
+      return;
+    }
+
+    fetch(HERR_URL + '/' + encodeURIComponent(id))
+      .then(function (res) {
+        if (!res.ok) return readErrorMessage(res).then(function(msg){ throw new Error(msg); });
+        return res.json();
+      })
+      .then(function (found) {
+        if (!found) { closeModal(); alert('No se encontró el registro'); return; }
+        buildEditModalFromFound(found, false);
+      })
+      .catch(function (err) {
+        console.warn('GET /herramienta/{id} failed, try local', err);
+        // try to find in local storage (maybe created offline)
+        var foundLocal = findLocalToolById(id);
+        if (foundLocal) {
+          buildEditModalFromFound(foundLocal, true);
+        } else {
+          closeModal();
+          showError('No se pudo cargar el registro para editar: ' + (err && err.message ? err.message : 'error'));
+        }
+      });
+
+    // helper to build the modal and wire saving for both local and remote edits
+    function buildEditModalFromFound(found, isLocal) {
+      modalContent.innerHTML = '';
+      var container = document.createElement('div');
+
+      var html = '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
+        '<div style="flex:1;min-width:240px;"><label>Nombre</label><input id="edit_nombre" type="text" value="' + escapeHtml(found.nombre||'') + '" /></div>' +
+        '<div style="flex:1;min-width:180px;"><label>Estado</label><select id="edit_estado"><option value="">Seleccionar</option><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option><option value="No_disponible">No disponible</option></select></div>' +
+        '<div style="flex:1;min-width:180px;"><label>Tipo</label><select id="edit_tipo"><option value="">Seleccionar</option><option value="Manual">Manual</option><option value="Electrica">Eléctrica</option></select></div>' +
+      '</div>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">' +
+        '<div style="flex:1;min-width:180px;"><label>Ubicación</label><select id="edit_ubicacion"><option value="">Seleccionar</option><option value="Bodega">Bodega</option><option value="Taller">Taller</option></select></div>' +
+        '<div style="flex:1;min-width:180px;"><label>Fecha registro</label><input id="edit_fecha" type="date" value="' + escapeHtml(String(found.fechaRegistro || found.fecha_registro || found.fecha_registro || '')) + '" /></div>' +
+        '<div style="flex:1;min-width:180px;"><label>Número lote</label><select id="edit_lote"><option value="">Seleccionar</option><option value="Lote 1">Lote 1</option><option value="Lote 2">Lote 2</option></select></div>' +
+      '</div>' +
+      '<div style="margin-top:10px;"><label>Cantidad</label><input id="edit_cantidad" type="number" min="0" value="' + escapeHtml(String(found.cantidad || 0)) + '" /></div>' +
+      '<div style="margin-top:10px;"><label>Descripción</label><textarea id="edit_descripcion" style="width:100%;">' + escapeHtml(found.descripcion || '') + '</textarea></div>' +
+      '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;"><button id="saveEdit" class="btn-small" type="button">Guardar</button><button id="cancelEdit" class="btn-small delete" type="button">Cancelar</button></div>';
+
+      container.innerHTML = html;
+      modalContent.appendChild(container);
+
+      try { document.getElementById('edit_estado').value = found.estado || ''; } catch(e){}
+      try { document.getElementById('edit_tipo').value = found.tipo || ''; } catch(e){}
+      try { document.getElementById('edit_ubicacion').value = found.ubicacion || ''; } catch(e){}
+      try { document.getElementById('edit_lote').value = found.numeroLote || found.numero_lote || ''; } catch(e){}
+
+      document.getElementById('cancelEdit').addEventListener('click', function () { closeModal(); });
+
+      document.getElementById('saveEdit').addEventListener('click', function () {
+        var payload = {
+          nombre: (document.getElementById('edit_nombre').value || '').trim(),
+          estado: (document.getElementById('edit_estado').value || '').trim(),
+          tipo: (document.getElementById('edit_tipo').value || '').trim(),
+          ubicacion: (document.getElementById('edit_ubicacion').value || '').trim(),
+          fecha_registro: (document.getElementById('edit_fecha').value || ''),
+          numero_lote: (document.getElementById('edit_lote').value || ''),
+          cantidad: parseInt(document.getElementById('edit_cantidad').value || '0', 10) || 0,
+          descripcion: (document.getElementById('edit_descripcion').value || '').trim()
+        };
+
+        if (!payload.nombre || !payload.estado) { alert('Completa al menos nombre y estado.'); return; }
+
+        if (isLocal || String(found.idHerramienta).startsWith('local-')) {
+          // update local
+          updateLocalToolById(found.idHerramienta, function(old){
+            var updated = Object.assign({}, old, payload);
+            // if cantidad changed, regenerate detalles simple heuristic (drops old detalles)
+            if ((old.cantidad || 0) !== (payload.cantidad || 0)) {
+              updated.cantidad = payload.cantidad;
+              updated.detalles = genDetalleCodes(updated);
+            }
+            return updated;
+          });
+          alert('✅ Registro actualizado (local)');
+          closeModal();
+          obtenerHerramientasHoy();
+          return;
+        }
+
+        // Remote update
+        fetch(HERR_URL + '/' + encodeURIComponent(found.idHerramienta), {
+          method: 'PUT',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
+        })
+        .then(function (res) {
+          if (!res.ok) return readErrorMessage(res).then(function(msg){ throw new Error(msg); });
+          return res.json().catch(function(){ return null; });
+        })
+        .then(function () {
+          alert('✅ Registro actualizado');
+          closeModal();
+          obtenerHerramientasHoy();
+        })
+        .catch(function (err) {
+          console.warn('PUT failed, saving locally instead', err);
+          // fallback: save locally as offline edited item
+          // convert to local item
+          var localId = localIdCounter();
+          var localTool = Object.assign({}, payload, { idHerramienta: localId, _local: true });
+          localTool.detalles = genDetalleCodes(localTool);
+          pushLocalTool(localTool);
+          alert('No se pudo actualizar en servidor. Se guardó una copia local para sincronizar más tarde.');
+          closeModal();
+          obtenerHerramientasHoy();
+        });
+      });
+    }
+  }
+
+  // DETAILS modal: try backend, else local
+  function openDetallesModal(herramientaId, nombreLote) {
+    if (!herramientaId) return;
+    hideError();
+    modalTitle.textContent = 'Detalles: ' + (nombreLote || '');
+    modalContent.innerHTML = '<p>Cargando detalles...</p>';
+    modalBackdrop.style.display = 'flex';
+    modalBackdrop.setAttribute('aria-hidden','false');
+
+    // local case
+    if (String(herramientaId).startsWith('local-')) {
+      var local = findLocalToolById(herramientaId);
+      if (!local) { modalContent.innerHTML = '<p>No hay detalles.</p>'; return; }
+      renderDetallesList(local.detalles || []);
+      return;
+    }
+
+    fetch(DETALLE_URL_BASE + '/herramienta/' + encodeURIComponent(herramientaId))
+      .then(function (res) {
+        if (!res.ok) return readErrorMessage(res).then(function(msg){ throw new Error(msg); });
+        return res.json();
+      })
+      .then(function (detalles) {
+        modalContent.innerHTML = '';
+        renderDetallesList(detalles || []);
+      })
+      .catch(function (err) {
+        console.warn('DETALLE endpoint failed, trying local', err);
+        // try local
+        var local = findLocalToolById(herramientaId);
+        if (local) {
+          renderDetallesList(local.detalles || []);
+        } else {
+          modalBackdrop.style.display = 'none';
+          modalBackdrop.setAttribute('aria-hidden','true');
+          modalContent.innerHTML = '';
+          showError('No se pudieron cargar los detalles: ' + (err && err.message ? err.message : 'error'));
+        }
+      });
+
+    function renderDetallesList(detalles) {
+      modalContent.innerHTML = '';
+      if (!Array.isArray(detalles) || detalles.length === 0) { modalContent.innerHTML = '<p>No hay detalles.</p>'; return; }
+      var listDiv = document.createElement('div'); listDiv.className = 'modal-list';
+      detalles.forEach(function (d, idx) {
+        var cont = document.createElement('div'); cont.className = 'tarjeta';
+        var left = document.createElement('div'); left.style.flex = '1';
+        var nombreUnit = (d.herramienta && d.herramienta.nombre) ? d.herramienta.nombre : ('Unidad ' + (idx+1));
+        var h4 = document.createElement('h4'); h4.textContent = nombreUnit + ' — ' + (d.codigoUnico || '');
+        var p1 = document.createElement('p'); p1.innerHTML = '<strong>Estado:</strong> ' + escapeHtml(d.estado || '-');
+        var p2 = document.createElement('p'); p2.innerHTML = '<strong>Disponible:</strong> ' + (d.disponible ? 'Sí' : 'No') + ' • <strong>Fecha ingreso:</strong> ' + (d.fechaIngreso || '-');
+        left.appendChild(h4); left.appendChild(p1); left.appendChild(p2);
+
+        var right = document.createElement('div'); right.className = 'actions';
+        var btnEdit = document.createElement('button'); btnEdit.type='button'; btnEdit.className='btn-small'; btnEdit.textContent='Editar unidad';
+        btnEdit.addEventListener('click', function () {
+          var panel = cont.querySelector('.edit-panel');
+          if (!panel) { panel = buildDetalleEditPanel(d); cont.appendChild(panel); panel.style.display='block'; }
+          else panel.style.display = (panel.style.display === 'none' ? 'block' : 'none');
         });
 
-        if (response.ok) {
-          alert("✅ Herramienta registrada correctamente");
-          e.target.reset();
-          obtenerHerramientas(); // recarga la lista completa
-        } else {
-          const error = await response.text();
-          console.error("Error del servidor:", error);
-          alert("❌ Error al registrar herramienta: " + error);
+        right.appendChild(btnEdit);
+        cont.appendChild(left); cont.appendChild(right); listDiv.appendChild(cont);
+      });
+      modalContent.appendChild(listDiv);
+    }
+  }
+
+  // Edit panel builder for detalle (uses DETALLE_URL_BASE PUT or local edit)
+  function buildDetalleEditPanel(detalle) {
+    var panel = document.createElement('div'); panel.className = 'edit-panel';
+    var html = '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+      '<div style="min-width:160px;"><label>Estado</label><select id="up_estado"><option value="">Seleccionar</option><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option><option value="No_disponible">No disponible</option></select></div>' +
+      '<div style="min-width:160px;"><label>Disponible</label><select id="up_disponible"><option value="true">Sí</option><option value="false">No</option></select></div>' +
+      '<div style="min-width:160px;"><label>Fecha ingreso</label><input id="up_fecha" type="date" /></div>' +
+      '</div><div style="margin-top:8px;"><label>Descripción (opcional)</label><textarea id="up_descripcion" style="width:100%;"></textarea></div>' +
+      '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;"><button id="up_save" class="btn-small" type="button">Guardar</button><button id="up_cancel" class="btn-small delete" type="button">Cancelar</button></div>';
+    panel.innerHTML = html;
+
+    try { panel.querySelector('#up_estado').value = detalle.estado || ''; } catch(e){}
+    try { panel.querySelector('#up_disponible').value = (detalle.disponible ? 'true':'false'); } catch(e){}
+    try { panel.querySelector('#up_fecha').value = detalle.fechaIngreso || ''; } catch(e){}
+    try { panel.querySelector('#up_descripcion').value = detalle.descripcion || ''; } catch(e){}
+
+    panel.querySelector('#up_cancel').addEventListener('click', function () { panel.style.display = 'none'; });
+
+    panel.querySelector('#up_save').addEventListener('click', function () {
+      var payload = {
+        estado: panel.querySelector('#up_estado').value || detalle.estado,
+        disponible: (panel.querySelector('#up_disponible').value === 'true'),
+        fechaIngreso: panel.querySelector('#up_fecha').value || detalle.fechaIngreso,
+        descripcion: panel.querySelector('#up_descripcion').value || detalle.descripcion
+      };
+
+      // If detalle.idDetalle looks local (ld- or startsWith 'ld-' or includes 'ld-'), treat as local
+      var idD = detalle.idDetalle || detalle.id_detalle || detalle.id;
+      var isLocalDetalle = String(idD).startsWith('ld-') || String(idD).startsWith('local-') || String(idD).indexOf('ld-')>=0;
+
+      if (isLocalDetalle) {
+        // find local tool and update its detalle
+        var tool = findLocalToolById(detalle.herramienta && (detalle.herramienta.idHerramienta || detalle.herramienta.id));
+        if (tool) {
+          tool.detalles = (tool.detalles || []).map(function(dt){
+            if (String(dt.idDetalle) === String(idD)) {
+              return Object.assign({}, dt, payload);
+            }
+            return dt;
+          });
+          // update local store
+          updateLocalToolById(tool.idHerramienta, function(){ return tool; });
+          alert('Unidad actualizada (local)');
+          // refresh modal details
+          var hId = tool.idHerramienta;
+          openDetallesModal(hId, tool.nombre);
+          return;
         }
-      } catch (err) {
-        console.error("Error de conexión:", err);
-        alert("⚠ No se pudo conectar con el servidor.");
       }
+
+      // Remote update
+      fetch(DETALLE_URL_BASE + '/' + encodeURIComponent(idD), {
+        method: 'PUT',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      })
+      .then(function (res) {
+        if (!res.ok) return readErrorMessage(res).then(function(msg){ throw new Error(msg); });
+        return res.json().catch(function(){ return null; });
+      })
+      .then(function () {
+        alert('✅ Unidad actualizada');
+        // If we have herramienta id, refresh details
+        var herramientaId = detalle.herramienta && (detalle.herramienta.idHerramienta || detalle.herramienta.id);
+        if (herramientaId) openDetallesModal(herramientaId, detalle.herramienta && detalle.herramienta.nombre);
+        else { closeModal(); obtenerHerramientasHoy(); }
+      })
+      .catch(function (err) {
+        console.warn('PUT detalle failed, saving locally fallback', err);
+        // fallback: save detalle locally under its tool (create local tool if needed)
+        var toolId = detalle.herramienta && (detalle.herramienta.idHerramienta || detalle.herramienta.id) || localIdCounter();
+        var tool = findLocalToolById(toolId);
+        if (!tool) {
+          // create minimal local tool container
+          tool = {
+            idHerramienta: toolId,
+            nombre: detalle.herramienta && detalle.herramienta.nombre || 'LocalTool',
+            fecha_registro: nowIsoDate(),
+            cantidad: 1,
+            detalles: []
+          };
+          pushLocalTool(tool);
+        }
+        // replace or push detalle
+        var idLocalDetalle = idD || ('ld-' + Date.now() + '-' + Math.floor(Math.random()*1000));
+        var newDetalle = Object.assign({}, { idDetalle: idLocalDetalle }, payload, { codigoUnico: detalle.codigoUnico || idLocalDetalle, herramienta: { idHerramienta: tool.idHerramienta, nombre: tool.nombre } });
+        // upsert
+        tool.detalles = (tool.detalles || []).filter(function(dt){ return String(dt.idDetalle) !== String(idLocalDetalle); });
+        tool.detalles.push(newDetalle);
+        updateLocalToolById(tool.idHerramienta, function(){ return tool; });
+        alert('Unidad guardada localmente (offline)');
+        openDetallesModal(tool.idHerramienta, tool.nombre);
+      });
     });
 
-    // Obtener y mostrar todas las herramientas registradas
-    async function obtenerHerramientas() {
-      const lista = document.getElementById("listaHoy");
-      lista.innerHTML = "";
-      try {
-        const res = await fetch(API_URL); // GET /herramienta (devuelve todas)
-        if (!res.ok) throw new Error("No se pudieron obtener las herramientas");
-        const herramientas = await res.json();
+    return panel;
+  }
 
-        if (!Array.isArray(herramientas) || herramientas.length === 0) {
-          lista.innerHTML = "<p>No hay herramientas registradas.</p>";
-          return;
-        }
+  // Modal helpers
+  if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+  modalBackdrop.addEventListener('click', function (ev) { if (ev.target === modalBackdrop) closeModal(); });
+  document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') closeModal(); });
 
-        herramientas.forEach((h) => {
-          const card = document.createElement("div");
-          card.classList.add("tarjeta");
-          card.innerHTML = `
-            <h4>🛠 ${h.nombre ?? h.nombreHerramienta ?? 'Sin nombre'}</h4>
-            <p><strong>Estado:</strong> ${h.estado ?? '—'}</p>
-            <p><strong>Tipo:</strong> ${h.tipo ?? '—'}</p>
-            <p><strong>Ubicación:</strong> ${h.ubicacion ?? '—'}</p>
-            <p><strong>Fecha registro:</strong> ${h.fecha_registro ?? h.fecha ?? '—'}</p>
-            <p><strong>Lote:</strong> ${h.numero_lote ?? h.lote ?? '—'}</p>
-            <p><strong>Cantidad:</strong> ${h.cantidad ?? 0}</p>
-            <p><strong>Descripción:</strong> ${h.descripcion ?? 'Sin descripción'}</p>
-            <div class="acciones">
-              <button class="editar" data-id="${h.id ?? h.id_herramienta ?? ''}">Editar</button>
-              <button class="eliminar" data-id="${h.id ?? h.id_herramienta ?? ''}">Eliminar</button>
-            </div>
-          `;
-          lista.appendChild(card);
-        });
+  function closeModal() {
+    if (modalBackdrop) modalBackdrop.style.display = 'none';
+    if (modalBackdrop) modalBackdrop.setAttribute('aria-hidden','true');
+    if (modalContent) modalContent.innerHTML = '';
+  }
 
-        // Delegación: manejar click en Editar/Eliminar
-        lista.addEventListener('click', async (ev) => {
-          const btn = ev.target.closest('button');
-          if (!btn) return;
-          const id = btn.getAttribute('data-id');
-          if (btn.classList.contains('eliminar')) {
-            if (!confirm('¿Eliminar herramienta id ' + id + '?')) return;
-            try {
-              const r = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-              if (!r.ok) throw new Error(await r.text());
-              obtenerHerramientas();
-            } catch (err) {
-              console.error('Error eliminando:', err);
-              alert('No se pudo eliminar en el servidor.');
-            }
-          } else if (btn.classList.contains('editar')) {
-            alert('Función editar no implementada. ID: ' + id);
-            // Aquí puedes abrir modal con datos para editar y luego PUT /herramienta/:id
-          }
-        }, { once: false });
+  // Optional: sync local -> backend. Call this when backend is available.
+  function syncLocalToBackend() {
+    var local = loadLocalTools();
+    if (!local || local.length === 0) { alert('No hay registros locales para sincronizar'); return; }
 
-      } catch (error) {
-        console.error("Error cargando herramientas:", error);
-        lista.innerHTML = "<p>No se pudieron cargar las herramientas</p>";
+    // Sequentially try to POST each local item
+    (function sendNext(i){
+      if (i >= local.length) { alert('Sincronización finalizada.'); obtenerHerramientasHoy(); return; }
+      var item = local[i];
+      // If item already came from server (no local flag) skip
+      if (!item._local && !(String(item.idHerramienta).startsWith('local-'))) {
+        sendNext(i+1); return;
       }
-    }
+      // build payload matching backend model
+      var payload = {
+        nombre: item.nombre,
+        descripcion: item.descripcion,
+        estado: item.estado,
+        tipo: item.tipo,
+        ubicacion: item.ubicacion,
+        numero_lote: item.numero_lote,
+        cantidad: item.cantidad,
+        fecha_registro: item.fecha_registro
+      };
+      fetch(HERR_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+        .then(function(res){
+          if (!res.ok) return readErrorMessage(res).then(function(msg){ throw new Error(msg); });
+          return res.json();
+        })
+        .then(function(created){
+          // remove local item once created successfully
+          removeLocalToolById(item.idHerramienta);
+          // Optionally map server detalles or create detalles on server separately
+          // Continue to next
+          sendNext(i+1);
+        })
+        .catch(function(err){
+          console.error('Error sincronizando item', item, err);
+          // stop or continue? We'll continue to next but keep the item local
+          sendNext(i+1);
+        });
+    })(0);
+  }
 
-    // Cargar al iniciar
-    obtenerHerramientas();
+  // expose sync function for debug
+  window.FS = window.FS || {};
+  window.FS.obtenerHoy = obtenerHerramientasHoy;
+  window.FS.syncLocalToBackend = syncLocalToBackend;
+
+  // Initialize date input and list
+  try { if (fechaInput && !fechaInput.value) fechaInput.value = nowIsoDate(); } catch(e){}
+  obtenerHerramientasHoy();
+  })();
   </script>
 
   <script src="../modo-oscuro.js"></script>
