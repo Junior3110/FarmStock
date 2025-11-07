@@ -12,25 +12,23 @@
 <body>
     <div class="window-controls">
         <button id="minimize" title="Minimizar">
-        <svg viewBox="0 0 10 10">
-            <rect x="2" y="6" width="6" height="1" fill="currentColor"/>
-        </svg>
-    </button>
+            <svg viewBox="0 0 10 10">
+                <rect x="2" y="6" width="6" height="1" fill="currentColor"/>
+            </svg>
+        </button>
 
         <button id="maximize" title="Maximizar">
-        <svg viewBox="0 0 10 10">
-            <rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/>
-        </svg>
-    </button>
+            <svg viewBox="0 0 10 10">
+                <rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/>
+            </svg>
+        </button>
 
         <button id="close" title="Cerrar">
-        <svg viewBox="0 0 10 10">
-        <line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/>
-        <line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/>
-
-
-        </svg>
-    </button>
+            <svg viewBox="0 0 10 10">
+                <line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/>
+                <line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+        </button>
     </div>
 
     <div class="container">
@@ -48,30 +46,32 @@
                 <input type="tel" placeholder="Teléfono" name="telefono" required />
 
                 <select name="cargo" required>
-    <option value="">Cargo</option>
-    <option value="aprendiz">Aprendiz</option>
-    <option value="instructor">Instructor</option>
-    <option value="administrador">Administrador</option>
-  </select>
-
+                    <option value="">Cargo</option>
+                    <option value="aprendiz">Aprendiz</option>
+                    <option value="instructor">Instructor</option>
+                    <option value="administrador">Administrador</option>
+                </select>
 
                 <select name="tipo_documento" required>
                     <option value="">Tipo de documento</option>
                     <option value="CC">Cédula de ciudadanía</option>
                     <option value="TI">Tarjeta de identidad</option>
                     <option value="PPT">PPT</option>
-                    </select>
+                </select>
                 <input type="text" placeholder="Número de documento" name="numero_documento" required />
 
-                <input type="nombre_formacion" placeholder="Nombre de la Formación" name="nombre_formacion" required />
-                <input type="num_ficha" placeholder="Número de la ficha" name="num_ficha" required />
+                <input type="text" placeholder="Nombre de la Formación" name="nombre_formacion" required />
+                <input type="text" placeholder="Número de la ficha" name="num_ficha" required />
                 <input type="password" placeholder="Contraseña" name="password" required />
                 <input type="password" placeholder="Confirmar contraseña" name="confirm_password" required />
 
-
-
                 <button type="submit">Registrarme</button>
             </form>
+
+            <!-- Enlace añadido debajo del botón para llevar al login -->
+            <div class="volver-login">
+                ¿Ya tienes cuenta? <a href="../HTML/index.html">Iniciar sesión</a>
+            </div>
 
         </div>
 
@@ -79,8 +79,7 @@
             <img src="../imagenes/finca_sena.webp" alt="Imagen de la finca" />
         </div>
     </div>
-
-    <script src="../render.js"></script>
+    <script src="../render-window.js"></script>
 </body>
 
 </html>

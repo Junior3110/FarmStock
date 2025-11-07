@@ -70,11 +70,11 @@
                     <div class="menu-verde-completo">
                         <span class="menu-verde-label">Ver desde</span>
                         <select id="filtroTiempo" class="menu-verde-select">
-              <option value="hoy">Hoy</option>
-              <option value="semana">Última semana</option>
-              <option value="mes">Último mes</option>
-              <option value="3meses" selected>3 meses</option>
-              <option value="todo">Todo</option>
+            <option value="hoy">Hoy</option>
+            <option value="semana">Última semana</option>
+            <option value="mes">Último mes</option>
+            <option value="3meses" selected>3 meses</option>
+            <option value="todo">Todo</option>
             </select>
                     </div>
                 </div>
@@ -105,15 +105,15 @@
 
         function normalizar(h) {
             return {
-                id: h.id_herramienta ?? h.id ?? h.Id ?? h._id ?? "",
-                nombre: h.nombre ?? h.nombreHerramienta ?? "Sin nombre",
-                estado: h.estado ?? h.estadoHerramienta ?? "Desconocido",
-                tipo: h.tipo ?? h.tipoHerramienta ?? "",
-                ubicacion: h.ubicacion ?? h.ubicacionHerramienta ?? "",
-                fecha: h.fecha_registro ?? h.fecha ?? h.fechaIngreso ?? "",
-                lote: h.numero_lote ?? h.lote ?? h.loteHerramienta ?? "",
-                cantidad: h.cantidad ?? h.cant ?? 0,
-                descripcion: h.descripcion ?? h.desc ?? ""
+                id: h.id_herramienta ? ? h.id ? ? h.Id ? ? h._id ? ? "",
+                nombre: h.nombre ? ? h.nombreHerramienta ? ? "Sin nombre",
+                estado: h.estado ? ? h.estadoHerramienta ? ? "Desconocido",
+                tipo: h.tipo ? ? h.tipoHerramienta ? ? "",
+                ubicacion: h.ubicacion ? ? h.ubicacionHerramienta ? ? "",
+                fecha: h.fecha_registro ? ? h.fecha ? ? h.fechaIngreso ? ? "",
+                lote: h.numero_lote ? ? h.lote ? ? h.loteHerramienta ? ? "",
+                cantidad: h.cantidad ? ? h.cant ? ? 0,
+                descripcion: h.descripcion ? ? h.desc ? ? ""
             };
         }
 
@@ -138,33 +138,36 @@
                 if (filtro === "hoy") {
                     return fechaHerramienta.toDateString() === hoy.toDateString();
                 } else if (filtro === "semana") {
-                    const semanaPasada = new Date(); semanaPasada.setDate(hoy.getDate() - 7);
+                    const semanaPasada = new Date();
+                    semanaPasada.setDate(hoy.getDate() - 7);
                     return fechaHerramienta >= semanaPasada;
                 } else if (filtro === "mes") {
-                    const mesPasado = new Date(); mesPasado.setMonth(hoy.getMonth() - 1);
+                    const mesPasado = new Date();
+                    mesPasado.setMonth(hoy.getMonth() - 1);
                     return fechaHerramienta >= mesPasado;
                 } else if (filtro === "3meses") {
-                    const tresMeses = new Date(); tresMeses.setMonth(hoy.getMonth() - 3);
+                    const tresMeses = new Date();
+                    tresMeses.setMonth(hoy.getMonth() - 3);
                     return fechaHerramienta >= tresMeses;
                 }
                 return true;
             }).map(h => {
                 return `
-            <div class="tarjeta herramienta-card">
-              <h3>🛠️ ${h.nombre}</h3>
-              <p><strong>Estado:</strong> ${h.estado}</p>
-              <p><strong>Tipo:</strong> ${h.tipo}</p>
-              <p><strong>Ubicación:</strong> ${h.ubicacion}</p>
-              <p><strong>Fecha ingreso:</strong> ${h.fecha || "—"}</p>
-              <p><strong>Lote:</strong> ${h.lote || "—"}</p>
-              <p><strong>Cantidad:</strong> ${h.cantidad}</p>
-              <p><strong>Descripción:</strong> ${h.descripcion || "Sin descripción"}</p>
+        <div class="tarjeta herramienta-card">
+            <h3>🛠️ ${h.nombre}</h3>
+            <p><strong>Estado:</strong> ${h.estado}</p>
+            <p><strong>Tipo:</strong> ${h.tipo}</p>
+            <p><strong>Ubicación:</strong> ${h.ubicacion}</p>
+            <p><strong>Fecha ingreso:</strong> ${h.fecha || "—"}</p>
+            <p><strong>Lote:</strong> ${h.lote || "—"}</p>
+            <p><strong>Cantidad:</strong> ${h.cantidad}</p>
+            <p><strong>Descripción:</strong> ${h.descripcion || "Sin descripción"}</p>
 
-              <div class="acciones">
+            <div class="acciones">
                 <button class="editar" onclick="editarHerramienta('${h.id}')">Editar</button>
                 <button class="eliminar" onclick="eliminarHerramienta('${h.id}')">Eliminar</button>
-              </div>
-            </div>`;
+            </div>
+        </div>`;
             });
 
             contenedor.innerHTML = tarjetas.join("");
@@ -183,7 +186,9 @@
         function eliminarHerramienta(id) {
             if (!confirm("¿Eliminar herramienta id " + id + "?")) return;
             // Intentar eliminar por API; si falla, avisar y recargar lista
-            fetch(`${API_HERRAMIENTAS}/${id}`, { method: "DELETE" })
+            fetch(`${API_HERRAMIENTAS}/${id}`, {
+                    method: "DELETE"
+                })
                 .then(r => {
                     if (r.ok) {
                         mostrarInventario(document.getElementById("filtroTiempo").value);

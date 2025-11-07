@@ -124,6 +124,13 @@ body.dark-mode .foto-seccion {
     gap: 18px;
 }
 
+body.dark-mode .foto-seccion img {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    /* opcional: mantener bordes redondeados y contraste */
+    border-radius: 10px;
+    background-color: transparent;
+}
+
 
 /* =====================================================
    BOTONES DE CONTROL DE VENTANA — ESTILO FIJO Y LIMPIO
