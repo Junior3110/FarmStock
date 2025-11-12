@@ -105,15 +105,15 @@
 
         function normalizar(h) {
             return {
-                id: h.id_herramienta ? ? h.id ? ? h.Id ? ? h._id ? ? "",
-                nombre: h.nombre ? ? h.nombreHerramienta ? ? "Sin nombre",
-                estado: h.estado ? ? h.estadoHerramienta ? ? "Desconocido",
-                tipo: h.tipo ? ? h.tipoHerramienta ? ? "",
-                ubicacion: h.ubicacion ? ? h.ubicacionHerramienta ? ? "",
-                fecha: h.fecha_registro ? ? h.fecha ? ? h.fechaIngreso ? ? "",
-                lote: h.numero_lote ? ? h.lote ? ? h.loteHerramienta ? ? "",
-                cantidad: h.cantidad ? ? h.cant ? ? 0,
-                descripcion: h.descripcion ? ? h.desc ? ? ""
+                id: h.id_herramienta ?? h.id ?? h.Id ?? h._id ?? "",
+                nombre: h.nombre ?? h.nombreHerramienta ?? "Sin nombre",
+                estado: h.estado ?? h.estadoHerramienta ?? "Desconocido",
+                tipo: h.tipo ?? h.tipoHerramienta ?? "",
+                ubicacion: h.ubicacion ?? h.ubicacionHerramienta ?? "",
+                fecha: h.fecha_registro ?? h.fecha ?? h.fechaIngreso ?? "",
+                lote: h.numero_lote ?? h.lote ?? h.loteHerramienta ?? "",
+                cantidad: h.cantidad ?? h.cant ?? 0,
+                descripcion: h.descripcion ?? h.desc ?? ""
             };
         }
 

@@ -36,7 +36,7 @@ app.whenReady().then(createWindow);
 
 // 🔹 Navegación
 ipcMain.on("ir-a-registro", () =>
-    win.loadFile(path.join(__dirname, "app/HTML/registro-persona.html"))
+    win.loadFile(path.join(__dirname, "app/HTML/login.html"))
 );
 ipcMain.on("ir-a-login", () =>
     win.loadFile(path.join(__dirname, "app/HTML/login.html"))
