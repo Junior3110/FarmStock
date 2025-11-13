@@ -58,28 +58,77 @@
                     <option value="TI">Tarjeta de identidad</option>
                     <option value="PPT">PPT</option>
                 </select>
-                <input type="text" placeholder="Número de documento" name="numero_documento" required />
 
-                <input type="text" placeholder="Nombre de la Formación" name="nombre_formacion" required />
-                <input type="text" placeholder="Número de la ficha" name="num_ficha" required />
+                <input type="text" placeholder="Número de documento" name="numero_documento" required />
                 <input type="password" placeholder="Contraseña" name="password" required />
                 <input type="password" placeholder="Confirmar contraseña" name="confirm_password" required />
 
                 <button type="submit">Registrarme</button>
             </form>
 
-            <!-- Enlace añadido debajo del botón para llevar al login -->
             <div class="volver-login">
-                ¿Ya tienes cuenta? <a href="../HTML/index.html">Iniciar sesión</a>
+                ¿Ya tienes cuenta? <a href="../HTML/login.html">Iniciar sesión</a>
             </div>
-
         </div>
 
         <div class="right">
             <img src="../imagenes/finca_sena.webp" alt="Imagen de la finca" />
         </div>
     </div>
-    <script src="../render-window.js"></script>
+
+    <!-- ⚙️ Archivos JavaScript -->
+    <script>
+        const API_URL = "http://localhost:8080/usuario";
+
+document.getElementById("registroForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const datos = new FormData(form);
+  const f = Object.fromEntries(datos);
+
+  const pass = f.password || "";
+  const confirm = f.confirm_password || "";
+  if (pass !== confirm) {
+    alert("❌ Las contraseñas no coinciden");
+    return;
+  }
+
+  const payload = {
+    nombres: f.nombres?.trim(),
+    apellidos: f.apellidos?.trim(),
+    correo: f.correo?.trim(),
+    telefono: f.telefono?.trim(),
+    numeroDocumento: f.numero_documento?.trim(),
+    contrasena: pass,
+    cargo: f.cargo?.trim(),
+    tipoDocumento: f.tipo_documento?.trim()
+  };
+
+  console.log("➡️ Enviando a backend:", payload);
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const text = await res.text();
+    console.log("⬅️ Respuesta:", res.status, text);
+
+    if (res.ok) {
+      alert("✅ Usuario registrado correctamente");
+      form.reset();
+    } else {
+      alert(`⚠️ Error (${res.status}): ${text}`);
+    }
+  } catch (err) {
+    console.error("💥 Error de conexión:", err);
+    alert("🚫 No se pudo conectar con el servidor.");
+  }
+});
+
+    </script>
 </body>
 
 </html>

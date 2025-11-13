@@ -6,38 +6,25 @@ document.getElementById("registroForm").addEventListener("submit", async (e) => 
   const datos = new FormData(form);
   const f = Object.fromEntries(datos);
 
-  // aceptar varios nombres de campo para compatibilidad con tu HTML
-  const pass = f.password ?? f.contrasena ?? "";
-  const confirm = f.confirm_password ?? f.confirmPassword ?? "";
+  const pass = f.password || "";
+  const confirm = f.confirm_password || "";
   if (pass !== confirm) {
-    alert("Las contraseñas no coinciden ❌");
+    alert("❌ Las contraseñas no coinciden");
     return;
   }
 
-  // construir payload con los nombres que indicaste
   const payload = {
-    nombres: (f.nombres ?? f.nombre ?? "").trim(),
-    apellidos: (f.apellidos ?? f.apellido ?? "").trim(),
-    correo: (f.correo ?? f.email ?? "").trim(),
-    telefono: (f.telefono ?? "").trim(),
-    nombreFormacion: (f.nombre_formacion ?? f.nombreFormacion ?? "").trim(),
-    numeroFicha: (f.num_ficha ?? f.numeroFicha ?? "").toString().trim(),
-    numeroDocumento: (f.numero_documento ?? f.numeroDocumento ?? "").toString().trim(),
+    nombres: f.nombres?.trim(),
+    apellidos: f.apellidos?.trim(),
+    correo: f.correo?.trim(),
+    telefono: f.telefono?.trim(),
+    numeroDocumento: f.numero_documento?.trim(),
     contrasena: pass,
-    cargo: (f.cargo ?? f.rol ?? "").trim(),
-    tipoDocumento: (f.tipo_documento ?? f.tipoDocumento ?? "").trim()
+    cargo: f.cargo?.trim(),
+    tipoDocumento: f.tipo_documento?.trim()
   };
 
-  // validación mínima frontend (ajusta según requisitos backend)
-  const required = ["nombres", "apellidos", "correo", "contrasena", "cargo", "tipoDocumento", "numeroDocumento"];
-  for (const k of required) {
-    if (!payload[k] || payload[k].toString().trim() === "") {
-      alert("Falta el campo obligatorio: " + k);
-      return;
-    }
-  }
-
-  console.log("Payload enviado a /usuario:", payload);
+  console.log("➡️ Enviando a backend:", payload);
 
   try {
     const res = await fetch(API_URL, {
@@ -46,20 +33,17 @@ document.getElementById("registroForm").addEventListener("submit", async (e) => 
       body: JSON.stringify(payload)
     });
 
-    const raw = await res.text();
-    let body;
-    try { body = JSON.parse(raw); } catch { body = raw; }
+    const text = await res.text();
+    console.log("⬅️ Respuesta:", res.status, text);
 
     if (res.ok) {
-      alert("Usuario registrado ✅");
+      alert("✅ Usuario registrado correctamente");
       form.reset();
     } else {
-      console.error("Error servidor:", res.status, body);
-      const msg = (body && (body.message || body.error || JSON.stringify(body))) || `HTTP ${res.status}`;
-      alert("Error servidor: " + msg);
+      alert(`⚠️ Error (${res.status}): ${text}`);
     }
   } catch (err) {
-    console.error("Error de conexión:", err);
-    alert("No se pudo conectar con el servidor.");
+    console.error("💥 Error de conexión:", err);
+    alert("🚫 No se pudo conectar con el servidor.");
   }
 });
