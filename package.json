@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^37.2.1"
+    "electron": "^37.7.0"
   },
   "dependencies": {
     "prompt-sync": "^4.2.0"
