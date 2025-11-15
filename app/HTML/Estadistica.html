@@ -5,8 +5,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FarmStock - Estadísticas</title>
+    <!-- Enlace al CSS global (unifica sidebar / proporciones / animaciones) -->
+    <link rel="stylesheet" href="../CSS/index.css" />
     <link rel="stylesheet" href="../CSS/Estadisticas.css" />
+    <link rel="stylesheet" href="../CSS/global-fixes.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../CSS/index.css" /> <link rel="stylesheet" href="../CSS/modal-fixes.css" />
 </head>
 
 <body>
@@ -31,37 +35,29 @@
     </button>
     </div>
 
-    <div class="contenedor-principal">
+    <div class="container">
         <!-- Menú lateral -->
         <aside class="sidebar">
             <div class="top-section">
-                <div class="logo">
-                    <img src="../imagenes/Logo.png" alt="Logo del sitio" />
-                </div>
+                <div class="logo"><img src="../imagenes/Logo.png" alt="Logo del sitio" /></div>
                 <ul class="menu-modulos">
                     <li><a href="../HTML/index.html">Registro Herramientas</a></li>
                     <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
                     <li><a href="../HTML/indexInventario.html">Inventario</a></li>
                     <li><a href="notificaciones.html">Notificaciones</a></li>
                     <li><a href="../HTML/estats.html" class="active">Estadísticas</a></li>
+                    <li><a href="../HTML/registro-aprendices.html">Aprendices</a></li>
+                    
                 </ul>
             </div>
-            <!-- Abajo: quienes somos + modo noche -->
             <div class="sidebar-bottom">
-                <a href="quienes-somos.html" class="somos active">
-      👥 Quiénes Somos
-    </a>
-                <div class="night-mode">
-                    <span>🌙 Modo noche</span>
-                </div>
+                <a href="quienes-somos.html" class="somos active">👥 Quiénes Somos</a>
+                <div class="night-mode"><span>🌙 Modo noche</span></div>
             </div>
-
         </aside>
 
         <!-- Panel principal -->
-        <main class="main-panel">
-
-            <!-- HEADER -->
+        <main class="main-content">
             <header class="header">
                 <div class="bienvenida">
                     <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
@@ -69,214 +65,80 @@
                 </div>
             </header>
 
-            <!-- CONTENIDO -->
             <section class="content">
-
-                <!-- CONTENEDOR DE INFORMES Y GRÁFICOS -->
                 <div class="content-box charts">
-                    <!-- Cabecera de informes -->
                     <div class="charts-header">
                         <h1>Informes</h1>
                         <div class="actions">
                             <button class="green">Descargar informe</button>
-
-                            <!-- Select proveedor -->
                             <select id="proveedor" class="light">
-                <option value="">Cambiar proveedor</option>
-                <option value="prov1">Proveedor 1</option>
-                <option value="prov2">Proveedor 2</option>
-                <option value="prov3">Proveedor 3</option>
-              </select>
-
-                            <!-- Select mes -->
+                                <option value="">Cambiar proveedor</option>
+                                <option value="prov1">Proveedor 1</option>
+                            </select>
                             <select id="mes" class="light" aria-label="Seleccionar mes">
-                <option value="">Mes</option>
-                <option value="1">Enero</option>
-                <option value="2">Febrero</option>
-                <option value="3">Marzo</option>
-                <option value="4">Abril</option>
-                <option value="5">Mayo</option>
-                <option value="6">Junio</option>
-                <option value="7">Julio</option>
-                <option value="8">Agosto</option>
-                <option value="9">Septiembre</option>
-                <option value="10">Octubre</option>
-                <option value="11">Noviembre</option>
-                <option value="12">Diciembre</option>
-              </select>
-
-                            <!-- Select día -->
+                                <option value="">Mes</option>
+                            </select>
                             <select id="dia" class="light" aria-label="Seleccionar día">
-                <option value="">Día</option>
-              </select>
+                                <option value="">Día</option>
+                            </select>
                         </div>
                     </div>
 
-                    <!-- Gráficos -->
                     <div class="charts-content">
-                        <!-- GRÁFICO DE LÍNEA -->
                         <div class="chart-container line-chart">
                             <h3>Estadística de uso</h3>
                             <canvas id="areaChart"></canvas>
                             <button class="dropdown">Cambiar herramienta ⌄</button>
                         </div>
 
-                        <!-- GRÁFICO DONUT -->
                         <div class="chart-container donut-chart">
-                            <div class="month-nav">
-                                <span>←</span>
-                                <strong>Marzo</strong>
-                                <span>→</span>
-                            </div>
-                            <div class="donut">
-                                <canvas id="donutChart"></canvas>
-                                <div class="donut-text">
-                                    <p><strong>Total</strong><br>100 herramientas</p>
-                                </div>
-                            </div>
-                            <div class="legend">
-                                <span><span class="green-dot"></span> Buen estado</span>
-                                <span><span class="yellow-dot"></span> En mantenimiento</span>
-                                <span><span class="red-dot"></span> Mal estado</span>
-                            </div>
+                            <div class="month-nav"><span>←</span><strong>Marzo</strong><span>→</span></div>
+                            <div class="donut"><canvas id="donutChart"></canvas><div class="donut-text"><p><strong>Total</strong><br>100 herramientas</p></div></div>
+                            <div class="legend"><span><span class="green-dot"></span> Buen estado</span><span><span class="yellow-dot"></span> En mantenimiento</span><span><span class="red-dot"></span> Mal estado</span></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- CONTENEDOR DE TABLA -->
                 <div class="content-box tabla">
                     <table>
                         <thead>
                             <tr>
-                                <th></th>
-                                <th>ID herramienta</th>
-                                <th>Herramienta</th>
-                                <th>Préstamos</th>
-                                <th>Daños</th>
-                                <th>Mantenimientos</th>
+                                <th></th><th>ID herramienta</th><th>Herramienta</th><th>Préstamos</th><th>Daños</th><th>Mantenimientos</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><input type="checkbox" /></td>
-                                <td>1002</td>
-                                <td>🛠️ Pala</td>
-                                <td>23</td>
-                                <td>5</td>
-                                <td>23</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" /></td>
-                                <td>1002</td>
-                                <td>🔧 Motosierra</td>
-                                <td>24</td>
-                                <td>10</td>
-                                <td>21</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" /></td>
-                                <td>1003</td>
-                                <td>⛏️ Picos</td>
-                                <td>24</td>
-                                <td>4</td>
-                                <td>22</td>
-                            </tr>
+                            <tr><td><input type="checkbox" /></td><td>1002</td><td>🛠️ Pala</td><td>23</td><td>5</td><td>23</td></tr>
+                            <tr><td><input type="checkbox" /></td><td>1002</td><td>🔧 Motosierra</td><td>24</td><td>10</td><td>21</td></tr>
+                            <tr><td><input type="checkbox" /></td><td>1003</td><td>⛏️ Picos</td><td>24</td><td>4</td><td>22</td></tr>
                         </tbody>
                     </table>
                 </div>
-
             </section>
         </main>
     </div>
 
-    <!-- SCRIPTS -->
     <script>
         (function() {
             const mesSelect = document.getElementById('mes');
             const diaSelect = document.getElementById('dia');
-
             function rellenarDias() {
+                if (!mesSelect || !diaSelect) return;
                 const mes = parseInt(mesSelect.value, 10);
                 const year = new Date().getFullYear();
                 diaSelect.innerHTML = '';
-
-                const placeholder = document.createElement('option');
-                placeholder.value = '';
-                placeholder.textContent = 'Día';
-                diaSelect.appendChild(placeholder);
-
+                const placeholder = document.createElement('option'); placeholder.value = ''; placeholder.textContent = 'Día'; diaSelect.appendChild(placeholder);
                 if (!isNaN(mes) && mes >= 1 && mes <= 12) {
                     const diasEnMes = new Date(year, mes, 0).getDate();
                     for (let d = 1; d <= diasEnMes; d++) {
-                        const opt = document.createElement('option');
-                        opt.value = d;
-                        opt.textContent = d;
-                        diaSelect.appendChild(opt);
+                        const opt = document.createElement('option'); opt.value = d; opt.textContent = d; diaSelect.appendChild(opt);
                     }
                 }
             }
-
-            const mesActual = new Date().getMonth() + 1;
-            mesSelect.value = String(mesActual);
-            rellenarDias();
-            mesSelect.addEventListener('change', rellenarDias);
+            if (mesSelect) { mesSelect.value = String(new Date().getMonth() + 1); rellenarDias(); mesSelect.addEventListener('change', rellenarDias); }
         })();
     </script>
 
-    <script>
-        // GRÁFICO DE ÁREA
-        const ctxArea = document.getElementById('areaChart').getContext('2d');
-        new Chart(ctxArea, {
-            type: 'line',
-            data: {
-                labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-                datasets: [{
-                    label: 'Cantidad',
-                    data: [20, 30, 25, 40, 35, 50],
-                    fill: true,
-                    backgroundColor: 'rgba(129, 199, 132, 0.2)',
-                    borderColor: 'rgba(129, 199, 132, 1)',
-                    tension: 0.4
-                }]
-            },
-            options: {
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-
-        // GRÁFICO DONUT
-        const ctxDonut = document.getElementById('donutChart').getContext('2d');
-        new Chart(ctxDonut, {
-            type: 'doughnut',
-            data: {
-                labels: ['Buen estado', 'En mantenimiento', 'Mal estado'],
-                datasets: [{
-                    data: [70, 20, 10],
-                    backgroundColor: ['#8bc34a', '#ffeb3b', '#f44336'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                cutout: '70%',
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
-    </script>
     <script src="../modo-oscuro.js"></script>
     <script src="../render-window.js"></script>
 </body>
-
 </html>

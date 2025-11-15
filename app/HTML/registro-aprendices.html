@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Registro Aprendices - FarmStock</title>
+
+  <!-- Estilo global (usa la misma estética que el resto) -->
+  <link rel="stylesheet" href="../CSS/index.css" />
+  <link rel="stylesheet" href="../CSS/index.css" /> <link rel="stylesheet" href="../CSS/modal-fixes.css" />
+
+  <style>
+    /* --- Layout / form tweaks --- */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      align-items: end;
+    }
+    .form-grid .full { grid-column: 1 / -1; }
+
+    .input-group { display:flex; flex-direction:column; gap:6px; }
+    input[type="text"], select {
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid var(--card-border);
+      background: color-mix(in srgb,var(--surface) 96%, transparent 4%);
+      color:var(--text);
+    }
+
+    /* Keep inputs visually inside a subtle inner panel */
+    .form-inner {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-1);
+    }
+
+    /* Filter area (dropdown + single input) */
+    .filter-row {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .filter-row select, .filter-row input {
+      padding:8px 10px;
+      border-radius:8px;
+      border:1px solid var(--card-border);
+      background: color-mix(in srgb,var(--surface) 96%, transparent 4%);
+      color:var(--text);
+    }
+    .filter-actions { display:flex; gap:8px; }
+
+    .table-responsive { overflow:auto; margin-top:12px; }
+    table.reg-table {
+      width:100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      min-width: 720px;
+    }
+    table.reg-table th, table.reg-table td {
+      padding:10px 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      text-align:left;
+      color:var(--text);
+    }
+    table.reg-table thead th {
+      font-weight:800;
+      color:var(--muted);
+      background: color-mix(in srgb,var(--surface) 96%, transparent 4%);
+    }
+    .actions button {
+      padding:6px 8px;
+      border-radius:8px;
+      border:none;
+      cursor:pointer;
+      font-weight:700;
+      margin-right:6px;
+    }
+    .btn-delete { background: linear-gradient(180deg,#ef5350,#d32f2f); color:#fff; }
+    .btn-edit { background:#1976d2; color:#fff; }
+
+    /* Modal: shared style for nuevo y editar */
+    .modal-backdrop-ap {
+      display:none;
+      position:fixed;
+      inset:0;
+      background: rgba(6,10,8,0.44);
+      z-index: 10000;
+      justify-content:center;
+      align-items:center;
+      padding:24px;
+    }
+    .modal-backdrop-ap.open { display:flex; }
+    .modal-ap {
+      width: 680px;
+      max-width: calc(100% - 48px);
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 18px 60px rgba(6,10,8,0.6);
+      max-height: 88vh;
+      overflow:auto;
+    }
+    .modal-ap .modal-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px; }
+    .modal-ap .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .form-grid { grid-template-columns: 1fr; }
+      table.reg-table { min-width: 600px; }
+      .modal-ap { width: 100%; padding:14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="window-controls">
+    <button id="minimize" title="Minimizar" type="button"><svg viewBox="0 0 10 10"><rect x="2" y="6" width="6" height="1" fill="currentColor"/></svg></button>
+    <button id="maximize" title="Maximizar" type="button"><svg viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/></svg></button>
+    <button id="close" title="Cerrar" type="button"><svg viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/></svg></button>
+  </div>
+
+  <div class="container">
+    <aside class="sidebar">
+      <div class="top-section">
+        <div class="logo"><img src="../imagenes/Logo.png" alt="Logo del sitio" style="max-width:160px;display:block;" /></div>
+        <ul class="menu-modulos">
+          <li><a href="../HTML/index.html">Registro Herramientas</a></li>
+          <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
+          <li><a href="../HTML/indexInventario.html">Inventario</a></li>
+          <li><a href="../HTML/Notificaciones.html">Notificaciones</a></li>
+          <li><a href="../HTML/estats.html">Estadísticas</a></li>
+          <li><a href="../HTML/registro-aprendices.html" class="active">Aprendices</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-bottom">
+        <a href="../HTML/quienes-somos.html" class="somos">👥 Quiénes Somos</a>
+        <div class="night-mode"><span>🌙 Modo noche</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content" role="main">
+      <div class="bienvenida" style="margin-bottom:8px;">
+        <img src="../imagenes/Maria.png" alt="Foto usuario" class="foto-usuario" />
+        <p><strong>Registro Aprendices</strong></p>
+      </div>
+
+      <div class="content-box">
+        <div class="header" style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+          <h1>Registro Aprendices</h1>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button id="btnExport" class="boton-verde" style="height:40px;padding:0 14px;">Exportar CSV</button>
+            <button id="btnOpenNuevo" class="boton-verde" style="height:40px;padding:0 14px;">Registrar aprendiz</button>
+          </div>
+        </div>
+
+        <!-- Filter area: dropdown to choose field and single input for the search value -->
+        <div class="filter-row">
+          <select id="filter_field" aria-label="Campo a filtrar">
+            <option value="numero_documento">Número documento</option>
+            <option value="numero_ficha">Número ficha</option>
+          </select>
+
+          <input id="filter_value" type="text" placeholder="Escribe el valor a buscar" aria-label="Valor a buscar" />
+
+          <div class="filter-actions">
+            <button id="btnFilter" class="btn btn-small">Filtrar</button>
+            <button id="btnClearFilter" class="btn btn-small delete">Limpiar</button>
+          </div>
+        </div>
+
+        <!-- Tabla con los registros locales -->
+        <div class="table-responsive">
+          <table class="reg-table" id="tablaAprendices" aria-describedby="tablaAprendicesDesc">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Tipo documento</th>
+                <th>Número documento</th>
+                <th>Número ficha</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <p id="tablaAprendicesDesc" class="helper" style="margin-top:8px;">Los registros se almacenan localmente en tu navegador (modo offline).</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal para crear nuevo aprendiz -->
+  <div id="modalNuevoAprendiz" class="modal-backdrop-ap" aria-hidden="true">
+    <div class="modal-ap" role="dialog" aria-modal="true" aria-labelledby="nuevoAprTitle">
+      <div class="modal-header">
+        <h2 id="nuevoAprTitle">Registrar aprendiz</h2>
+        <button id="closeNuevoApr" class="btn-small" type="button" aria-label="Cerrar">Cerrar</button>
+      </div>
+
+      <form id="formNuevoAprendiz" novalidate>
+        <div class="form-inner">
+          <div class="form-grid" style="margin-bottom:10px;">
+            <div class="input-group full">
+              <label for="nuevo_ap_nombre">Nombre</label>
+              <input id="nuevo_ap_nombre" name="nombre" type="text" placeholder="Nombre completo" required/>
+            </div>
+
+            <div class="input-group">
+              <label for="nuevo_ap_tipo">Tipo de documento</label>
+              <select id="nuevo_ap_tipo" name="tipo_documento" required>
+                <option value="">Selecciona</option>
+                <option value="CC">Cédula de ciudadanía (CC)</option>
+                <option value="TI">Tarjeta de identidad (TI)</option>
+                <option value="PPT">Pasaporte (PPT)</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label for="nuevo_ap_num">Número documento</label>
+              <input id="nuevo_ap_num" name="numero_documento" type="text" placeholder="Número de documento" required />
+            </div>
+
+            <div class="input-group">
+              <label for="nuevo_ap_ficha">Número ficha</label>
+              <input id="nuevo_ap_ficha" name="numero_ficha" type="text" placeholder="Número de ficha" />
+            </div>
+
+            <div class="input-group full" style="display:flex;justify-content:flex-end;align-items:center;">
+              <button id="btnGuardarNuevo" class="btn btn-small" type="submit" style="background:linear-gradient(180deg,var(--accent-400),var(--accent-600)); color:#fff;">Guardar aprendiz</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para editar aprendiz -->
+  <div id="modalAprendiz" class="modal-backdrop-ap" aria-hidden="true">
+    <div class="modal-ap" role="dialog" aria-modal="true" aria-labelledby="modalAprTitle">
+      <div class="modal-header">
+        <h2 id="modalAprTitle">Editar aprendiz</h2>
+        <button id="closeModalApr" class="btn-small" type="button">Cerrar</button>
+      </div>
+
+      <form id="formModalAprendiz" novalidate>
+        <input type="hidden" id="modal_ap_id" />
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="input-group">
+            <label for="modal_ap_nombre">Nombre</label>
+            <input id="modal_ap_nombre" type="text" required />
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+            <div class="input-group">
+              <label for="modal_ap_tipo">Tipo de documento</label>
+              <select id="modal_ap_tipo" required>
+                <option value="">Selecciona</option>
+                <option value="CC">CC</option>
+                <option value="TI">TI</option>
+                <option value="PPT">PPT</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label for="modal_ap_num">Número documento</label>
+              <input id="modal_ap_num" type="text" required />
+            </div>
+
+            <div class="input-group">
+              <label for="modal_ap_ficha">Número ficha</label>
+              <input id="modal_ap_ficha" type="text" />
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="cancelModalApr" class="btn btn-small delete">Cancelar</button>
+            <button type="submit" class="btn btn-small" style="background:linear-gradient(180deg,var(--accent-400),var(--accent-600)); color:#fff;">Guardar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const LS_KEY = 'fs_aprendices_v1';
+      // Elements
+      const tablaBody = document.querySelector('#tablaAprendices tbody');
+      const btnExport = document.getElementById('btnExport');
+      const btnOpenNuevo = document.getElementById('btnOpenNuevo');
+
+      const btnFilter = document.getElementById('btnFilter');
+      const btnClearFilter = document.getElementById('btnClearFilter');
+      const selectFilterField = document.getElementById('filter_field');
+      const inputFilterValue = document.getElementById('filter_value');
+
+      // Nuevo modal elements
+      const modalNuevo = document.getElementById('modalNuevoAprendiz');
+      const formNuevo = document.getElementById('formNuevoAprendiz');
+      const closeNuevo = document.getElementById('closeNuevoApr');
+
+      // Edit modal elements
+      const modalBackdrop = document.getElementById('modalAprendiz');
+      const modalForm = document.getElementById('formModalAprendiz');
+      const modalClose = document.getElementById('closeModalApr');
+      const modalCancel = document.getElementById('cancelModalApr');
+
+      // Storage helpers
+      function loadAprendices() {
+        try { const raw = localStorage.getItem(LS_KEY); return raw ? JSON.parse(raw) : []; }
+        catch (e) { return []; }
+      }
+      function saveAprendices(list) { localStorage.setItem(LS_KEY, JSON.stringify(list || [])); }
+      function genId() { return 'A-' + Date.now().toString(36).toUpperCase().slice(-8); }
+      function escapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+      // Render table (generic filter)
+      function renderTable(filter = {}) {
+        const list = loadAprendices();
+        const filtered = list.filter(item => {
+          if (filter.field && filter.value && filter.value.trim() !== '') {
+            const field = filter.field;
+            const val = String(filter.value).toLowerCase();
+            const itemVal = String(item[field] || '').toLowerCase();
+            return itemVal.includes(val);
+          }
+          return true;
+        });
+
+        tablaBody.innerHTML = '';
+        if (!Array.isArray(filtered) || filtered.length === 0) {
+          const tr = document.createElement('tr');
+
+          // If user applied a filter, show a specific "no encontrado" message
+          if (filter && filter.field && filter.value && filter.value.trim() !== '') {
+            const fieldLabel = (filter.field === 'numero_documento') ? 'número de documento' :
+                               (filter.field === 'numero_ficha') ? 'número de ficha' : filter.field;
+            tr.innerHTML = `<td colspan="5" style="padding:14px;color:var(--muted);">No se encontró ningún aprendiz con ${fieldLabel} «${escapeHtml(filter.value)}».</td>`;
+          } else {
+            tr.innerHTML = '<td colspan="5" style="padding:14px;color:var(--muted);">No hay aprendices registrados.</td>';
+          }
+
+          tablaBody.appendChild(tr);
+          return;
+        }
+        filtered.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${escapeHtml(item.nombre)}</td>
+            <td>${escapeHtml(item.tipo_documento)}</td>
+            <td>${escapeHtml(item.numero_documento)}</td>
+            <td>${escapeHtml(item.numero_ficha)}</td>
+            <td class="actions">
+              <button class="btn-edit" data-id="${item.id}">Editar</button>
+              <button class="btn-delete" data-id="${item.id}">Eliminar</button>
+            </td>
+          `;
+          tablaBody.appendChild(tr);
+        });
+      }
+
+      // Open/close Nuevo modal
+      function openNuevoModal() {
+        modalNuevo.classList.add('open');
+        modalNuevo.setAttribute('aria-hidden', 'false');
+        document.getElementById('nuevo_ap_nombre').focus();
+      }
+      function closeNuevoModal() {
+        modalNuevo.classList.remove('open');
+        modalNuevo.setAttribute('aria-hidden', 'true');
+        formNuevo.reset();
+      }
+
+      btnOpenNuevo.addEventListener('click', openNuevoModal);
+      closeNuevo.addEventListener('click', closeNuevoModal);
+      modalNuevo.addEventListener('click', function (ev) { if (ev.target === modalNuevo) closeNuevoModal(); });
+      document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') { closeNuevoModal(); closeEditModal(); } });
+
+      // Create nuevo aprendiz
+      formNuevo.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        const nombre = document.getElementById('nuevo_ap_nombre').value.trim();
+        const tipo = document.getElementById('nuevo_ap_tipo').value;
+        const numero = document.getElementById('nuevo_ap_num').value.trim();
+        const ficha = document.getElementById('nuevo_ap_ficha').value.trim();
+
+        if (!nombre || !tipo || !numero) { alert('Completa Nombre, Tipo y Número de documento.'); return; }
+
+        const list = loadAprendices();
+        const existingIndex = list.findIndex(x => x.numero_documento === numero);
+        const record = {
+          id: existingIndex >= 0 ? list[existingIndex].id : genId(),
+          nombre, tipo_documento: tipo, numero_documento: numero, numero_ficha: ficha
+        };
+
+        if (existingIndex >= 0) {
+          list[existingIndex] = record;
+          alert('Aprendiz actualizado (local).');
+        } else {
+          list.unshift(record);
+          alert('Aprendiz guardado localmente.');
+        }
+        saveAprendices(list);
+        closeNuevoModal();
+        renderTable();
+      });
+
+      // Table actions (delegate)
+      tablaBody.addEventListener('click', function (ev) {
+        const btn = ev.target.closest('button');
+        if (!btn) return;
+        const id = btn.dataset.id;
+        if (btn.classList.contains('btn-delete')) {
+          if (!confirm('Eliminar aprendiz?')) return;
+          let list = loadAprendices();
+          list = list.filter(x => x.id !== id);
+          saveAprendices(list);
+          renderTable();
+          return;
+        }
+        if (btn.classList.contains('btn-edit')) {
+          openEditModal(id);
+          return;
+        }
+      });
+
+      // Export CSV
+      btnExport.addEventListener('click', function () {
+        const list = loadAprendices();
+        if (!list || list.length === 0) { alert('No hay registros para exportar.'); return; }
+        const headers = ['nombre','tipo_documento','numero_documento','numero_ficha'];
+        const rows = [headers.join(',')].concat(list.map(r => headers.map(h => `"${(r[h] || '').toString().replace(/"/g,'""')}"`).join(',')));
+        const csv = rows.join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'aprendices.csv'; document.body.appendChild(a); a.click();
+        setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1000);
+      });
+
+      // Filters: generic dropdown + input
+      btnFilter.addEventListener('click', function () {
+        const field = selectFilterField.value;
+        const value = inputFilterValue.value || '';
+        renderTable({ field, value });
+      });
+      btnClearFilter.addEventListener('click', function () {
+        selectFilterField.value = 'numero_documento';
+        inputFilterValue.value = '';
+        renderTable();
+      });
+
+      // Edit modal functions (reuse previous modal)
+      function openEditModal(id) {
+        const list = loadAprendices();
+        const item = list.find(x => x.id === id);
+        if (!item) return alert('Registro no encontrado.');
+        document.getElementById('modal_ap_id').value = item.id;
+        document.getElementById('modal_ap_nombre').value = item.nombre;
+        document.getElementById('modal_ap_tipo').value = item.tipo_documento;
+        document.getElementById('modal_ap_num').value = item.numero_documento;
+        document.getElementById('modal_ap_ficha').value = item.numero_ficha;
+
+        modalBackdrop.classList.add('open');
+        modalBackdrop.setAttribute('aria-hidden', 'false');
+        document.getElementById('modal_ap_nombre').focus();
+      }
+
+      function closeEditModal() {
+        modalBackdrop.classList.remove('open');
+        modalBackdrop.setAttribute('aria-hidden', 'true');
+        const fm = document.getElementById('formModalAprendiz');
+        if (fm) fm.reset();
+      }
+
+      if (modalClose) modalClose.addEventListener('click', closeEditModal);
+      if (modalCancel) modalCancel.addEventListener('click', closeEditModal);
+      modalBackdrop.addEventListener('click', function (ev) { if (ev.target === modalBackdrop) closeEditModal(); });
+
+      // Save from edit modal
+      const modalFormEl = document.getElementById('formModalAprendiz');
+      if (modalFormEl) {
+        modalFormEl.addEventListener('submit', function (ev) {
+          ev.preventDefault();
+          const id = document.getElementById('modal_ap_id').value;
+          const nombre = document.getElementById('modal_ap_nombre').value.trim();
+          const tipo = document.getElementById('modal_ap_tipo').value;
+          const numero = document.getElementById('modal_ap_num').value.trim();
+          const ficha = document.getElementById('modal_ap_ficha').value.trim();
+
+          if (!id) { alert('ID inválido'); return; }
+          if (!nombre || !tipo || !numero) { alert('Completa Nombre, Tipo y Número.'); return; }
+
+          const list = loadAprendices();
+          const idx = list.findIndex(x => x.id === id);
+          if (idx === -1) { alert('Registro no encontrado'); closeEditModal(); return; }
+
+          list[idx].nombre = nombre;
+          list[idx].tipo_documento = tipo;
+          list[idx].numero_documento = numero;
+          list[idx].numero_ficha = ficha;
+
+          saveAprendices(list);
+          alert('Cambios guardados (local).');
+          closeEditModal();
+          renderTable();
+        });
+      }
+
+      // Init
+      renderTable();
+    })();
+  </script>
+
+  <script src="../modo-oscuro.js"></script>
+  <script src="../render-window.js"></script>
+</body>
+</html>

@@ -2,130 +2,114 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Estadísticas - FarmStock</title>
-    <link rel="stylesheet" href="../CSS/estats.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Estadísticas - FarmStock</title>
+
+  <!-- Solo CSS global para unificar apariencia -->
+  <link rel="stylesheet" href="../CSS/index.css" />
+  <link rel="stylesheet" href="../CSS/index.css" /> <link rel="stylesheet" href="../CSS/modal-fixes.css" />
 </head>
 
 <body>
-    <div class="window-controls">
-        <button id="minimize" title="Minimizar">
-        <svg viewBox="0 0 10 10">
-            <rect x="2" y="6" width="6" height="1" fill="currentColor"/>
-        </svg>
+  <div class="window-controls">
+    <button id="minimize" title="Minimizar">
+      <svg viewBox="0 0 10 10"><rect x="2" y="6" width="6" height="1" fill="currentColor"/></svg>
     </button>
-
-        <button id="maximize" title="Maximizar">
-        <svg viewBox="0 0 10 10">
-            <rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/>
-        </svg>
+    <button id="maximize" title="Maximizar">
+      <svg viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/></svg>
     </button>
-
-        <button id="close" title="Cerrar">
-        <svg viewBox="0 0 10 10">
-        <line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/>
-        <line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/>
-
-
-        </svg>
+    <button id="close" title="Cerrar">
+      <svg viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/></svg>
     </button>
-    </div>
+  </div>
 
-
+  <div class="container">
     <aside class="sidebar">
-        <div class="top-section">
-            <div class="logo">
-                <img src="../imagenes/Logo.png" alt="Logo del sitio" />
-            </div>
-            <ul class="menu-modulos">
-                <li><a href="../HTML/index.html">Registro Herramientas</a></li>
-                <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
-                <li><a href="../HTML/indexInventario.html">Inventario</a></li>
-                <li><a href="notificaciones.html">Notificaciones</a></li>
-                <li><a href="../HTML/estats.html" class="active">Estadísticas</a></li>
-            </ul>
-        </div>
-        <!-- Abajo: quienes somos + modo noche -->
-        <div class="sidebar-bottom">
-            <a href="quienes-somos.html" class="somos active">
-            👥 Quiénes Somos
-          </a>
-            <div class="night-mode">
-                <span id="btnModoNoche">🌙 Modo noche</span>
-            </div>
-        </div>
+      <div class="top-section">
+        <div class="logo"><img src="../imagenes/Logo.png" alt="Logo del sitio" /></div>
+        <ul class="menu-modulos">
+          <li><a href="../HTML/index.html">Registro Herramientas</a></li>
+          <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
+          <li><a href="../HTML/indexInventario.html">Inventario</a></li>
+          <li><a href="notificaciones.html">Notificaciones</a></li>
+          <li><a href="../HTML/estats.html" class="active">Estadísticas</a></li>
+          <li><a href="../HTML/registro-aprendices.html">Aprendices</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-bottom">
+        <a href="quienes-somos.html" class="somos active">👥 Quiénes Somos</a>
+        <div class="night-mode"><span id="btnModoNoche">🌙 Modo noche</span></div>
+      </div>
     </aside>
 
+    <main class="main-content">
+      <div class="bienvenida">
+        <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
+        <p><strong>¡Hola Maria!</strong></p>
+      </div>
 
-    <main>
-        <div class="bienvenida">
-            <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
-            <p><strong>¡Hola Maria!</strong></p>
+      <div class="content-box">
+        <h1>Estadísticas</h1>
+
+        <div class="filtros">
+          <input type="text" placeholder="Buscar...">
+          <a href="../HTML/Estadistica.html" class="btn-informe">Generar informe</a>
+          <select><option>ID herramienta</option></select>
+          <select><option>Fecha</option></select>
         </div>
 
-        <!-- Contenedor para el contenido principal -->
-        <div class="content-box">
-            <h1>Estadísticas</h1>
-
-            <div class="filtros">
-                <input type="text" placeholder="Buscar...">
-                <a href="../HTML/Estadistica.html" class="btn-informe">Generar informe</a>
-                <select>
-        <option>ID herramienta</option>
-    </select>
-                <select>
-        <option>Fecha</option>
-    </select>
-            </div>
-
-
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>ID estadística</th>
-                        <th>Herramienta</th>
-                        <th>Préstamos</th>
-                        <th>Daños</th>
-                        <th>Mantenimientos</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>1002</td>
-                        <td><img class="icon" src="cositas/lapala.png" alt="">Pala</td>
-                        <td><span class="dot green"></span>24</td>
-                        <td><span class="dot red"></span>2</td>
-                        <td><span class="dot orange"></span>10</td>
-                        <td class="acciones">🗑️</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>1002</td>
-                        <td><img class="icon" src="cositas/sisierra.png" alt="">Motosierra</td>
-                        <td><span class="dot green"></span>24</td>
-                        <td><span class="dot red"></span>2</td>
-                        <td><span class="dot orange"></span>10</td>
-                        <td class="acciones">🗑️</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>1003</td>
-                        <td><img class="icon" src="cositas/picaxo.png" alt="">Picos</td>
-                        <td><span class="dot green"></span>24</td>
-                        <td><span class="dot red"></span>2</td>
-                        <td><span class="dot orange"></span>10</td>
-                        <td class="acciones">🗑️</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>ID estadística</th>
+                <th>Herramienta</th>
+                <th>Préstamos</th>
+                <th>Daños</th>
+                <th>Mantenimientos</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>1002</td>
+                <td>Pala</td>
+                <td>24</td>
+                <td>2</td>
+                <td>10</td>
+                <td class="acciones">🗑️</td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>1002</td>
+                <td>Motosierra</td>
+                <td>24</td>
+                <td>2</td>
+                <td>10</td>
+                <td class="acciones">🗑️</td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>1003</td>
+                <td>Picos</td>
+                <td>24</td>
+                <td>2</td>
+                <td>10</td>
+                <td class="acciones">🗑️</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
     </main>
-    <script src="../modo-oscuro.js"></script>
-    <script src="../render-window.js"></script>
+  </div>
+
+  <script src="../modo-oscuro.js"></script>
+  <script src="../render-window.js"></script>
 </body>
 
 </html>

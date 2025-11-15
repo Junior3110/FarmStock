@@ -2,92 +2,123 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notificaciones - FarmStock</title>
-    <link rel="stylesheet" href="../CSS/Iventario.css">
-    <link rel="stylesheet" href="../CSS/Notificaciones.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notificaciones - FarmStock</title>
+
+  <!-- Solo la hoja global: ahora Notificaciones reutiliza index.css exactamente como las demás -->
+  <link rel="stylesheet" href="../CSS/index.css" />
+  <link rel="stylesheet" href="../CSS/index.css" /> <link rel="stylesheet" href="../CSS/modal-fixes.css" />
 </head>
 
 <body>
-    <div class="window-controls">
-        <button id="minimize" title="Minimizar">
-    <svg viewBox="0 0 10 10">
-        <rect x="2" y="6" width="6" height="1" fill="currentColor"/>
-    </svg>
+  <div class="window-controls">
+    <button id="minimize" title="Minimizar">
+      <svg viewBox="0 0 10 10"><rect x="2" y="6" width="6" height="1" fill="currentColor"/></svg>
     </button>
-
-        <button id="maximize" title="Maximizar">
-    <svg viewBox="0 0 10 10">
-        <rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/>
-    </svg>
+    <button id="maximize" title="Maximizar">
+      <svg viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/></svg>
     </button>
-
-        <button id="close" title="Cerrar">
-    <svg viewBox="0 0 10 10">
-        <line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/>
-        <line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/>
-    </svg>
+    <button id="close" title="Cerrar">
+      <svg viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/></svg>
     </button>
-    </div>
+  </div>
 
-    <div class="contenedor-principal">
-        <aside class="sidebar">
-            <div class="top-section">
-                <div class="logo">
-                    <img src="../imagenes/Logo.png" alt="Logo del sitio" />
-                </div>
-                <ul class="menu-modulos">
-                    <li><a href="../HTML/index.html">Registro Herramientas</a></li>
-                    <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
-                    <li><a href="../HTML/indexInventario.html">Inventario</a></li>
-                    <li><a href="notificaciones.html" class="active">Notificaciones</a></li>
-                    <li><a href="../HTML/estats.html">Estadísticas</a></li>
-                </ul>
-            </div>
-            <div class="sidebar-bottom">
-                <a href="quienes-somos.html" class="somos active">
-                        👥 Quiénes Somos
-                        </a>
-                <div class="night-mode">
-                    <span>🌙 Modo noche</span>
-                </div>
-            </div>
-        </aside>
-        <main>
-            <div class="bienvenida">
-                <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
-                <p><strong>¡Hola Maria!</strong></p>
-            </div>
-            <div class="content-box">
-                <div class="content-header">
-                    <h1>Notificaciones</h1>
-                    <button id="btn-crear-reporte" class="boton-verde btn-reporte">Crear reporte</button>
-                </div>
-                <!-- Aquí puedes agregar más contenido si lo necesitas -->
-            </div>
-        </main>
-    </div>
-    <div id="modal-reporte">
-        <div class="modal-contenido">
-            <button id="cerrar-modal" class="cerrar-modal">✖</button>
-            <h2>Nuevo reporte</h2>
-            <form>
-                <label>Destinatario:</label>
-                <input type="email" required placeholder="correo@ejemplo.com">
-                <label>Asunto:</label>
-                <input type="text" required>
-                <label>Descripción:</label>
-                <textarea required></textarea>
-                <label>Adjuntar archivos:</label>
-                <input type="file" multiple>
-                <button type="submit" class="boton-verde">Enviar</button>
-            </form>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="top-section">
+        <div class="logo">
+          <img src="../imagenes/Logo.png" alt="Logo del sitio" />
         </div>
+        <ul class="menu-modulos">
+          <li><a href="../HTML/index.html">Registro Herramientas</a></li>
+          <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
+          <li><a href="../HTML/indexInventario.html">Inventario</a></li>
+          <li><a href="notificaciones.html" class="active">Notificaciones</a></li>
+          <li><a href="../HTML/estats.html">Estadísticas</a></li>
+          <li><a href="../HTML/registro-aprendices.html">Aprendices</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-bottom">
+        <a href="quienes-somos.html" class="somos active">👥 Quiénes Somos</a>
+        <div class="night-mode"><span>🌙 Modo noche</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="bienvenida">
+        <img src="../imagenes/Maria.png" alt="Foto de usuario" class="foto-usuario" />
+        <p><strong>¡Hola Maria!</strong></p>
+      </div>
+
+      <div class="content-box">
+        <div class="content-header">
+          <h1>Notificaciones</h1>
+          <button id="btn-crear-reporte" class="boton-verde btn-reporte">Crear reporte</button>
+        </div>
+
+        <!-- Aquí irá el contenido principal de notificaciones -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal: oculto por defecto (solo se muestra al abrir con la clase .open) -->
+  <div id="modal-reporte" aria-hidden="true" class="modal-backdrop">
+    <div class="modal-contenido" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button id="cerrar-modal" class="cerrar-modal" aria-label="Cerrar modal">✖</button>
+      <h2 id="modalTitle">Nuevo reporte</h2>
+      <form id="formReporte">
+        <label>Destinatario:</label>
+        <input id="rep_email" type="email" required placeholder="correo@ejemplo.com">
+        <label>Asunto:</label>
+        <input id="rep_asunto" type="text" required>
+        <label>Descripción:</label>
+        <textarea id="rep_descripcion" required></textarea>
+        <label>Adjuntar archivos:</label>
+        <input id="rep_files" type="file" multiple>
+        <button type="submit" class="boton-verde">Enviar</button>
+      </form>
     </div>
-    <script src="../../backend/Notificaciones.js"></script>
-    <script src="../modo-oscuro.js"></script>
-    <script src="../render-window.js"></script>
+  </div>
+
+  <script>
+    // Modal open/close logic (keeps functionality local to this page)
+    (function () {
+      const btn = document.getElementById('btn-crear-reporte');
+      const modal = document.getElementById('modal-reporte');
+      const closeBtn = document.getElementById('cerrar-modal');
+      const form = document.getElementById('formReporte');
+
+      function openModal() {
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        const first = modal.querySelector('input, textarea, select');
+        if (first) first.focus();
+      }
+      function closeModal() {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      if (btn) btn.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+      if (closeBtn) closeBtn.addEventListener('click', (e) => { e.preventDefault(); closeModal(); });
+      if (modal) modal.addEventListener('click', (ev) => { if (ev.target === modal) closeModal(); });
+      document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeModal(); });
+
+      if (form) {
+        form.addEventListener('submit', function (ev) {
+          ev.preventDefault();
+          // aquí podrías enviar por fetch/ajax
+          form.reset();
+          closeModal();
+        });
+      }
+    })();
+  </script>
+
+  <script src="../modo-oscuro.js"></script>
+  <script src="../render-window.js"></script>
 </body>
 
 </html>
