@@ -9,7 +9,6 @@
   <!-- Usar solo el CSS global para mantener el mismo tema -->
   <link rel="stylesheet" href="../CSS/index.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../CSS/index.css" /> <link rel="stylesheet" href="../CSS/modal-fixes.css" />
 
   <style>
     /* Card centrada y estética coherente con registro */
@@ -197,25 +196,13 @@
     </section>
   </main>
 
-  <script>
-    // Simple login demo script (front-end only)
-    (function () {
-      const form = document.getElementById('loginForm');
-      if (!form) return;
-
-      form.addEventListener('submit', function (ev) {
-        ev.preventDefault();
-        // Basic validation
-        const doc = document.getElementById('documento').value.trim();
-        const pwd = document.getElementById('password').value;
-        if (!doc || !pwd) { alert('Por favor completa documento y contraseña.'); return; }
-        // Simulate success
-        alert('Inicio de sesión (demo).');
-        form.reset();
-      });
-    })();
-  </script>
-
+  <!-- Carga ordenada de scripts:
+       1) FSApiClient (cliente de backend)
+       2) render-login (validación + login)
+       3) modo-oscuro y render-window (UI helpers)
+  -->
+  <script src="../FSApiClient.js"></script>
+  <script src="../render-login.js"></script>
   <script src="../modo-oscuro.js"></script>
   <script src="../render-window.js"></script>
 </body>

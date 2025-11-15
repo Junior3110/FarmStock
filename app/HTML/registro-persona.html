@@ -6,13 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registro - FarmStock</title>
 
-  <!-- Hoja global para mantener tema y modo noche coherente -->
+  <!-- Hoja global -->
   <link rel="stylesheet" href="../CSS/index.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../CSS/index.css" /> <link rel="stylesheet" href="../CSS/modal-fixes.css" />
+ 
 
   <style>
-    /* Centrado del formulario en el panel */
+    /* Mantengo tus estilos locales (sin tocar comportamiento) */
     .registro-page {
       display: flex;
       align-items: center;
@@ -23,7 +23,6 @@
       max-width: calc(var(--max-width-main, 1200px) + 40px);
       margin: 0 auto;
     }
-
     .registro-card {
       width: 100%;
       max-width: 760px;
@@ -35,143 +34,30 @@
       box-sizing: border-box;
       position: relative;
     }
-
-    /* Header: logo left, actions right */
-    .registro-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-
-    .site-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    /* Logo enlarged and only logo shown (no text) */
-    .site-brand img {
-      height: 56px; /* increased size to make it stand out */
-      width: auto;
-      display: block;
-    }
-
-    /* Right-aligned actions (modo noche) */
-    .top-actions {
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-    .night-mode {
-      padding: 8px 12px;
-      border-radius: 10px;
-      background: color-mix(in srgb, var(--surface) 96%, transparent 4%);
-      border: 1px solid var(--card-border);
-      cursor: pointer;
-      font-weight:700;
-    }
-
-    /* Title */
-    .registro-card h1 {
-      margin: 8px 0 18px 0;
-      font-size: 28px;
-      color: var(--text);
-      font-weight: 900;
-    }
-
-    /* Form grid */
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
+    .registro-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px; }
+    .site-brand img { height:56px; }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
     .form-grid .full { grid-column: 1 / -1; }
-
-    .input-group-plain {
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-
-    /* Button primary */
-    .btn-primary {
-      background: linear-gradient(180deg, var(--accent-400, #7bd07a), var(--accent-600, #3fa34a));
-      color: white;
-      border: none;
-      padding: 12px 16px;
-      border-radius: 10px;
-      font-weight:800;
-      cursor:pointer;
-      box-shadow: 0 10px 24px rgba(63,163,74,0.12);
-    }
-
-    /* Back button bottom-left inside card */
-    .back-btn {
-      position: absolute;
-      left: 18px;
-      bottom: 18px;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:8px;
-      background: color-mix(in srgb, var(--surface) 96%, transparent 4%);
-      border:1px solid var(--card-border);
-      color: var(--text);
-      text-decoration: none;
-      font-weight:700;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
-    }
-    .back-btn:hover { transform: translateY(-2px); }
-
-    /* Inputs consistent with global theme */
-    input[type="text"], input[type="email"], input[type="tel"], input[type="password"], select, textarea {
-      border: 1px solid var(--card-border);
-      background: color-mix(in srgb, var(--surface) 96%, transparent 4%);
-      padding: 10px 12px;
-      border-radius: 10px;
-      color: var(--text);
-      font-size: 14px;
-    }
-    textarea { min-height: 110px; resize: vertical; }
-
-    @media (max-width: 920px) {
-      .form-grid { grid-template-columns: 1fr; }
-      .registro-card { padding: 20px; }
-      .back-btn { left: 12px; bottom: 12px; }
-      /* show slightly smaller logo on small screens */
-      .site-brand img { height: 44px; }
-    }
+    .input-group-plain { display:flex; flex-direction:column; gap:8px; }
+    .btn-primary { background: linear-gradient(180deg, var(--accent-400), var(--accent-600)); color:#fff; border:none; padding:12px 16px; border-radius:10px; font-weight:800; cursor:pointer; }
+    .back-btn { position:absolute; left:18px; bottom:18px; padding:8px 12px; border-radius:8px; background: color-mix(in srgb, var(--surface) 96%, transparent 4%); border:1px solid var(--card-border); color:var(--text); font-weight:700; text-decoration:none; box-shadow: 0 6px 18px rgba(0,0,0,0.04); }
+    input, select, textarea { border:1px solid var(--card-border); background: color-mix(in srgb, var(--surface) 96%, transparent 4%); padding:10px 12px; border-radius:10px; color:var(--text); font-size:14px; }
+    @media (max-width: 920px) { .form-grid { grid-template-columns:1fr; } .site-brand img { height:44px; } }
   </style>
 </head>
 
 <body>
   <div class="window-controls">
-    <button id="minimize" title="Minimizar">
-      <svg viewBox="0 0 10 10"><rect x="2" y="6" width="6" height="1" fill="currentColor"/></svg>
-    </button>
-    <button id="maximize" title="Maximizar">
-      <svg viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/></svg>
-    </button>
-    <button id="close" title="Cerrar">
-      <svg viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/></svg>
-    </button>
+    <button id="minimize" title="Minimizar" type="button"><svg viewBox="0 0 10 10"><rect x="2" y="6" width="6" height="1" fill="currentColor"/></svg></button>
+    <button id="maximize" title="Maximizar" type="button"><svg viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/></svg></button>
+    <button id="close" title="Cerrar" type="button"><svg viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/></svg></button>
   </div>
 
   <main class="registro-page" role="main">
     <section class="registro-card" aria-labelledby="registroTitle">
-      <!-- Header: only logo left + night-mode right -->
-      <div class="registro-header" role="region" aria-label="Encabezado de registro">
-        <div class="site-brand" aria-hidden="false">
-          <img src="../imagenes/Logo.png" alt="FarmStock logo" />
-        </div>
-
-        <div class="top-actions" aria-hidden="false">
-          <div class="night-mode" title="Alternar modo noche">
-            <span id="btnModoNoche">🌙 Modo noche</span>
-          </div>
-        </div>
+      <div class="registro-header">
+        <div class="site-brand"><img src="../imagenes/Logo.png" alt="FarmStock logo" /></div>
+        <div class="top-actions"><div class="night-mode" title="Alternar modo noche"><span id="btnModoNoche">🌙 Modo noche</span></div></div>
       </div>
 
       <h1 id="registroTitle">Crear cuenta</h1>
@@ -186,6 +72,23 @@
           <div class="input-group-plain">
             <label for="apellidos">Apellidos</label>
             <input id="apellidos" name="apellidos" type="text" placeholder="Apellidos" required>
+          </div>
+
+          <!-- Tipo documento: name y id alineados con backend (tipoDocumento) -->
+          <div class="input-group-plain">
+            <label for="tipoDocumento">Tipo de documento</label>
+            <select id="tipoDocumento" name="tipoDocumento" required>
+              <option value="">Selecciona tipo</option>
+              <option value="CC">Cédula de ciudadanía (CC)</option>
+              <option value="TI">Tarjeta de identidad (TI)</option>
+              <option value="PPT">Pasaporte (PPT)</option>
+            </select>
+          </div>
+
+          <!-- Número de documento: name y id alineados con backend (numeroDocumento) -->
+          <div class="input-group-plain">
+            <label for="numeroDocumento">Número de documento</label>
+            <input id="numeroDocumento" name="numeroDocumento" type="text" placeholder="Número de documento" required>
           </div>
 
           <div class="input-group-plain">
@@ -203,13 +106,15 @@
             <select id="cargo" name="cargo" required>
               <option value="">Cargo</option>
               <option value="instructor">Instructor</option>
+              <option value="aprendiz">Aprendiz</option>
               <option value="administrador">Administrador</option>
             </select>
           </div>
 
+          <!-- contraseña: name alineado con backend (contrasena) -->
           <div class="input-group-plain">
-            <label for="password">Contraseña</label>
-            <input id="password" name="password" type="password" placeholder="••••••••" required>
+            <label for="contrasena">Contraseña</label>
+            <input id="contrasena" name="contrasena" type="password" placeholder="••••••••" required>
           </div>
 
           <div class="input-group-plain">
@@ -223,36 +128,14 @@
         </div>
       </form>
 
-      <!-- Back button to login panel -->
       <a class="back-btn" href="login.html" title="Volver al login">← Atrás</a>
     </section>
   </main>
 
-  <script>
-    // Client-side logic: password match + demo submission
-    (function () {
-      const form = document.getElementById('registroForm');
-      if (!form) return;
-
-      form.addEventListener('submit', function (ev) {
-        ev.preventDefault();
-        const pwd = document.getElementById('password').value || '';
-        const cpwd = document.getElementById('confirm_password').value || '';
-
-        if (pwd !== cpwd) {
-          alert('Las contraseñas no coinciden. Por favor verifica.');
-          return;
-        }
-
-        // Simulate submission (replace with real fetch to backend)
-        alert('Registro completado (demo).');
-        form.reset();
-      });
-    })();
-  </script>
-
+  <script src="../render.js"></script>
   <script src="../modo-oscuro.js"></script>
   <script src="../render-window.js"></script>
+  <script src="../FSApiClient.js"></script>
 </body>
 
 </html>

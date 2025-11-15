@@ -8,7 +8,100 @@
 
   <!-- Usar solo el CSS global -->
   <link rel="stylesheet" href="../CSS/index.css" />
-  <link rel="stylesheet" href="../CSS/index.css" /> <link rel="stylesheet" href="../CSS/modal-fixes.css" />
+
+  <style>
+    /* Cambios locales para vista Inventario:
+       - tarjetas más pequeñas y en grid
+       - scroll interno en el contenedor de tarjetas
+       - no tocar estilos globales fuera de esta página
+    */
+
+    /* Wrapper de las tarjetas: grid responsive */
+    .tarjetas-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* 220px ancho min por tarjeta */
+      gap: 12px;
+      padding: 12px;
+      box-sizing: border-box;
+      align-content: start;
+      /* Scroll interno: calcula altura disponible restando header/encabezado aproximado */
+      max-height: calc(100vh - 240px); /* ajustable si quieres más/menos espacio */
+      overflow: auto;
+      border-radius: 10px;
+      background: transparent;
+    }
+
+    /* Tarjeta compacta específica para Inventario (no afecta otras páginas) */
+    .tarjetas-container .tarjeta {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 98%, transparent 2%), transparent);
+      box-shadow: 0 6px 18px rgba(16,34,31,0.03);
+      transition: transform .12s ease, box-shadow .12s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 92px;
+    }
+
+    .tarjetas-container .tarjeta h3 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.1;
+      color: color-mix(in srgb, var(--accent-600) 40%, var(--text) 60%);
+    }
+
+    .tarjetas-container .tarjeta p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .tarjetas-container .tarjeta .acciones {
+      margin-top: 6px;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    /* Ajustes de botones dentro de tarjeta (más compactos) */
+    .tarjetas-container .tarjeta .acciones .btn-small {
+      padding: 6px 8px;
+      font-size: 12px;
+      border-radius: 8px;
+    }
+
+    /* When lots of records, smooth scrollbar */
+    .tarjetas-container::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    .tarjetas-container::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--accent-400), var(--accent-600));
+      border-radius: 10px;
+    }
+
+    @media (max-width: 560px) {
+      .tarjetas-container {
+        grid-template-columns: 1fr;
+        max-height: calc(100vh - 220px);
+      }
+      .tarjetas-container .tarjeta {
+        min-height: 110px;
+      }
+    }
+
+    @media (min-width: 1400px) {
+      .tarjetas-container {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 14px;
+      }
+      .tarjetas-container .tarjeta h3 { font-size: 13px; }
+      .tarjetas-container .tarjeta p { font-size: 12px; }
+    }
+  </style>
 </head>
 
 <body>
@@ -65,73 +158,474 @@
           </div>
         </div>
 
-        <div id="inventarioLista" class="tarjetas-container"></div>
+        <!-- Contenedor de tarjetas convertido en grid con scroll interno -->
+        <div id="inventarioLista" class="tarjetas-container" aria-live="polite"></div>
       </div>
     </main>
   </div>
 
-  <script src="../modo-oscuro.js"></script>
+  <!-- Modal backdrop (reutiliza estilos globales) -->
+  <div id="modalBackdropInv" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitleInv" tabindex="-1">
+      <div class="modal-header" style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 id="modalTitleInv">Registro</h3>
+        <div><button id="closeModalInv" class="btn-small" style="background:#9e9e9e;color:#111;" type="button">Cerrar</button></div>
+      </div>
+      <div id="modalContentInv"></div>
+    </div>
+  </div>
+
+  <!-- Cargar helpers y cliente API -->
+  <script src="../FSApiClient.js"></script>
+
   <script>
-    function mostrarInventario(filtro = "3meses") {
-      let herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
-      const contenedor = document.getElementById("inventarioLista");
-      contenedor.innerHTML = "";
+    (function () {
+      const API = window.FSApiClient;
+      const contenedor = document.getElementById('inventarioLista');
+      const filtroSelect = document.getElementById('filtroTiempo');
+      const modalBackdrop = document.getElementById('modalBackdropInv');
+      const modalContent = document.getElementById('modalContentInv');
+      const modalTitle = document.getElementById('modalTitleInv');
+      const closeModalBtn = document.getElementById('closeModalInv');
 
-      const hoy = new Date();
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+      function parseIsoToDate(str) {
+        if (!str) return null;
+        const d = new Date(str);
+        if (isNaN(d)) return null;
+        return d;
+      }
+      function normalizeTool(h) {
+        // ensure both idHerramienta and id are present and identical (if backend uses idHerramienta)
+        const idVal = h.idHerramienta || h.id || h.id_herramienta || h.idHerr || null;
+        return {
+          idHerramienta: idVal,
+          id: idVal,
+          nombre: h.nombre || h.name || '',
+          estado: h.estado || '',
+          tipo: h.tipo || '',
+          ubicacion: h.ubicacion || '',
+          fecha: h.fecha_registro || h.fechaRegistro || h.fecha || '',
+          lote: h.numero_lote || h.numeroLote || h.lote || '',
+          cantidad: (h.cantidad != null) ? h.cantidad : (h.cantidad || 0),
+          descripcion: h.descripcion || h.desc || '',
+          detalles: h.detalles || []
+        };
+      }
 
-      herramientas.forEach(h => {
-        let fechaHerramienta = new Date(h.fecha);
-        let mostrar = true;
+      async function fetchAllTools() {
+        if (API && typeof API.obtenerTodasHerramientas === 'function') {
+          try {
+            const remoto = await API.obtenerTodasHerramientas();
+            return (Array.isArray(remoto) ? remoto.map(normalizeTool) : []);
+          } catch (e) {
+            console.warn('Error backend, fallback to local', e);
+            return loadToolsFromLocal();
+          }
+        } else {
+          try {
+            const r = await fetch('http://localhost:8080/herramienta');
+            if (r.ok) {
+              const arr = await r.json();
+              return (Array.isArray(arr) ? arr.map(normalizeTool) : []);
+            }
+            return loadToolsFromLocal();
+          } catch (e) {
+            console.warn('Fetch failed', e);
+            return loadToolsFromLocal();
+          }
+        }
+      }
 
-        if (filtro === "hoy") {
-          mostrar = fechaHerramienta.toDateString() === hoy.toDateString();
-        } else if (filtro === "semana") {
-          let semanaPasada = new Date();
-          semanaPasada.setDate(hoy.getDate() - 7);
-          mostrar = fechaHerramienta >= semanaPasada;
-        } else if (filtro === "mes") {
-          let mesPasado = new Date();
-          mesPasado.setMonth(hoy.getMonth() - 1);
-          mostrar = fechaHerramienta >= mesPasado;
-        } else if (filtro === "3meses") {
-          let tresMeses = new Date();
-          tresMeses.setMonth(hoy.getMonth() - 3);
-          mostrar = fechaHerramienta >= tresMeses;
+      function loadToolsFromLocal() {
+        try {
+          const raw = localStorage.getItem('fs_local_tools_v1');
+          if (raw) return JSON.parse(raw).map(normalizeTool);
+        } catch(e){}
+        try {
+          const raw = localStorage.getItem('herramientas');
+          if (raw) return JSON.parse(raw).map(normalizeTool);
+        } catch(e){}
+        return [];
+      }
+
+      function renderCard(h) {
+        const fechaDisplay = h.fecha ? (parseIsoToDate(h.fecha) ? parseIsoToDate(h.fecha).toLocaleDateString() : h.fecha) : '-';
+        const div = document.createElement('div');
+        div.className = 'tarjeta herramienta-card';
+        // IMPORTANT: use idHerramienta consistently in data-id
+        div.innerHTML = `
+          <h3>🛠️ ${escapeHtml(h.nombre)}</h3>
+          <p><strong>Estado:</strong> ${escapeHtml(h.estado)}</p>
+          <p><strong>Tipo:</strong> ${escapeHtml(h.tipo)}</p>
+          <p><strong>Ubicación:</strong> ${escapeHtml(h.ubicacion)}</p>
+          <p><strong>Fecha ingreso:</strong> ${escapeHtml(fechaDisplay)}</p>
+          <p><strong>Lote:</strong> ${escapeHtml(h.lote)}</p>
+          <p><strong>Cantidad:</strong> ${escapeHtml(String(h.cantidad))}</p>
+          <div class="acciones">
+            <button class="btn-small detalles" data-id="${escapeHtml(h.idHerramienta || h.id)}">Ver detalles</button>
+            <button class="btn-small editar" data-id="${escapeHtml(h.idHerramienta || h.id)}">Editar</button>
+            <button class="btn-small delete eliminar" data-id="${escapeHtml(h.idHerramienta || h.id)}">Eliminar</button>
+          </div>
+        `;
+        return div;
+      }
+
+      function applyTimeFilter(items, filtro) {
+        if (!Array.isArray(items)) return [];
+        if (filtro === 'todo') return items;
+        const hoy = new Date();
+        return items.filter(h => {
+          const d = parseIsoToDate(h.fecha);
+          if (!d) return false;
+          if (filtro === 'hoy') return d.toDateString() === hoy.toDateString();
+          if (filtro === 'semana') { const semana = new Date(); semana.setDate(hoy.getDate() - 7); return d >= semana; }
+          if (filtro === 'mes') { const mes = new Date(); mes.setMonth(hoy.getMonth() - 1); return d >= mes; }
+          if (filtro === '3meses') { const t = new Date(); t.setMonth(hoy.getMonth() - 3); return d >= t; }
+          return true;
+        });
+      }
+
+      async function mostrarInventario(filtro = '3meses') {
+        contenedor.innerHTML = '<p>Cargando inventario...</p>';
+        let all = [];
+        try { all = await fetchAllTools(); } catch (e) { all = loadToolsFromLocal(); }
+        const mostrados = applyTimeFilter(all, filtro);
+        contenedor.innerHTML = '';
+        if (!mostrados || mostrados.length === 0) {
+          contenedor.innerHTML = '<p>No hay herramientas registradas en este rango de tiempo.</p>';
+          return;
+        }
+        mostrados.forEach(t => contenedor.appendChild(renderCard(t)));
+      }
+
+      // modal helpers (build edit modal same as Registro Herramientas)
+      function openEditLoteModal(id) {
+        if (!id) return;
+        modalTitle.textContent = 'Editar registro';
+        modalContent.innerHTML = '<p>Cargando...</p>';
+        modalBackdrop.classList.add('open');
+        modalBackdrop.setAttribute('aria-hidden','false');
+
+        (async function(){
+          let found = null;
+          try {
+            if (API && typeof API.obtenerTodasHerramientas === 'function') {
+              const all = await API.obtenerTodasHerramientas();
+              // normalize then find by idHerramienta or id
+              found = (Array.isArray(all) ? all.map(normalizeTool).find(x => String(x.idHerramienta) === String(id) || String(x.id) === String(id)) : null);
+            }
+            if (!found) {
+              const local = loadToolsFromLocal();
+              found = local.find(x => String(x.idHerramienta) === String(id) || String(x.id) === String(id));
+            }
+          } catch (e) {
+            console.warn('Error loading for edit', e);
+            const local = loadToolsFromLocal();
+            found = local.find(x => String(x.idHerramienta) === String(id) || String(x.id) === String(id));
+          }
+
+          if (!found) {
+            modalContent.innerHTML = '<p>No se encontró el registro.</p>';
+            return;
+          }
+
+          buildEditModalFromFound(found, String(found.id).startsWith('local-') || !!found._local);
+        })();
+
+        function buildEditModalFromFound(found, isLocal) {
+          modalContent.innerHTML = '';
+          const container = document.createElement('div');
+          const html = '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
+            '<div style="flex:1;min-width:240px;"><label>Nombre</label><input id="edit_nombre" type="text" value="' + escapeHtml(found.nombre || '') + '" /></div>' +
+            '<div style="flex:1;min-width:180px;"><label>Estado</label><select id="edit_estado"><option value="">Seleccionar</option><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option><option value="No_disponible">No disponible</option></select></div>' +
+            '<div style="flex:1;min-width:180px;"><label>Tipo</label><select id="edit_tipo"><option value="">Seleccionar</option><option value="Manual">Manual</option><option value="Electrica">Eléctrica</option></select></div>' +
+            '</div>' +
+            '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">' +
+            '<div style="flex:1;min-width:180px;"><label>Ubicación</label><select id="edit_ubicacion"><option value="">Seleccionar</option><option value="Bodega">Bodega</option><option value="Taller">Taller</option></select></div>' +
+            '<div style="flex:1;min-width:180px;"><label>Fecha registro</label><input id="edit_fecha" type="date" value="' + escapeHtml(String(found.fecha || '')) + '" /></div>' +
+            '<div style="flex:1;min-width:180px;"><label>Número lote</label><select id="edit_lote"><option value="">Seleccionar</option><option value="Lote 1">Lote 1</option><option value="Lote 2">Lote 2</option></select></div>' +
+            '</div>' +
+            '<div style="margin-top:10px;"><label>Cantidad</label><input id="edit_cantidad" type="number" min="0" value="' + escapeHtml(String(found.cantidad || 0)) + '" /></div>' +
+            '<div style="margin-top:10px;"><label>Descripción</label><textarea id="edit_descripcion" style="width:100%;">' + escapeHtml(found.descripcion || '') + '</textarea></div>' +
+            '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;"><button id="saveEditInv" class="btn-small" type="button">Guardar</button><button id="cancelEditInv" class="btn-small delete" type="button">Cancelar</button></div>';
+          container.innerHTML = html;
+          modalContent.appendChild(container);
+
+          try { document.getElementById('edit_estado').value = found.estado || ''; } catch(e){}
+          try { document.getElementById('edit_tipo').value = found.tipo || ''; } catch(e){}
+          try { document.getElementById('edit_ubicacion').value = found.ubicacion || ''; } catch(e){}
+          try { document.getElementById('edit_lote').value = found.lote || found.numero_lote || ''; } catch(e){}
+
+          document.getElementById('cancelEditInv').addEventListener('click', () => closeModal());
+
+          document.getElementById('saveEditInv').addEventListener('click', async function(){
+            const payload = {
+              nombre: (document.getElementById('edit_nombre').value || '').trim(),
+              estado: (document.getElementById('edit_estado').value || '').trim(),
+              tipo: (document.getElementById('edit_tipo').value || '').trim(),
+              ubicacion: (document.getElementById('edit_ubicacion').value || '').trim(),
+              fecha_registro: (document.getElementById('edit_fecha').value || ''),
+              numero_lote: (document.getElementById('edit_lote').value || ''),
+              cantidad: parseInt(document.getElementById('edit_cantidad').value || '0',10) || 0,
+              descripcion: (document.getElementById('edit_descripcion').value || '').trim()
+            };
+            if (!payload.nombre || !payload.estado) {
+              alert('Completa al menos nombre y estado.');
+              return;
+            }
+
+            if (isLocal) {
+              const listRaw = localStorage.getItem('fs_local_tools_v1');
+              let list = listRaw ? JSON.parse(listRaw) : [];
+              const idx = list.findIndex(x => String((x.idHerramienta||x.id)) === String(found.idHerramienta || found.id));
+              if (idx >= 0) {
+                list[idx] = Object.assign({}, list[idx], payload);
+                if ((list[idx].cantidad||0) !== payload.cantidad) {
+                  const detalles = [];
+                  for (let i=1;i<=payload.cantidad;i++){
+                    detalles.push({ idDetalle: 'ld-'+Date.now()+'-'+i, codigoUnico: (payload.nombre||'LOCAL').toUpperCase()+'-'+String(list[idx].idHerramienta || list[idx].id)+'-'+String(i).padStart(3,'0'), estado:'Disponible', disponible:true, fechaIngreso: payload.fecha_registro});
+                  }
+                  list[idx].detalles = detalles;
+                }
+                localStorage.setItem('fs_local_tools_v1', JSON.stringify(list));
+              }
+              alert('Registro actualizado localmente.');
+              closeModal();
+              mostrarInventario(filtroSelect.value);
+              return;
+            }
+
+            try {
+              if (API && typeof API.actualizarHerramienta === 'function') {
+                await API.actualizarHerramienta(found.idHerramienta || found.id, payload);
+              } else {
+                await fetch('http://localhost:8080/herramienta/' + encodeURIComponent(found.idHerramienta || found.id), {
+                  method: 'PUT',
+                  headers: {'Content-Type':'application/json'},
+                  body: JSON.stringify(payload)
+                });
+              }
+              alert('Registro actualizado en servidor.');
+              closeModal();
+              mostrarInventario(filtroSelect.value);
+            } catch (e) {
+              console.warn('PUT failed, saving locally', e);
+              const localListRaw = localStorage.getItem('fs_local_tools_v1');
+              const localList = localListRaw ? JSON.parse(localListRaw) : [];
+              const lid = 'local-' + Date.now();
+              const newLocal = Object.assign({}, payload, { idHerramienta: lid, _local:true });
+              newLocal.detalles = [];
+              for (let i=1;i<=newLocal.cantidad;i++){
+                newLocal.detalles.push({ idDetalle: 'ld-'+Date.now()+'-'+i, codigoUnico: (newLocal.nombre||'LOCAL').toUpperCase()+'-'+lid+'-'+String(i).padStart(3,'0'), estado:'Disponible', disponible:true, fechaIngreso:newLocal.fecha_registro});
+              }
+              localList.unshift(newLocal);
+              localStorage.setItem('fs_local_tools_v1', JSON.stringify(localList));
+              alert('No se pudo actualizar en servidor. Se guardó localmente.');
+              closeModal();
+              mostrarInventario(filtroSelect.value);
+            }
+          });
+        }
+      }
+
+      // details modal (shows unidades / detalles)
+      async function openDetallesModal(herramientaId, nombre) {
+        if (!herramientaId) return;
+        modalTitle.textContent = 'Detalles: ' + (nombre || '');
+        modalContent.innerHTML = '<p>Cargando detalles...</p>';
+        modalBackdrop.classList.add('open');
+        modalBackdrop.setAttribute('aria-hidden','false');
+
+        try {
+          let detalles = [];
+          if (API && typeof API.obtenerDetalles === 'function') {
+            detalles = await API.obtenerDetalles(herramientaId);
+          } else {
+            const local = loadToolsFromLocal();
+            const t = local.find(x => String(x.idHerramienta) === String(herramientaId) || String(x.id) === String(herramientaId));
+            detalles = (t && t.detalles) ? t.detalles : [];
+          }
+          renderDetallesList(detalles || [], herramientaId);
+        } catch (err) {
+          console.warn('DETALLE failed', err);
+          const local = loadToolsFromLocal();
+          const t = local.find(x => String(x.idHerramienta) === String(herramientaId) || String(x.id) === String(herramientaId));
+          if (t) renderDetallesList(t.detalles || [], herramientaId);
+          else {
+            modalBackdrop.classList.remove('open');
+            modalBackdrop.setAttribute('aria-hidden','true');
+            alert('No se pudieron cargar los detalles.');
+          }
         }
 
-        if (mostrar) {
-          let tarjeta = `
-            <div class="tarjeta herramienta-card">
-              <h3>🛠️ ${h.nombre}</h3>
-              <p><strong>Estado:</strong> ${h.estado}</p>
-              <p><strong>Tipo:</strong> ${h.tipo}</p>
-              <p><strong>Ubicación:</strong> ${h.ubicacion}</p>
-              <p><strong>Fecha ingreso:</strong> ${h.fecha}</p>
-              <p><strong>Lote:</strong> ${h.lote}</p>
-              <p><strong>Cantidad:</strong> ${h.cantidad}</p>
-              <p><strong>Descripción:</strong> ${h.descripcion}</p>
+        function renderDetallesList(detalles, herramientaId) {
+          modalContent.innerHTML = '';
+          if (!Array.isArray(detalles) || detalles.length === 0) {
+            modalContent.innerHTML = '<p>No hay detalles.</p>';
+            return;
+          }
+          const listDiv = document.createElement('div');
+          listDiv.className = 'modal-list';
+          detalles.forEach(function(d, idx){
+            const cont = document.createElement('div');
+            cont.className = 'tarjeta';
+            const left = document.createElement('div');
+            left.style.flex = '1';
+            const nombreUnit = (d.herramienta && d.herramienta.nombre) ? d.herramienta.nombre : ('Unidad ' + (idx + 1));
+            const h4 = document.createElement('h4');
+            h4.textContent = nombreUnit + ' — ' + (d.codigoUnico || '');
+            const p1 = document.createElement('p');
+            p1.innerHTML = '<strong>Estado:</strong> ' + escapeHtml(d.estado || '-');
+            const p2 = document.createElement('p');
+            p2.innerHTML = '<strong>Disponible:</strong> ' + (d.disponible ? 'Sí' : 'No') + ' • <strong>Fecha ingreso:</strong> ' + (d.fechaIngreso || '-');
+            left.appendChild(h4); left.appendChild(p1); left.appendChild(p2);
 
-              <div class="acciones">
-                <button class="editar" onclick="editarHerramienta('${h.id}')">Editar</button>
-                <button class="eliminar" onclick="eliminarHerramienta('${h.id}')">Eliminar</button>
-              </div>
-            </div>
-          `;
-          contenedor.innerHTML += tarjeta;
+            const right = document.createElement('div');
+            right.className = 'actions';
+            const btnEdit = document.createElement('button');
+            btnEdit.type = 'button';
+            btnEdit.className = 'btn-small';
+            btnEdit.textContent = 'Editar unidad';
+            btnEdit.addEventListener('click', function(){
+              const panel = cont.querySelector('.edit-panel');
+              if (!panel) {
+                const p = buildDetalleEditPanel(d, herramientaId);
+                cont.appendChild(p);
+                p.style.display = 'block';
+              } else panel.style.display = (panel.style.display === 'none' ? 'block' : 'none');
+            });
+            right.appendChild(btnEdit);
+            cont.appendChild(left); cont.appendChild(right);
+            listDiv.appendChild(cont);
+          });
+          modalContent.appendChild(listDiv);
+        }
+      }
+
+      function buildDetalleEditPanel(detalle, herramientaId) {
+        const panel = document.createElement('div');
+        panel.className = 'edit-panel';
+        panel.style.display = 'block';
+        panel.innerHTML = '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+          '<div style="min-width:160px;"><label>Estado</label><select class="up_estado"><option value="">Seleccionar</option><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option><option value="No_disponible">No disponible</option></select></div>' +
+          '<div style="min-width:160px;"><label>Disponible</label><select class="up_disponible"><option value="true">Sí</option><option value="false">No</option></select></div>' +
+          '<div style="min-width:160px;"><label>Fecha ingreso</label><input class="up_fecha" type="date" /></div>' +
+          '</div><div style="margin-top:8px;"><label>Descripción (opcional)</label><textarea class="up_descripcion" style="width:100%;"></textarea></div>' +
+          '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;"><button class="up_save btn-small" type="button">Guardar</button><button class="up_cancel btn-small delete" type="button">Cancelar</button></div>';
+
+        try { panel.querySelector('.up_estado').value = detalle.estado || ''; } catch(e){}
+        try { panel.querySelector('.up_disponible').value = detalle.disponible ? 'true' : 'false'; } catch(e){}
+        try { panel.querySelector('.up_fecha').value = detalle.fechaIngreso || ''; } catch(e){}
+        try { panel.querySelector('.up_descripcion').value = detalle.descripcion || ''; } catch(e){}
+
+        panel.querySelector('.up_cancel').addEventListener('click', function(){ panel.style.display='none'; });
+
+        panel.querySelector('.up_save').addEventListener('click', async function(){
+          const payload = {
+            estado: panel.querySelector('.up_estado').value || detalle.estado,
+            disponible: panel.querySelector('.up_disponible').value === 'true',
+            fechaIngreso: panel.querySelector('.up_fecha').value || detalle.fechaIngreso,
+            descripcion: panel.querySelector('.up_descripcion').value || detalle.descripcion
+          };
+
+          const idD = detalle.idDetalle || detalle.id_detalle || detalle.id;
+          const isLocalDetalle = String(idD).startsWith('ld-') || String(idD).startsWith('local-') || String(idD).indexOf('ld-') >= 0;
+
+          if (isLocalDetalle) {
+            const toolsRaw = localStorage.getItem('fs_local_tools_v1');
+            const tools = toolsRaw ? JSON.parse(toolsRaw) : [];
+            const tool = tools.find(t => String((t.idHerramienta||t.id||t.id_herramienta)) === String(herramientaId));
+            if (tool) {
+              tool.detalles = (tool.detalles||[]).map(dt => {
+                if (String(dt.idDetalle) === String(idD)) return Object.assign({}, dt, payload);
+                return dt;
+              });
+              localStorage.setItem('fs_local_tools_v1', JSON.stringify(tools));
+              alert('Unidad actualizada (local)');
+              openDetallesModal(herramientaId);
+              return;
+            }
+          }
+
+          try {
+            if (API && typeof API.actualizarDetalle === 'function') {
+              await API.actualizarDetalle(idD, payload, herramientaId);
+            } else {
+              await fetch('http://localhost:8080/api/herramienta-detalle/' + encodeURIComponent(idD), {
+                method: 'PUT',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(payload)
+              });
+            }
+            alert('Unidad actualizada');
+            openDetallesModal(herramientaId);
+          } catch (e) {
+            console.warn('PUT detalle failed, saving locally', e);
+            const toolsRaw = localStorage.getItem('fs_local_tools_v1');
+            const tools = toolsRaw ? JSON.parse(toolsRaw) : [];
+            let tool = tools.find(t => String((t.idHerramienta||t.id||t.id_herramienta)) === String(herramientaId));
+            if (!tool) {
+              tool = { idHerramienta: herramientaId, nombre: detalle.herramienta && detalle.herramienta.nombre || 'LocalTool', fecha_registro: (new Date()).toISOString().split('T')[0], cantidad:1, detalles:[] };
+              tools.unshift(tool);
+            }
+            const idLocalDetalle = idD || ('ld-' + Date.now() + '-' + Math.floor(Math.random()*1000));
+            const newDetalle = Object.assign({}, { idDetalle: idLocalDetalle }, payload, { codigoUnico: detalle.codigoUnico || idLocalDetalle, herramienta: { idHerramienta: tool.idHerramienta, nombre: tool.nombre } });
+            tool.detalles = (tool.detalles || []).filter(dt => String(dt.idDetalle) !== String(idLocalDetalle));
+            tool.detalles.push(newDetalle);
+            localStorage.setItem('fs_local_tools_v1', JSON.stringify(tools));
+            alert('Unidad guardada localmente (offline)');
+            openDetallesModal(tool.idHerramienta);
+          }
+        });
+
+        return panel;
+      }
+
+      function closeModal() {
+        modalBackdrop.classList.remove('open');
+        modalBackdrop.setAttribute('aria-hidden','true');
+        modalContent.innerHTML = '';
+      }
+
+      if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+      modalBackdrop.addEventListener('click', function(ev) { if (ev.target === modalBackdrop) closeModal(); });
+      document.addEventListener('keydown', function(ev) { if (ev.key === 'Escape') closeModal(); });
+
+      // Delegated actions: details / edit / delete
+      contenedor.addEventListener('click', function(ev){
+        const btn = ev.target.closest('button');
+        if (!btn) return;
+        const id = btn.dataset.id;
+        if (btn.classList.contains('detalles')) {
+          openDetallesModal(id);
+        } else if (btn.classList.contains('editar')) {
+          openEditLoteModal(id);
+        } else if (btn.classList.contains('eliminar')) {
+          if (!confirm('Eliminar herramienta id ' + id + '?')) return;
+          (async function(){
+            try {
+              if (API && typeof API.eliminarHerramienta === 'function') await API.eliminarHerramienta(id);
+              else await fetch('http://localhost:8080/herramienta/' + encodeURIComponent(id), { method: 'DELETE' });
+              mostrarInventario(filtroSelect.value);
+            } catch (e) {
+              console.error('Eliminar error', e);
+              alert('No se pudo eliminar. Revisa la consola.');
+            }
+          })();
         }
       });
 
-      if (contenedor.innerHTML === "") {
-        contenedor.innerHTML = "<p>No hay herramientas registradas en este rango de tiempo.</p>";
-      }
-    }
+      filtroSelect.addEventListener('change', function(){ mostrarInventario(this.value); });
 
-    document.getElementById("filtroTiempo").addEventListener("change", function() {
-      mostrarInventario(this.value);
-    });
-
-    mostrarInventario();
+      // initial load
+      mostrarInventario(filtroSelect.value);
+    })();
   </script>
+
+  <script src="../modo-oscuro.js"></script>
   <script src="../render-window.js"></script>
 </body>
 
