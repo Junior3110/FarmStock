@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Perfil - FarmStock</title>
+  <link rel="stylesheet" href="../CSS/index.css" />
+  <link rel="stylesheet" href="../CSS/Notificaciones.css" />
+</head>
+<body>
+  <div class="window-controls">
+    <button id="minimize" title="Minimizar" type="button">─</button>
+    <button id="maximize" title="Maximizar" type="button">▢</button>
+    <button id="close" title="Cerrar" type="button">✕</button>
+  </div>
+
+  <div class="container">
+    <!-- SIDEBAR: misma estructura que index.html -->
+    <aside class="sidebar" style="border-radius: 12px;">
+      <div class="top-section">
+        <div class="logo"><img src="../imagenes/Logo.png" alt="Logo FarmStock" /></div>
+        <ul class="menu-modulos">
+          <li><a href="index.html">Registro Herramientas</a></li>
+          <li><a href="registro-salida.html">Historial de herramientas</a></li>
+          <li><a href="indexInventario.html">Inventario</a></li>
+          <li><a href="Notificaciones.html">Notificaciones</a></li>
+          <li><a href="estats.html">Estadísticas</a></li>
+          <li><a href="registro-aprendices.html">Aprendices</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-bottom">
+        <a href="quienes-somos.html" class="somos">👥 Quiénes Somos</a>
+        <div id="btnModoNoche" class="night-mode">🌙 Modo noche</div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+      <div class="bienvenida">
+        <a href="perfil.html"><img src="../imagenes/usuario.png" alt="Foto de usuario" class="foto-usuario" /></a>
+        <p><strong>¡Hola María!</strong></p>
+      </div>
+
+      <!-- PERFIL: tarjeta principal con formulario y actividad, usando clases de index.css -->
+      <div class="area-superior">
+        <div class="formulario-card">
+          <div style="display:grid; grid-template-columns: 260px 1fr; gap:18px; align-items:start;">
+            <!-- Columna izquierda: avatar + stats -->
+            <div>
+              <div class="card" style="padding:16px; display:flex; flex-direction:column; gap:12px; align-items:center; text-align:center; border-radius: 20px;">
+                <img src="../imagenes/usuario.png" alt="Avatar" style="width:96px; height:96px; border-radius:12px; object-fit:cover; box-shadow:var(--shadow-1);" />
+                <div>
+                  <h3 style="margin:6px 0 0 0;">María Pérez</h3>
+                  <div class="small-muted">Administrador</div>
+                </div>
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                  <button id="editarPerfil" class="btn-small" style="background:var(--accent)">Editar</button>
+                  <button id="cerrarSesion" class="btn-small delete" style="background:var(--danger)">Cerrar sesión</button>
+                </div>
+
+                <div style="width:100%; margin-top:10px; display:flex; gap:8px; justify-content:space-between;">
+                  <div style="text-align:center; flex:1;">
+                    <div style="font-weight:700; font-size:1.05rem;">24</div>
+                    <div class="small-muted">Notificaciones</div>
+                  </div>
+                  <div style="text-align:center; flex:-1;">
+                    <div style="font-weight:00; font-size:1.05rem;"></div>
+                  </div>
+                  <div style="text-align:center; flex:1;">
+                    <div style="font-weight:700; font-size:1.05rem;">12</div>
+                    <div class="small-muted">Entradas</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Columna derecha: formulario -->
+            <div>
+              <h3 style="margin-top:0">Información personal</h3>
+              <form id="profile-form" class="formulario-horizontal" style="grid-template-columns: 1fr; gap:12px;" novalidate>
+                <div class="columna">
+                  <label for="nombre">Nombre</label>
+                  <input id="nombre" name="nombre" type="text" value="María" placeholder="Nombre" />
+                </div>
+
+                <div class="columna">
+                  <label for="apellido">Apellido</label>
+                  <input id="apellido" name="apellido" type="text" value="Gafaro" placeholder="Apellido" />
+                </div>
+
+                <div class="columna">
+                  <label for="email">Correo</label>
+                  <input id="email" name="email" type="email" value="maria@ejemplo.com" placeholder="correo@dominio.com" />
+                </div>
+
+                <div class="columna">
+                  <label for="telefono">Teléfono</label>
+                  <input id="telefono" name="telefono" type="tel" placeholder="(+57) 300 000 0000" />
+                </div>
+
+                <div class="columna">
+                  <label for="direccion">Dirección</label>
+                  <input id="direccion" name="direccion" type="text" placeholder="Ciudad, Dirección" />
+                </div>
+
+                <div style="display:flex; gap:10px; margin-top:8px; justify-content:flex-end;">
+                  <button type="submit" class="btn">Guardar cambios</button>
+                  <button type="button" id="cambiarPassword" class="btn" style="background:var(--surface); color:var(--text); border:1px solid var(--card-border);">Cambiar contraseña</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actividad reciente -->
+      <div class="area-inferior" style="margin-top:18px;">
+        <div class="herramientas-hoy">
+          <h3>Actividad reciente</h3>
+          <div class="lista-tarjetas" id="activity-list" aria-live="polite">
+            <div class="tarjeta">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  <h4>Actualizó inventario</h4>
+                  <p class="small-muted">Hace 2 horas — Herramienta: Pipicilina</p>
+                </div>
+                <div class="small-muted">02:14</div>
+              </div>
+            </div>
+
+            <div class="tarjeta">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  <h4>Generó reporte</h4>
+                  <p class="small-muted">Ayer — Reporte mensual</p>
+                </div>
+                <div class="small-muted">18:47</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <div id="modalBackdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" tabindex="-1">
+      <div class="modal-header">
+        <h3 id="modalTitle">Mensaje</h3>
+        <div><button id="closeModal" class="btn-small" style="background:#9e9e9e;color:#111;">Cerrar</button></div>
+      </div>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script src="../modo-oscuro.js"></script>
+  <script src="../render-window.js"></script>
+</body>
+</html>

@@ -504,6 +504,8 @@ th{ color:var(--text); font-weight:800; }
   border-radius: 10px;
 }
 
+
+
 /* Responsive para mobile */
 @media (max-width: 820px) {
   .modal, .modal-ap, .modal-contenido {

@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FarmStock</title>
+  <link rel="stylesheet" href="../CSS/index.css" />
+  <link rel="stylesheet" href="/FarmStock/app/CSS/darkmode.css" />
+</head>
+
+<body>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FarmStock</title>
     <link rel="stylesheet" href="../CSS/index.css" />
+
     <style>
-       .modal-backdrop {
+    .modal-backdrop {
     position: fixed;
     inset: 0;
     background: rgba(6,10,8,0.44);           /* Color fondo modal, funciona en modo oscuro y claro */
@@ -91,29 +99,243 @@
 </head>
 
 <body>
-    <div class="window-controls">
-        <button id="minimize" title="Minimizar">
-        <svg viewBox="0 0 10 10">
-            <rect x="2" y="6" width="6" height="1" fill="currentColor"/>
-        </svg>
+  <div class="window-controls">
+    <button id="minimize" title="Minimizar" type="button">─</button>
+    <button id="maximize" title="Maximizar" type="button">▢</button>
+    <button id="close" title="Cerrar" type="button">✕</button>
+  </div>
     </button>
-
-        <button id="maximize" title="Maximizar">
-        <svg viewBox="0 0 10 10">
-            <rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/>
-        </svg>
-    </button>
-
-        <button id="close" title="Cerrar">
-        <svg viewBox="0 0 10 10">
-        <line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.5"/>
-        <line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.5"/>
+  </div>
 
 
-        </svg>
-    </button>
-    </div>
+  <!-- Contenedor general -->
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="top-section">
+        <div class="logo"><img src="../imagenes/Logo.png" alt="Logo del sitio" /></div>
+        <ul class="menu-modulos">
+          <li><a href="../HTML/index.html" class="active">Registro Herramientas</a></li>
+          <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
+          <li><a href="../HTML/indexInventario.html">Inventario</a></li>
+          <li><a href="../HTML/Notificaciones.html">Notificaciones</a></li>
+          <li><a href="../HTML/estats.html">Estadísticas</a></li>
+          <li><a href="../HTML/registro-aprendices.html">Aprendices</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-bottom">
+        <a href="../HTML/quienes-somos.html" class="somos">👥 Quiénes Somos</a>
+        <div class="night-mode"><span>🌙 Modo noche</span></div>
+      </div>
+    </aside>
 
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <div class="bienvenida">
+            <a href="/FarmStock/app/HTML/perfil.html">
+                <img src="../imagenes/usuario.png" alt="Foto de usuario" class="foto-usuario" />
+            </a>
+        <p><strong>¡Hola Maria!</strong></p>
+        
+      </div>
+
+      <!-- Formulario principal -->
+      <div class="area-superior">
+        <div class="formulario-card">
+          <form id="formHerramienta" class="formulario-horizontal">
+            <div class="columna borde-derecho">
+              <label for="nombre">Nombre de herramienta</label>
+              <input type="text" id="nombre" name="nombre" placeholder="Escribe el nombre de la herramienta" required>
+
+              <label for="estado">Estado</label>
+              <select id="estado" name="estado" required>
+                <option value="">Seleccionar</option>
+                <option value="Disponible">Disponible</option>
+                <option value="Mantenimiento">Mantenimiento</option>
+                <option value="No_disponible">No disponible</option>
+              </select>
+
+              <label for="tipo">Tipo</label>
+              <select id="tipo" name="tipo" required>
+                <option value="">Seleccionar</option>
+                <option value="Manual">Manual</option>
+                <option value="Electrica">Eléctrica</option>
+              </select>
+
+              <label for="ubicacion">Ubicación</label>
+              <select id="ubicacion" name="ubicacion" required>
+                <option value="">Seleccionar</option>
+                <option value="Bodega">Bodega</option>
+                <option value="Taller">Taller</option>
+              </select>
+            </div>
+
+            <div class="columna borde-derecho">
+              <label for="fecha_registro">Fecha de registro</label>
+              <input type="date" id="fecha_registro" name="fecha_registro" required>
+
+              <label for="numero_lote">Número de Lote</label>
+              <select id="numero_lote" name="numero_lote" required>
+                <option value="">Seleccionar</option>
+                <option value="Lote 1">Lote 1</option>
+                <option value="Lote 2">Lote 2</option>
+              </select>
+
+              <label for="cantidad">Cantidad</label>
+              <input type="number" id="cantidad" name="cantidad" min="1" placeholder="Ejemplo: 10" required>
+            </div>
+
+            <div class="columna descripcion">
+              <label for="descripcion">Descripción de herramienta</label>
+              <textarea id="descripcion" name="descripcion" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
+              <div class="boton-registrar">
+                <button type="submit" id="btnRegistrar" class="btn btn-success">Registrar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Herramientas registradas -->
+      <div class="area-inferior">
+        <div class="herramientas-hoy">
+          <h3>Herramientas registradas</h3>
+          <div id="listaHoy" class="lista-tarjetas"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // IPC: intenta enviar vía preload (electron) o muestra advertencia si no está disponible
+    function sendWindowIPC(channel) {
+      try {
+        if (window.electronAPI && typeof window.electronAPI.send === 'function') {
+          window.electronAPI.send(channel);
+          return;
+        }
+        if (window.api && typeof window.api.send === 'function') {
+          window.api.send(channel);
+          return;
+        }
+        // Si require está disponible (contextIsolation false)
+        if (typeof require === 'function') {
+          const { ipcRenderer } = require('electron');
+          ipcRenderer.send(channel);
+          return;
+        }
+      } catch (e) {
+        console.warn('IPC no disponible:', e);
+      }
+      console.warn('No se pudo enviar IPC. Asegura preload.js exponga electronAPI.send o api.send');
+    }
+
+    document.getElementById('minimize').addEventListener('click', () => sendWindowIPC('window-minimize'));
+    document.getElementById('maximize').addEventListener('click', () => sendWindowIPC('window-maximize'));
+    document.getElementById('close').addEventListener('click', () => sendWindowIPC('window-close'));
+  </script>
+
+  <script>
+    const API_URL = "http://localhost:8080/herramienta";
+
+    // Registrar herramienta
+    document.getElementById("formHerramienta").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const datos = Object.fromEntries(new FormData(e.target).entries());
+      if (!datos.fecha_registro) datos.fecha_registro = new Date().toISOString().split("T")[0];
+      datos.cantidad = parseInt(datos.cantidad) || 0;
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(datos),
+        });
+
+        if (response.ok) {
+          alert("✅ Herramienta registrada correctamente");
+          e.target.reset();
+          obtenerHerramientas(); // recarga la lista completa
+        } else {
+          const error = await response.text();
+          console.error("Error del servidor:", error);
+          alert("❌ Error al registrar herramienta: " + error);
+        }
+      } catch (err) {
+        console.error("Error de conexión:", err);
+        alert("⚠ No se pudo conectar con el servidor.");
+      }
+    });
+
+    // Obtener y mostrar todas las herramientas registradas
+    async function obtenerHerramientas() {
+      const lista = document.getElementById("listaHoy");
+      lista.innerHTML = "";
+      try {
+        const res = await fetch(API_URL); // GET /herramienta (devuelve todas)
+        if (!res.ok) throw new Error("No se pudieron obtener las herramientas");
+        const herramientas = await res.json();
+
+        if (!Array.isArray(herramientas) || herramientas.length === 0) {
+          lista.innerHTML = "<p>No hay herramientas registradas.</p>";
+          return;
+        }
+
+        herramientas.forEach((h) => {
+          const card = document.createElement("div");
+          card.classList.add("tarjeta");
+          card.innerHTML = `
+            <h4>🛠 ${h.nombre ?? h.nombreHerramienta ?? 'Sin nombre'}</h4>
+            <p><strong>Estado:</strong> ${h.estado ?? '—'}</p>
+            <p><strong>Tipo:</strong> ${h.tipo ?? '—'}</p>
+            <p><strong>Ubicación:</strong> ${h.ubicacion ?? '—'}</p>
+            <p><strong>Fecha registro:</strong> ${h.fecha_registro ?? h.fecha ?? '—'}</p>
+            <p><strong>Lote:</strong> ${h.numero_lote ?? h.lote ?? '—'}</p>
+            <p><strong>Cantidad:</strong> ${h.cantidad ?? 0}</p>
+            <p><strong>Descripción:</strong> ${h.descripcion ?? 'Sin descripción'}</p>
+            <div class="acciones">
+              <button class="editar" data-id="${h.id ?? h.id_herramienta ?? ''}">Editar</button>
+              <button class="eliminar" data-id="${h.id ?? h.id_herramienta ?? ''}">Eliminar</button>
+            </div>
+          `;
+          lista.appendChild(card);
+        });
+
+        // Delegación: manejar click en Editar/Eliminar
+        lista.addEventListener('click', async (ev) => {
+          const btn = ev.target.closest('button');
+          if (!btn) return;
+          const id = btn.getAttribute('data-id');
+          if (btn.classList.contains('eliminar')) {
+            if (!confirm('¿Eliminar herramienta id ' + id + '?')) return;
+            try {
+              const r = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+              if (!r.ok) throw new Error(await r.text());
+              obtenerHerramientas();
+            } catch (err) {
+              console.error('Error eliminando:', err);
+              alert('No se pudo eliminar en el servidor.');
+            }
+          } else if (btn.classList.contains('editar')) {
+            alert('Función editar no implementada. ID: ' + id);
+            // Aquí puedes abrir modal con datos para editar y luego PUT /herramienta/:id
+          }
+        }, { once: false });
+
+      } catch (error) {
+        console.error("Error cargando herramientas:", error);
+        lista.innerHTML = "<p>No se pudieron cargar las herramientas</p>";
+      }
+    }
+
+    // Cargar al iniciar
+    obtenerHerramientas();
+  </script>
+
+  <script src="../modo-oscuro.js"></script>
+  <script src="../render-window.js"></script>
+=======
     <div class="container">
         <aside class="sidebar">
             <div class="top-section">
@@ -1075,5 +1297,4 @@
     <script src="../render-window.js"></script>
     <script src="../FSApiClient.js"></script>
 </body>
-
 </html>
