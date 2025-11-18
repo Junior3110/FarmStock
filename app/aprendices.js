@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function closeNuevoModal() {
     modalNuevo.classList.remove('open');
-    modalNuevo.setAttribute('aria-hidden','true');
+    modalNuevo.setAttribute
     setInertOnMain(false);
     try { formNuevo.reset(); } catch(e){}
     try { if (_previouslyFocused && typeof _previouslyFocused.focus === 'function') _previouslyFocused.focus(); } catch(e){}
@@ -136,54 +136,38 @@ document.addEventListener('DOMContentLoaded', () => {
   // Create nuevo aprendiz (normalized payload + logging)
   formNuevo.addEventListener('submit', async (ev) => {
     ev.preventDefault();
-    const nombre = (document.getElementById('nuevo_ap_nombre').value || '').trim();
-    const tipo = (document.getElementById('nuevo_ap_tipo').value || '').trim();
-    const numero = (document.getElementById('nuevo_ap_num').value || '').trim();
-    const ficha = (document.getElementById('nuevo_ap_ficha').value || '').trim();
-    if (!nombre || !tipo || !numero) { alert('Completa Nombre, Tipo y Número.'); return; }
-
-    const payload = {
-      nombres: nombre,
-      nombre: nombre,
-      tipoDocumento: tipo,
-      tipo_documento: tipo,
-      numeroDocumento: numero,
-      numero_documento: numero,
-      ficha: ficha,
-      numeroFicha: ficha,
-      numero_ficha: ficha,
-      correo: '',
-      telefono: ''
+    const data = {
+      nombre: (formNuevo.querySelector('#nombre') || {}).value || '',
+      tipoDocumento: (formNuevo.querySelector('#tipo_documento') || {}).value || '',
+      numeroDocumento: (formNuevo.querySelector('#numero_documento') || {}).value || '',
+      numeroFicha: (formNuevo.querySelector('#numero_ficha') || {}).value || ''
     };
-
-    console.debug('Intentando enviar payload /aprendiz:', payload);
 
     try {
       let created;
       if (API && typeof API.crearAprendiz === 'function') {
-        created = await API.crearAprendiz(payload);
+        created = await API.crearAprendiz(data);
       } else {
+        // fallback directo al backend (ruta REST correcta)
         const res = await fetch('/aprendices', {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify(payload)
-         });
-        const respText = await res.text().catch(()=>'');
-        console.debug('/aprendiz response', res.status, respText);
-        if (!res.ok) {
-          const parsed = (() => { try { return JSON.parse(respText); } catch(e) { return respText; } })();
-          throw new Error('HTTP ' + res.status + ' - ' + (parsed && parsed.message ? parsed.message : JSON.stringify(parsed)));
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok && res.status !== 201) {
+          const errBody = await res.text().catch(() => '');
+          throw new Error('HTTP ' + res.status + ' ' + errBody);
         }
-        created = respText ? (JSON.parse(respText) || payload) : payload;
+        created = await res.json().catch(() => data);
       }
 
-      // If backend returned an object without _local, assume server saved it
-      closeNuevoModal();
+      console.debug('Aprendiz creado:', created);
+      // actualizar UI (re-render tabla)
       await renderTable();
-      alert(created && created._local ? 'Guardado localmente (offline)' : 'Aprendiz registrado correctamente');
+      closeNuevoModal();
     } catch (err) {
       console.error('Error creando aprendiz:', err);
-      alert('Error creando aprendiz: ' + ((err && err.message) ? err.message : 'error'));
+      alert('No se pudo crear el aprendiz: ' + (err.message || err));
     }
   });
 

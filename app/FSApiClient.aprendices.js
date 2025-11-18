@@ -112,17 +112,16 @@
     },
 
     crearAprendiz: async function (payload) {
-      const send = Object.assign({}, payload, {
-        nombres: payload.nombres || payload.nombre || payload.name || '',
+      // normalize payload to the exact names expected by backend (Java bean)
+      const send = {
         nombre: payload.nombre || payload.nombres || payload.name || '',
-        numeroDocumento: payload.numeroDocumento || payload.numero_documento || payload.documento || '',
-        numero_documento: payload.numero_documento || payload.numeroDocumento || payload.documento || '',
         tipoDocumento: payload.tipoDocumento || payload.tipo_documento || payload.tipo || '',
-        tipo_documento: payload.tipo_documento || payload.tipoDocumento || payload.tipo || '',
-        ficha: payload.ficha || payload.numero_ficha || payload.numeroFicha || ''
-      });
+        numeroDocumento: payload.numeroDocumento || payload.numero_documento || payload.documento || '',
+        numeroFicha: payload.numeroFicha || payload.numero_ficha || payload.ficha || ''
+      };
 
       const base = await detectPath();
+      // si no hay backend detectado -> guardar local
       if (!base) {
         console.warn('FSApiClient.crearAprendiz: no backend detected, saving locally');
         const list = loadLocal();
@@ -132,7 +131,9 @@
         saveLocal(list);
         return item;
       }
-      const url = BACKEND_BASE + base;
+
+      // usa buildUrl para formar URL correcta (detectPath puede devolver '/aprendices')
+      const url = await buildUrl();
       try {
         const res = await timeoutFetch(url, {
           method: 'POST',
