@@ -36,6 +36,7 @@
       padding: 10px;
       border-radius: 10px;
       border: 1px solid var(--card-border);
+      border-left: 1px solid var(--card-border) !important;
       background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 98%, transparent 2%), transparent);
       box-shadow: 0 6px 18px rgba(16,34,31,0.03);
       transition: transform .12s ease, box-shadow .12s ease;
@@ -159,61 +160,6 @@
     </main>
   </div>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    <!-- Script para mostrar herramientas -->
-    <script src="../modo-oscuro.js"></script>
-    <script>
-        const API_HERRAMIENTAS = "http://localhost:8080/herramienta";
-
-        async function obtenerHerramientasBackend() {
-            try {
-                const res = await fetch(API_HERRAMIENTAS);
-                if (!res.ok) throw new Error("respuesta no ok");
-                const datos = await res.json();
-                if (!Array.isArray(datos)) return [];
-                return datos;
-            } catch (err) {
-                console.warn("No se pudo obtener del backend, usando localStorage:", err);
-                return null; // indica fallo para usar fallback
-            }
-        }
-
-        function normalizar(h) {
-            return {
-                id: h.id_herramienta ?? h.id ?? h.Id ?? h._id ?? "",
-                nombre: h.nombre ?? h.nombreHerramienta ?? "Sin nombre",
-                estado: h.estado ?? h.estadoHerramienta ?? "Desconocido",
-                tipo: h.tipo ?? h.tipoHerramienta ?? "",
-                ubicacion: h.ubicacion ?? h.ubicacionHerramienta ?? "",
-                fecha: h.fecha_registro ?? h.fecha ?? h.fechaIngreso ?? "",
-                lote: h.numero_lote ?? h.lote ?? h.loteHerramienta ?? "",
-                cantidad: h.cantidad ?? h.cant ?? 0,
-                descripcion: h.descripcion ?? h.desc ?? ""
-            };
-        }
-
-        async function mostrarInventario(filtro = "3meses") {
-            let herramientas = await obtenerHerramientasBackend();
-            if (herramientas === null) {
-                // fallback a localStorage si el backend no responde
-                herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
-            }
-
-            // normalizar arreglo
-            herramientas = herramientas.map(normalizar);
-
-            const contenedor = document.getElementById("inventarioLista");
-            contenedor.innerHTML = "";
-=======
-  <script src="../modo-oscuro.js"></script>
-  <script>
-    function mostrarInventario(filtro = "3meses") {
-      let herramientas = JSON.parse(localStorage.getItem("herramientas")) || [];
-      const contenedor = document.getElementById("inventarioLista");
-      contenedor.innerHTML = "";
->>>>>>> 7add10833658e6bfab4ba549eb8da85aa5301e73
-=======
   <!-- Modal backdrop (reutiliza estilos globales) -->
   <div id="modalBackdropInv" class="modal-backdrop" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitleInv" tabindex="-1">
@@ -237,7 +183,6 @@
       const modalContent = document.getElementById('modalContentInv');
       const modalTitle = document.getElementById('modalTitleInv');
       const closeModalBtn = document.getElementById('closeModalInv');
->>>>>>> ecb1cad5875df19b53b1b8e203309a03e95a23ce
 
       function escapeHtml(s) {
         return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -266,31 +211,6 @@
         };
       }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-            const tarjetas = herramientas.filter(h => {
-                if (!h.fecha) return true;
-                const fechaHerramienta = new Date(h.fecha);
-                if (filtro === "hoy") {
-                    return fechaHerramienta.toDateString() === hoy.toDateString();
-                } else if (filtro === "semana") {
-                    const semanaPasada = new Date(); semanaPasada.setDate(hoy.getDate() - 7);
-                    return fechaHerramienta >= semanaPasada;
-                } else if (filtro === "mes") {
-                    const mesPasado = new Date(); mesPasado.setMonth(hoy.getMonth() - 1);
-                    return fechaHerramienta >= mesPasado;
-                } else if (filtro === "3meses") {
-                    const tresMeses = new Date(); tresMeses.setMonth(hoy.getMonth() - 3);
-                    return fechaHerramienta >= tresMeses;
-                }
-                return true;
-            }).map(h => {
-                return `
-=======
-      herramientas.forEach(h => {
-        let fechaHerramienta = new Date(h.fecha);
-        let mostrar = true;
-=======
       async function fetchAllTools() {
         if (API && typeof API.obtenerTodasHerramientas === 'function') {
           try {
@@ -314,7 +234,6 @@
           }
         }
       }
->>>>>>> ecb1cad5875df19b53b1b8e203309a03e95a23ce
 
       function loadToolsFromLocal() {
         try {
@@ -538,76 +457,6 @@
           }
         }
 
-<<<<<<< HEAD
-        if (mostrar) {
-          let tarjeta = `
->>>>>>> 7add10833658e6bfab4ba549eb8da85aa5301e73
-            <div class="tarjeta herramienta-card">
-              <h3>🛠️ ${h.nombre}</h3>
-              <p><strong>Estado:</strong> ${h.estado}</p>
-              <p><strong>Tipo:</strong> ${h.tipo}</p>
-              <p><strong>Ubicación:</strong> ${h.ubicacion}</p>
-              <p><strong>Fecha ingreso:</strong> ${h.fecha || "—"}</p>
-              <p><strong>Lote:</strong> ${h.lote || "—"}</p>
-              <p><strong>Cantidad:</strong> ${h.cantidad}</p>
-              <p><strong>Descripción:</strong> ${h.descripcion || "Sin descripción"}</p>
-
-              <div class="acciones">
-                <button class="editar" onclick="editarHerramienta('${h.id}')">Editar</button>
-                <button class="eliminar" onclick="eliminarHerramienta('${h.id}')">Eliminar</button>
-              </div>
-<<<<<<< HEAD
-            </div>`;
-            });
-
-            contenedor.innerHTML = tarjetas.join("");
-
-            if (contenedor.innerHTML === "") {
-                contenedor.innerHTML = "<p>No hay herramientas registradas en este rango de tiempo.</p>";
-            }
-=======
-            </div>
-          `;
-          contenedor.innerHTML += tarjeta;
->>>>>>> 7add10833658e6bfab4ba549eb8da85aa5301e73
-        }
-      });
-
-<<<<<<< HEAD
-        // funciones stub para editar/eliminar (implementa según backend)
-        function editarHerramienta(id) {
-            alert("Editar herramienta: " + id);
-            // TODO: abrir modal o navegar a formulario de edición
-        }
-
-        function eliminarHerramienta(id) {
-            if (!confirm("¿Eliminar herramienta id " + id + "?")) return;
-            // Intentar eliminar por API; si falla, avisar y recargar lista
-            fetch(`${API_HERRAMIENTAS}/${id}`, { method: "DELETE" })
-                .then(r => {
-                    if (r.ok) {
-                        mostrarInventario(document.getElementById("filtroTiempo").value);
-                    } else {
-                        return r.text().then(t => Promise.reject(t));
-                    }
-                })
-                .catch(err => {
-                    console.warn("No se pudo eliminar en backend:", err);
-                    alert("No se pudo eliminar en el servidor. (Revisa backend)");
-                });
-        }
-
-        // Detectar cambios en el filtro
-        document.getElementById("filtroTiempo").addEventListener("change", function() {
-            mostrarInventario(this.value);
-        });
-=======
-      if (contenedor.innerHTML === "") {
-        contenedor.innerHTML = "<p>No hay herramientas registradas en este rango de tiempo.</p>";
-      }
-    }
->>>>>>> 7add10833658e6bfab4ba549eb8da85aa5301e73
-=======
         function renderDetallesList(detalles, herramientaId) {
           modalContent.innerHTML = '';
           if (!Array.isArray(detalles) || detalles.length === 0) {
@@ -766,7 +615,6 @@
       });
 
       filtroSelect.addEventListener('change', function(){ mostrarInventario(this.value); });
->>>>>>> ecb1cad5875df19b53b1b8e203309a03e95a23ce
 
       // initial load
       mostrarInventario(filtroSelect.value);
