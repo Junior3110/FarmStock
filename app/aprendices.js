@@ -163,11 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (API && typeof API.crearAprendiz === 'function') {
         created = await API.crearAprendiz(payload);
       } else {
-        const res = await fetch('/aprendiz', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+        const res = await fetch('/aprendices', {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify(payload)
+         });
         const respText = await res.text().catch(()=>'');
         console.debug('/aprendiz response', res.status, respText);
         if (!res.ok) {

@@ -18,7 +18,8 @@
 
   // Forzar uso de backend (temporal para depuración). Pon a false para volver a detección automática.
   const FORCE_BACKEND = true;
-  let cachedPath = FORCE_BACKEND ? '/aprendiz' : null;
+  // backend expone /aprendices (plural) según tu controlador Spring
+  let cachedPath = FORCE_BACKEND ? '/aprendices' : null;
 
   function timeoutFetch(url, opts, ms = TIMEOUT_MS) {
     return Promise.race([
