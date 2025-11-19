@@ -188,8 +188,13 @@
     </div>
   </div>
 
+  <script src="../FSApiClient.js"></script>
   <script>
     (function () {
+      const API = window.FSApiClient;
+      console.log('🔍 FSApiClient cargado:', API);
+      console.log('🔍 Método crearPrestamo disponible:', typeof API?.crearPrestamo);
+      
       // Keys:
       const LS_TOOLS = 'fs_local_tools_v1'; // existing tools storage (from inventario)
       const LS_APRENDICES = 'fs_aprendices_v1';
@@ -344,72 +349,171 @@
       });
 
       // Process scanned code: find tool and build historial record
-      function handleScannedCode(code) {
+      async function handleScannedCode(code) {
         stopWaitingScan();
         scanPreview.textContent = 'Código leído: ' + code;
-        // Find tool by idHerramienta or by codigoUnico inside detalles
-        const tools = loadLS(LS_TOOLS);
-        let foundTool = null;
-        // Try matching idHerramienta
-        foundTool = tools.find(t => String(t.idHerramienta) === String(code));
-        if (!foundTool) {
-          // try detalles.codigoUnico
-          for (const t of tools) {
-            if (Array.isArray(t.detalles)) {
-              const d = t.detalles.find(dd => String(dd.codigoUnico) === String(code) || String(dd.idDetalle) === String(code));
-              if (d) { foundTool = t; break; }
-            }
-          }
-        }
-
+        
         // Prepare aprendiz info
         const cc = regNumdoc.value.trim();
         const tipo = regTipo.value;
-        const apr = lookupAprendizByDoc(cc);
-        const ficha = apr ? (apr.numero_ficha || '') : '';
-
-        if (!foundTool) {
-          // If not found, still create a record with the scanned code as nombre/id to keep the trace
-          const record = {
-            id: genId('H'),
-            idHerramienta: code,
-            nombre: `Código: ${code}`,
-            estado: 'Desconocido',
-            cc: cc || '',
-            ficha: ficha || '',
-            fecha: nowDate(),
-            horaSalida: nowTime(),
-            horaEntrada: ''
-          };
-          const hist = loadLS(LS_HIST);
-          hist.unshift(record);
-          saveLS(LS_HIST, hist);
-          renderHist();
-          alert('Herramienta no encontrada en inventario local. Se registró el código escaneado en historial (local).');
+        
+        if (!cc) {
+          alert('Por favor, ingresa el número de documento del aprendiz.');
           return;
         }
-
-        // Build proper historial record from foundTool
+        
+        const apr = lookupAprendizByDoc(cc);
+        let ficha = apr ? (apr.numero_ficha || '') : '';
+        
+        // ===== PRIMERO: Intentar crear préstamo en el backend =====
+        console.log('📤 Iniciando proceso de creación de préstamo...');
+        console.log('  - Código único:', code);
+        console.log('  - Número documento:', cc);
+        console.log('  - ID Usuario:', 1);
+        
+        let prestamoExitoso = false;
+        let nombreHerramienta = 'Código: ' + code;
+        let estadoHerramienta = 'Desconocido';
+        let nombreAprendiz = '';
+        
+        try {
+          // Verificar que el API esté disponible
+          if (!API) {
+            throw new Error('❌ FSApiClient no está cargado. Verifica que FSApiClient.js esté incluido.');
+          }
+          
+          if (typeof API.crearPrestamo !== 'function') {
+            throw new Error('❌ El método crearPrestamo no existe en FSApiClient');
+          }
+          
+          // Obtener idUsuario (por ahora hardcodeado)
+          // IMPORTANTE: Este usuario DEBE existir en la tabla 'usuario' de la BD
+          // Cambia este ID por uno que exista en tu base de datos
+          const idUsuario = 48; // TODO: cambiar por ID real de usuario logueado
+          
+          console.log('⚠️ IMPORTANTE: Usando idUsuario =', idUsuario, '- Verifica que este usuario exista en la BD');
+          
+          // Crear el objeto Prestamo con el formato que espera el backend
+          // LocalDateTime en Java NO acepta la "Z", necesita formato: 2025-11-19T01:21:34
+          const ahora = new Date();
+          const year = ahora.getFullYear();
+          const month = String(ahora.getMonth() + 1).padStart(2, '0');
+          const day = String(ahora.getDate()).padStart(2, '0');
+          const hours = String(ahora.getHours()).padStart(2, '0');
+          const minutes = String(ahora.getMinutes()).padStart(2, '0');
+          const seconds = String(ahora.getSeconds()).padStart(2, '0');
+          const fechaPrestamoLocal = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+          
+          const prestamoPayload = {
+            fechaPrestamo: fechaPrestamoLocal,
+            fechaDevolucion: null,
+            estado: 'Activo'
+          };
+          
+          console.log('  - Payload a enviar:', JSON.stringify(prestamoPayload, null, 2));
+          console.log('  - URL completa:', `http://localhost:8080/prestamos/crear?codigoUnico=${code}&idUsuario=${idUsuario}&numeroDocumento=${cc}`);
+          
+          // Llamar al backend
+          console.log('  🔄 Enviando petición al backend...');
+          const prestamoCreado = await API.crearPrestamo(code, idUsuario, cc, prestamoPayload);
+          
+          console.log('✅ Respuesta del backend:', prestamoCreado);
+          console.log('✅ Préstamo creado exitosamente con ID:', prestamoCreado.idPrestamo);
+          
+          prestamoExitoso = true;
+          
+          // Extraer información de la respuesta del backend
+          if (prestamoCreado.herramienta && prestamoCreado.herramienta.nombre) {
+            nombreHerramienta = prestamoCreado.herramienta.nombre;
+          }
+          if (prestamoCreado.herramientaDetalle && prestamoCreado.herramientaDetalle.estado) {
+            estadoHerramienta = prestamoCreado.herramientaDetalle.estado;
+          }
+          // ✅ NUEVO: Extraer datos del aprendiz desde el backend
+          if (prestamoCreado.aprendiz) {
+            if (prestamoCreado.aprendiz.numeroFicha) {
+              ficha = prestamoCreado.aprendiz.numeroFicha;
+              console.log('✅ Número de ficha obtenido del backend:', ficha);
+            }
+            if (prestamoCreado.aprendiz.nombre) {
+              nombreAprendiz = prestamoCreado.aprendiz.nombre;
+              console.log('✅ Nombre del aprendiz obtenido del backend:', nombreAprendiz);
+            }
+          }
+          
+        } catch (error) {
+          console.error('❌ ERROR al crear préstamo en backend:', error);
+          console.error('  - Tipo de error:', error.name);
+          console.error('  - Mensaje:', error.message);
+          
+          prestamoExitoso = false;
+          
+          // Intentar buscar en localStorage como fallback
+          const tools = loadLS(LS_TOOLS);
+          let foundTool = tools.find(t => String(t.idHerramienta) === String(code));
+          if (!foundTool) {
+            for (const t of tools) {
+              if (Array.isArray(t.detalles)) {
+                const d = t.detalles.find(dd => String(dd.codigoUnico) === String(code) || String(dd.idDetalle) === String(code));
+                if (d) { foundTool = t; break; }
+              }
+            }
+          }
+          
+          if (foundTool) {
+            nombreHerramienta = foundTool.nombre || 'Sin nombre';
+            estadoHerramienta = foundTool.estado || 'Desconocido';
+          }
+        }
+        
+        // ===== SEGUNDO: Guardar registro local en historial =====
         const record = {
           id: genId('H'),
-          idHerramienta: foundTool.idHerramienta || '',
-          nombre: foundTool.nombre || 'Sin nombre',
-          estado: foundTool.estado || '',
+          idHerramienta: code,
+          nombre: nombreHerramienta,
+          estado: estadoHerramienta,
           cc: cc || '',
           ficha: ficha || '',
           fecha: nowDate(),
           horaSalida: nowTime(),
           horaEntrada: ''
         };
+        
         const hist = loadLS(LS_HIST);
         hist.unshift(record);
         saveLS(LS_HIST, hist);
         renderHist();
-        alert('Salida registrada localmente: ' + record.nombre);
+        
+        closeModal();
+        
+        // ===== TERCERO: Mostrar resultado al usuario =====
+        if (prestamoExitoso) {
+          alert('✅ ¡PRÉSTAMO REGISTRADO EXITOSAMENTE!\n\n' +
+                'Herramienta: ' + nombreHerramienta + '\n' +
+                'Código: ' + code + '\n' +
+                'Aprendiz: ' + (apr ? apr.nombre : cc) + '\n' +
+                'Ficha: ' + ficha + '\n' +
+                'Estado: Activo\n\n' +
+                '✓ Guardado en base de datos\n' +
+                '✓ Guardado en historial local');
+        } else {
+          alert('⚠️ PRÉSTAMO GUARDADO SOLO LOCALMENTE\n\n' +
+                'Herramienta: ' + nombreHerramienta + '\n' +
+                'Código: ' + code + '\n' +
+                'Aprendiz: ' + (apr ? apr.nombre : cc) + '\n' +
+                'Ficha: ' + ficha + '\n\n' +
+                '❌ No se pudo conectar con el servidor\n' +
+                'El préstamo se guardó en el historial local.\n\n' +
+                'Verifica:\n' +
+                '• Backend corriendo en localhost:8080\n' +
+                '• Herramienta existe en herramienta_detalle\n' +
+                '• Aprendiz registrado en la BD\n' +
+                '• Usuario ID=1 existe en la BD');
+        }
       }
 
       // Also allow manual confirmation without scanning (useful for testing)
-      btnConfirmManual.addEventListener('click', function () {
+      btnConfirmManual.addEventListener('click', async function () {
         const cc = regNumdoc.value.trim();
         const tipo = regTipo.value;
         if (!cc) { alert('Introduce número de documento del aprendiz.'); return; }
@@ -418,7 +522,7 @@
         // Let user type tool id in a prompt (manual)
         const toolId = prompt('Introduce ID de herramienta o código leído (manual) para registrar salida:');
         if (!toolId) return;
-        handleScannedCode(toolId.trim());
+        await handleScannedCode(toolId.trim());
       });
 
       // Export CSV for historial
