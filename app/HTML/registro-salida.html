@@ -6,6 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FarmStock - Historial de herramientas</title>
 
+  <!-- Prevenir flashazo del modo oscuro -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('fs_dark_mode');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const shouldBeDark = saved === null ? prefersDark : saved === 'true';
+      if (shouldBeDark) {
+        document.documentElement.classList.add('dark-mode');
+        document.body.classList.add('dark-mode');
+      }
+    })();
+  </script>
+
   <!-- Usar solo el CSS global para mantener el mismo tema -->
   <link rel="stylesheet" href="../CSS/index.css" />
 

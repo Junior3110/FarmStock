@@ -6,6 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FarmStock - Inventario</title>
 
+  <!-- Prevenir flashazo del modo oscuro -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('fs_dark_mode');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const shouldBeDark = saved === null ? prefersDark : saved === 'true';
+      if (shouldBeDark) {
+        document.documentElement.classList.add('dark-mode');
+        document.body.classList.add('dark-mode');
+      }
+    })();
+  </script>
+
   <!-- Usa tu CSS global -->
   <link rel="stylesheet" href="../CSS/index.css" />
 
@@ -58,6 +71,142 @@
     @media (max-width:560px) {
       .tarjetas-container { grid-template-columns: 1fr; max-height: calc(100vh - 220px); }
       .tarjetas-container .tarjeta { min-height:110px; }
+    }
+
+    /* Modal de confirmación personalizado */
+    .confirm-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 15000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .confirm-modal-backdrop.show {
+      display: flex;
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    .confirm-modal {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 0;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      transform: scale(0.9) translateY(-20px);
+      animation: modalBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      overflow: hidden;
+    }
+
+    @keyframes modalBounce {
+      to {
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .confirm-modal-header {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+      color: white;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .confirm-modal-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px) rotate(-5deg); }
+      75% { transform: translateX(10px) rotate(5deg); }
+    }
+
+    .confirm-modal-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .confirm-modal-body {
+      padding: 24px;
+      color: var(--text);
+    }
+
+    .confirm-modal-message {
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .confirm-modal-detail {
+      background: var(--card-bg);
+      border-left: 3px solid #ff6b6b;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .confirm-modal-footer {
+      padding: 16px 24px 24px;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .confirm-modal-btn {
+      padding: 10px 24px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .confirm-modal-btn-cancel {
+      background: var(--card-bg);
+      color: var(--text);
+    }
+
+    .confirm-modal-btn-cancel:hover {
+      background: var(--hover-bg);
+      transform: translateY(-1px);
+    }
+
+    .confirm-modal-btn-confirm {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+      color: white;
+    }
+
+    .confirm-modal-btn-confirm:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+    }
+
+    .confirm-modal-btn:active {
+      transform: translateY(0);
     }
   </style>
 </head>
@@ -124,6 +273,24 @@
     </div>
   </div>
 
+  <!-- Modal de confirmación personalizado -->
+  <div id="confirmModalBackdrop" class="confirm-modal-backdrop">
+    <div class="confirm-modal">
+      <div class="confirm-modal-header">
+        <div class="confirm-modal-icon">⚠️</div>
+        <h3 class="confirm-modal-title">Confirmar Eliminación</h3>
+      </div>
+      <div class="confirm-modal-body">
+        <p class="confirm-modal-message" id="confirmModalMessage"></p>
+        <div class="confirm-modal-detail" id="confirmModalDetail"></div>
+      </div>
+      <div class="confirm-modal-footer">
+        <button type="button" class="confirm-modal-btn confirm-modal-btn-cancel" id="confirmModalCancel">Cancelar</button>
+        <button type="button" class="confirm-modal-btn confirm-modal-btn-confirm" id="confirmModalConfirm">Sí, Eliminar</button>
+      </div>
+    </div>
+  </div>
+
   <script src="../FSApiClient.js"></script>
 
   <script>
@@ -166,6 +333,56 @@
       const BACKEND_BASE = 'http://127.0.0.1:8080'; // <-- backend local
       function ensureNoSlash(u){ return u && u.endsWith('/') ? u.slice(0,-1) : u; }
       const BACKEND = ensureNoSlash(BACKEND_BASE);
+
+      // ===== MODAL DE CONFIRMACIÓN PERSONALIZADO =====
+      function showConfirmModal(message, detail) {
+        return new Promise((resolve) => {
+          const backdrop = document.getElementById('confirmModalBackdrop');
+          const messageEl = document.getElementById('confirmModalMessage');
+          const detailEl = document.getElementById('confirmModalDetail');
+          const confirmBtn = document.getElementById('confirmModalConfirm');
+          const cancelBtn = document.getElementById('confirmModalCancel');
+
+          messageEl.textContent = message;
+          detailEl.textContent = detail;
+
+          backdrop.classList.add('show');
+
+          const handleConfirm = () => {
+            backdrop.classList.remove('show');
+            setTimeout(() => backdrop.style.display = 'none', 300);
+            cleanup();
+            resolve(true);
+          };
+
+          const handleCancel = () => {
+            backdrop.classList.remove('show');
+            setTimeout(() => backdrop.style.display = 'none', 300);
+            cleanup();
+            resolve(false);
+          };
+
+          const handleEscape = (e) => {
+            if (e.key === 'Escape') handleCancel();
+          };
+
+          const cleanup = () => {
+            confirmBtn.removeEventListener('click', handleConfirm);
+            cancelBtn.removeEventListener('click', handleCancel);
+            backdrop.removeEventListener('click', handleBackdropClick);
+            document.removeEventListener('keydown', handleEscape);
+          };
+
+          const handleBackdropClick = (e) => {
+            if (e.target === backdrop) handleCancel();
+          };
+
+          confirmBtn.addEventListener('click', handleConfirm);
+          cancelBtn.addEventListener('click', handleCancel);
+          backdrop.addEventListener('click', handleBackdropClick);
+          document.addEventListener('keydown', handleEscape);
+        });
+      }
 
       // Construye URL absoluta para QR por CÓDIGO UNICO (archivo en backend: qr_<CODIGO>.png)
       function qrUrlForCodigo(codigoUnico) {
@@ -397,55 +614,33 @@
               return;
             }
 
-            if (isLocal) {
-              const listRaw = localStorage.getItem('fs_local_tools_v1');
-              let list = listRaw ? JSON.parse(listRaw) : [];
-              const idx = list.findIndex(x => String((x.idHerramienta||x.id)) === String(found.idHerramienta || found.id));
-              if (idx >= 0) {
-                list[idx] = Object.assign({}, list[idx], payload);
-                if ((list[idx].cantidad||0) !== payload.cantidad) {
-                  const detalles = [];
-                  for (let i=1;i<=payload.cantidad;i++){
-                    detalles.push({ idDetalle: 'ld-'+Date.now()+'-'+i, codigoUnico: (payload.nombre||'LOCAL').toUpperCase()+'-'+String(list[idx].idHerramienta || list[idx].id)+'-'+String(i).padStart(3,'0'), estado:'Disponible', disponible:true, fechaIngreso: payload.fecha_registro});
-                  }
-                  list[idx].detalles = detalles;
-                }
-                localStorage.setItem('fs_local_tools_v1', JSON.stringify(list));
-              }
-              alert('Registro actualizado localmente.');
-              closeModal();
-              mostrarInventario(filtroSelect.value);
-              return;
-            }
-
             try {
               if (API && typeof API.actualizarHerramienta === 'function') {
                 await API.actualizarHerramienta(found.idHerramienta || found.id, payload);
               } else {
-                await fetch(BACKEND + '/herramienta/' + encodeURIComponent(found.idHerramienta || found.id), {
+                const response = await fetch(BACKEND + '/herramienta/' + encodeURIComponent(found.idHerramienta || found.id), {
                   method: 'PUT',
                   headers: {'Content-Type':'application/json'},
                   body: JSON.stringify(payload)
                 });
+                if (!response.ok) {
+                  const errorData = await response.text();
+                  let errorMessage = 'Error al actualizar';
+                  try {
+                    const errorJson = JSON.parse(errorData);
+                    errorMessage = errorJson.message || errorJson.error || errorData;
+                  } catch(e) {
+                    errorMessage = errorData || `Error HTTP ${response.status}`;
+                  }
+                  throw new Error(errorMessage);
+                }
               }
               alert('Registro actualizado en servidor.');
               closeModal();
               mostrarInventario(filtroSelect.value);
             } catch (e) {
-              console.warn('PUT failed, saving locally', e);
-              const localListRaw = localStorage.getItem('fs_local_tools_v1');
-              const localList = localListRaw ? JSON.parse(localListRaw) : [];
-              const lid = 'local-' + Date.now();
-              const newLocal = Object.assign({}, payload, { idHerramienta: lid, _local:true });
-              newLocal.detalles = [];
-              for (let i=1;i<=newLocal.cantidad;i++){
-                newLocal.detalles.push({ idDetalle: 'ld-'+Date.now()+'-'+i, codigoUnico: (newLocal.nombre||'LOCAL').toUpperCase()+'-'+lid+'-'+String(i).padStart(3,'0'), estado:'Disponible', disponible:true, fechaIngreso:newLocal.fecha_registro});
-              }
-              localList.unshift(newLocal);
-              localStorage.setItem('fs_local_tools_v1', JSON.stringify(localList));
-              alert('No se pudo actualizar en servidor. Se guardó localmente.');
-              closeModal();
-              mostrarInventario(filtroSelect.value);
+              console.error('Error al actualizar:', e);
+              alert('Error: ' + (e.message || e));
             }
           });
         }
@@ -543,8 +738,54 @@
               } else panel.style.display = (panel.style.display === 'none' ? 'block' : 'none');
             });
 
+            const btnDelete = document.createElement('button');
+            btnDelete.type = 'button';
+            btnDelete.className = 'btn-small delete';
+            btnDelete.textContent = 'Eliminar unidad';
+            btnDelete.addEventListener('click', async function(){
+              const idD = d.idDetalle || d.id_detalle || d.id;
+              const nombreUnidad = (d.herramienta && d.herramienta.nombre) ? d.herramienta.nombre : 'esta unidad';
+              const codigoUnidad = d.codigoUnico || idD;
+              
+              // Mostrar modal de confirmación personalizado
+              const confirmed = await showConfirmModal(
+                '¿Está seguro de que desea eliminar esta unidad?',
+                `${nombreUnidad} (${codigoUnidad})`
+              );
+
+              if (!confirmed) return;
+
+              try {
+                if (API && typeof API.eliminarDetalle === 'function') {
+                  await API.eliminarDetalle(idD);
+                } else {
+                  const response = await fetch(BACKEND + '/api/herramienta-detalle/' + encodeURIComponent(idD), {
+                    method: 'DELETE'
+                  });
+                  if (!response.ok) {
+                    const errorData = await response.text();
+                    let errorMessage = 'Error al eliminar';
+                    try {
+                      const errorJson = JSON.parse(errorData);
+                      errorMessage = errorJson.message || errorJson.error || errorData;
+                    } catch(e) {
+                      errorMessage = errorData || `Error HTTP ${response.status}`;
+                    }
+                    throw new Error(errorMessage);
+                  }
+                }
+                alert('Unidad eliminada exitosamente');
+                // Recargar detalles usando el nombre de la herramienta del detalle
+                openDetallesModal(herramientaId, nombreUnidad);
+              } catch (e) {
+                console.error('Error al eliminar detalle:', e);
+                alert('Error: ' + (e.message || e));
+              }
+            });
+
             right.appendChild(img);
             right.appendChild(btnEdit);
+            right.appendChild(btnDelete);
 
             cont.appendChild(left);
             cont.appendChild(right);
@@ -563,13 +804,13 @@
           '<div style="min-width:160px;"><label>Estado</label><select class="up_estado"><option value="">Seleccionar</option><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option><option value="No_disponible">No disponible</option></select></div>' +
           '<div style="min-width:160px;"><label>Disponible</label><select class="up_disponible"><option value="true">Sí</option><option value="false">No</option></select></div>' +
           '<div style="min-width:160px;"><label>Fecha ingreso</label><input class="up_fecha" type="date" /></div>' +
-          '</div><div style="margin-top:8px;"><label>Descripción (opcional)</label><textarea class="up_descripcion" style="width:100%;"></textarea></div>' +
+          '</div><div style="margin-top:8px;"><label>Comentario</label><textarea class="up_comentario" style="width:100%;"></textarea></div>' +
           '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;"><button class="up_save btn-small" type="button">Guardar</button><button class="up_cancel btn-small delete" type="button">Cancelar</button></div>';
 
         try { panel.querySelector('.up_estado').value = detalle.estado || ''; } catch(e){}
         try { panel.querySelector('.up_disponible').value = detalle.disponible ? 'true' : 'false'; } catch(e){}
         try { panel.querySelector('.up_fecha').value = detalle.fechaIngreso || ''; } catch(e){}
-        try { panel.querySelector('.up_descripcion').value = detalle.descripcion || ''; } catch(e){}
+        try { panel.querySelector('.up_comentario').value = detalle.comentario || ''; } catch(e){}
 
         panel.querySelector('.up_cancel').addEventListener('click', function(){ panel.style.display='none'; });
 
@@ -578,56 +819,37 @@
             estado: panel.querySelector('.up_estado').value || detalle.estado,
             disponible: panel.querySelector('.up_disponible').value === 'true',
             fechaIngreso: panel.querySelector('.up_fecha').value || detalle.fechaIngreso,
-            descripcion: panel.querySelector('.up_descripcion').value || detalle.descripcion
+            comentario: panel.querySelector('.up_comentario').value || ''
           };
 
           const idD = detalle.idDetalle || detalle.id_detalle || detalle.id;
-          const isLocalDetalle = String(idD).startsWith('ld-') || String(idD).startsWith('local-') || String(idD).indexOf('ld-') >= 0;
-
-          if (isLocalDetalle) {
-            const toolsRaw = localStorage.getItem('fs_local_tools_v1');
-            const tools = toolsRaw ? JSON.parse(toolsRaw) : [];
-            const tool = tools.find(t => String((t.idHerramienta||t.id||t.id_herramienta)) === String(herramientaId));
-            if (tool) {
-              tool.detalles = (tool.detalles||[]).map(dt => {
-                if (String(dt.idDetalle) === String(idD)) return Object.assign({}, dt, payload);
-                return dt;
-              });
-              localStorage.setItem('fs_local_tools_v1', JSON.stringify(tools));
-              alert('Unidad actualizada (local)');
-              openDetallesModal(herramientaId);
-              return;
-            }
-          }
 
           try {
             if (API && typeof API.actualizarDetalle === 'function') {
               await API.actualizarDetalle(idD, payload, herramientaId);
             } else {
-              await fetch(BACKEND + '/api/herramienta-detalle/' + encodeURIComponent(idD), {
+              const response = await fetch(BACKEND + '/api/herramienta-detalle/' + encodeURIComponent(idD), {
                 method: 'PUT',
                 headers: {'Content-Type':'application/json'},
                 body: JSON.stringify(payload)
               });
+              if (!response.ok) {
+                const errorData = await response.text();
+                let errorMessage = 'Error al actualizar detalle';
+                try {
+                  const errorJson = JSON.parse(errorData);
+                  errorMessage = errorJson.message || errorJson.error || errorData;
+                } catch(e) {
+                  errorMessage = errorData || `Error HTTP ${response.status}`;
+                }
+                throw new Error(errorMessage);
+              }
             }
             alert('Unidad actualizada');
             openDetallesModal(herramientaId);
           } catch (e) {
-            console.warn('PUT detalle failed, saving locally', e);
-            const toolsRaw = localStorage.getItem('fs_local_tools_v1');
-            const tools = toolsRaw ? JSON.parse(toolsRaw) : [];
-            let tool = tools.find(t => String((t.idHerramienta||t.id||t.id_herramienta)) === String(herramientaId));
-            if (!tool) {
-              tool = { idHerramienta: herramientaId, nombre: detalle.herramienta && detalle.herramienta.nombre || 'LocalTool', fecha_registro: (new Date()).toISOString().split('T')[0], cantidad:1, detalles:[] };
-              tools.unshift(tool);
-            }
-            const idLocalDetalle = idD || ('ld-' + Date.now() + '-' + Math.floor(Math.random()*1000));
-            const newDetalle = Object.assign({}, { idDetalle: idLocalDetalle }, payload, { codigoUnico: detalle.codigoUnico || idLocalDetalle, herramienta: { idHerramienta: tool.idHerramienta, nombre: tool.nombre } });
-            tool.detalles = (tool.detalles || []).filter(dt => String(dt.idDetalle) !== String(idLocalDetalle));
-            tool.detalles.push(newDetalle);
-            localStorage.setItem('fs_local_tools_v1', JSON.stringify(tools));
-            alert('Unidad guardada localmente (offline)');
-            openDetallesModal(tool.idHerramienta);
+            console.error('Error al actualizar detalle:', e);
+            alert('Error: ' + (e.message || e));
           }
         });
 

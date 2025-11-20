@@ -178,29 +178,14 @@
         });
         if (!res.ok) {
           const txt = await parseJSONSafe(res);
-          throw new Error((txt && (txt.message || txt.error)) || ('HTTP ' + res.status));
+          const errorMsg = (txt && (txt.message || txt.error)) || ('HTTP ' + res.status);
+          throw new Error(errorMsg);
         }
         const updated = await parseJSONSafe(res);
         return normalizeBackendTool(updated || Object.assign({}, payload, { idHerramienta: id }));
       } catch (err) {
-        let list = loadLocal(LS_KEYS.TOOLS);
-        const idx = list.findIndex(t => String(t.idHerramienta) === String(id));
-        if (idx >= 0) {
-          list[idx] = Object.assign({}, list[idx], payload);
-          const oldCantidad = list[idx].cantidad || 0;
-          if ((payload.cantidad || 0) !== oldCantidad) {
-            list[idx].cantidad = payload.cantidad;
-            list[idx].detalles = genDetalleCodes(list[idx]);
-          }
-          saveLocal(LS_KEYS.TOOLS, list);
-          return normalizeLocalTool(list[idx]);
-        } else {
-          const local = normalizeLocalTool(Object.assign({}, payload, { idHerramienta: ('local-' + Date.now()) }));
-          local.detalles = genDetalleCodes(local);
-          list.unshift(local);
-          saveLocal(LS_KEYS.TOOLS, list);
-          return local;
-        }
+        // Re-lanzar el error para que el caller lo maneje
+        throw err;
       }
     },
 
@@ -259,36 +244,22 @@
         const updated = await parseJSONSafe(res);
         return updated || payload;
       } catch (err) {
-        const tools = loadLocal(LS_KEYS.TOOLS);
-        const tool = tools.find(t => String(t.idHerramienta) === String(herramientaId));
-        if (tool && Array.isArray(tool.detalles)) {
-          tool.detalles = tool.detalles.map(dt => {
-            if (String((dt.idDetalle || dt.id || dt.id_detalle)) === String(idDetalle)) {
-              return Object.assign({}, dt, payload);
-            }
-            return dt;
-          });
-          saveLocal(LS_KEYS.TOOLS, tools);
-          return payload;
-        } else {
-          const newTool = {
-            idHerramienta: herramientaId || ('local-' + Date.now()),
-            nombre: (payload.herramienta && payload.herramienta.nombre) || 'LocalTool',
-            fecha_registro: nowIsoDate(),
-            cantidad: 1,
-            detalles: []
-          };
-          const idLocalDetalle = idDetalle || ('ld-' + Date.now() + '-' + Math.floor(Math.random() * 1000));
-          const newDetalle = Object.assign({}, { idDetalle: idLocalDetalle }, payload, {
-            codigoUnico: payload.codigoUnico || idLocalDetalle,
-            herramienta: { idHerramienta: newTool.idHerramienta, nombre: newTool.nombre }
-          });
-          newTool.detalles.push(newDetalle);
-          const all = loadLocal(LS_KEYS.TOOLS);
-          all.unshift(newTool);
-          saveLocal(LS_KEYS.TOOLS, all);
-          return newDetalle;
+        throw err;
+      }
+    },
+
+    eliminarDetalle: async function (idDetalle) {
+      try {
+        const res = await safeFetch(DETALLE_URL_BASE + '/' + encodeURIComponent(idDetalle), {
+          method: 'DELETE'
+        });
+        if (!res.ok) {
+          const txt = await parseJSONSafe(res);
+          throw new Error((txt && (txt.message || txt.error)) || ('HTTP ' + res.status));
         }
+        return true;
+      } catch (err) {
+        throw err;
       }
     },
 

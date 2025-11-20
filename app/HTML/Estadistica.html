@@ -5,6 +5,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FarmStock - Estadísticas</title>
+    <!-- Prevenir flashazo del modo oscuro -->
+    <script>
+      (function() {
+        const saved = localStorage.getItem('fs_dark_mode');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const shouldBeDark = saved === null ? prefersDark : saved === 'true';
+        if (shouldBeDark) {
+          document.documentElement.classList.add('dark-mode');
+          document.body.classList.add('dark-mode');
+        }
+      })();
+    </script>
     <!-- Enlace al CSS global (unifica sidebar / proporciones / animaciones) -->
     <link rel="stylesheet" href="../CSS/index.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
