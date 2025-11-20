@@ -6,40 +6,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FarmStock - Inventario</title>
 
-  <!-- Usar solo el CSS global -->
+  <!-- Usa tu CSS global -->
   <link rel="stylesheet" href="../CSS/index.css" />
 
   <style>
-    /* Cambios locales para vista Inventario:
-       - tarjetas más pequeñas y en grid
-       - scroll interno en el contenedor de tarjetas
-       - no tocar estilos globales fuera de esta página
-    */
-
-    /* Wrapper de las tarjetas: grid responsive */
+    /* (estilos específicos para inventario) */
     .tarjetas-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* 220px ancho min por tarjeta */
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 12px;
       padding: 12px;
       box-sizing: border-box;
       align-content: start;
-      /* Scroll interno: calcula altura disponible restando header/encabezado aproximado */
-      max-height: calc(100vh - 240px); /* ajustable si quieres más/menos espacio */
+      max-height: calc(100vh - 240px);
       overflow: auto;
       border-radius: 10px;
       background: transparent;
     }
 
-    /* Tarjeta compacta específica para Inventario (no afecta otras páginas) */
     .tarjetas-container .tarjeta {
       padding: 10px;
       border-radius: 10px;
       border: 1px solid var(--card-border);
-      border-left: 1px solid var(--card-border) !important;
       background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 98%, transparent 2%), transparent);
       box-shadow: 0 6px 18px rgba(16,34,31,0.03);
-      transition: transform .12s ease, box-shadow .12s ease;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -50,57 +40,24 @@
       margin: 0;
       font-size: 14px;
       line-height: 1.1;
-      color: color-mix(in srgb, var(--accent-600) 40%, var(--text) 60%);
+      display:flex;
+      align-items:center;
+      gap:8px;
     }
 
-    .tarjetas-container .tarjeta p {
-      margin: 0;
-      font-size: 12px;
-      color: var(--muted);
-    }
+    .tarjetas-container .tarjeta p { margin:0; font-size:12px; color:var(--muted); }
 
-    .tarjetas-container .tarjeta .acciones {
-      margin-top: 6px;
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-      align-items: center;
-    }
+    .tarjetas-container .tarjeta .acciones { margin-top:6px; display:flex; gap:8px; justify-content:flex-end; }
 
-    /* Ajustes de botones dentro de tarjeta (más compactos) */
-    .tarjetas-container .tarjeta .acciones .btn-small {
-      padding: 6px 8px;
-      font-size: 12px;
-      border-radius: 8px;
-    }
+    .card-qr { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+    .card-qr img { width:72px; height:72px; object-fit:contain; border-radius:6px; border:1px solid #ddd; background:#fff; }
 
-    /* When lots of records, smooth scrollbar */
-    .tarjetas-container::-webkit-scrollbar {
-      width: 10px;
-      height: 10px;
-    }
-    .tarjetas-container::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, var(--accent-400), var(--accent-600));
-      border-radius: 10px;
-    }
+    .modal-qr { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+    .modal-qr img { max-width:140px; max-height:140px; border-radius:6px; border:1px solid #eee; background:#fff; }
 
-    @media (max-width: 560px) {
-      .tarjetas-container {
-        grid-template-columns: 1fr;
-        max-height: calc(100vh - 220px);
-      }
-      .tarjetas-container .tarjeta {
-        min-height: 110px;
-      }
-    }
-
-    @media (min-width: 1400px) {
-      .tarjetas-container {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 14px;
-      }
-      .tarjetas-container .tarjeta h3 { font-size: 13px; }
-      .tarjetas-container .tarjeta p { font-size: 12px; }
+    @media (max-width:560px) {
+      .tarjetas-container { grid-template-columns: 1fr; max-height: calc(100vh - 220px); }
+      .tarjetas-container .tarjeta { min-height:110px; }
     }
   </style>
 </head>
@@ -111,10 +68,11 @@
     <button id="maximize" title="Maximizar" type="button">▢</button>
     <button id="close" title="Cerrar" type="button">✕</button>
   </div>
+
   <div class="container">
     <aside class="sidebar">
       <div class="top-section">
-        <div class="logo"><img src="../imagenes/Logo.png" alt="Logo del sitio" /></div>
+        <div class="logo"><img src="../imagenes/Logo.png" alt="Logo" /></div>
         <ul class="menu-modulos">
           <li><a href="../HTML/index.html">Registro Herramientas</a></li>
           <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
@@ -124,7 +82,6 @@
           <li><a href="../HTML/registro-aprendices.html">Aprendices</a></li>
         </ul>
       </div>
-
       <div class="sidebar-bottom">
         <a href="quienes-somos.html" class="somos">👥 Quiénes Somos</a>
         <div class="night-mode"><span>🌙 Modo noche</span></div>
@@ -133,9 +90,7 @@
 
     <main class="main-content">
       <div class="bienvenida">
-        <a href="perfil.html">
-          <img src="../imagenes/usuario.png" alt="Foto de usuario" class="foto-usuario" />
-        </a>
+        <a href="perfil.html"><img src="../imagenes/usuario.png" alt="Foto de usuario" class="foto-usuario" /></a>
         <p><strong>¡Hola Maria!</strong></p>
       </div>
 
@@ -154,13 +109,11 @@
           </div>
         </div>
 
-        <!-- Contenedor de tarjetas convertido en grid con scroll interno -->
         <div id="inventarioLista" class="tarjetas-container" aria-live="polite"></div>
       </div>
     </main>
   </div>
 
-  <!-- Modal backdrop (reutiliza estilos globales) -->
   <div id="modalBackdropInv" class="modal-backdrop" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitleInv" tabindex="-1">
       <div class="modal-header" style="display:flex;justify-content:space-between;align-items:center;">
@@ -171,7 +124,6 @@
     </div>
   </div>
 
-  <!-- Cargar helpers y cliente API -->
   <script src="../FSApiClient.js"></script>
 
   <script>
@@ -194,7 +146,6 @@
         return d;
       }
       function normalizeTool(h) {
-        // ensure both idHerramienta and id are present and identical (if backend uses idHerramienta)
         const idVal = h.idHerramienta || h.id || h.id_herramienta || h.idHerr || null;
         return {
           idHerramienta: idVal,
@@ -211,18 +162,70 @@
         };
       }
 
+      // ===== CONFIG: BACKEND en local =====
+      const BACKEND_BASE = 'http://127.0.0.1:8080'; // <-- backend local
+      function ensureNoSlash(u){ return u && u.endsWith('/') ? u.slice(0,-1) : u; }
+      const BACKEND = ensureNoSlash(BACKEND_BASE);
+
+      // Construye URL absoluta para QR por CÓDIGO UNICO (archivo en backend: qr_<CODIGO>.png)
+      function qrUrlForCodigo(codigoUnico) {
+        if (!codigoUnico) return '';
+        const file = encodeURIComponent('qr_' + codigoUnico) + '.png';
+        return BACKEND + '/qr/' + file;
+      }
+
+      // Construye URL absoluta para QR por NOMBRE de herramienta (si es que guardaste por nombre)
+      function qrUrlForToolName(toolName) {
+        if (!toolName) return '';
+        const file = encodeURIComponent(toolName) + '.png';
+        return BACKEND + '/qr/' + file;
+      }
+
+      // Helper: crear imagen pequeña (para tarjeta)
+      function createSmallQrImg(codigoUnico) {
+        const img = document.createElement('img');
+        const src = qrUrlForCodigo(codigoUnico);
+        img.src = src;
+        img.alt = 'QR ' + (codigoUnico || '');
+        img.onerror = function() { console.warn('[QR] not found:', src); this.style.display = 'none'; };
+        img.onload = function() { /* ok */ };
+        console.log('[QR] small img src ->', src);
+        return img;
+      }
+
+      // Helper: crear bloque QR para modal
+      function createQrElement(qrImgUrl, titleText, idText) {
+        const qrDiv = document.createElement('div');
+        qrDiv.className = 'modal-qr';
+
+        const imgWrap = document.createElement('div');
+        const img = document.createElement('img');
+        img.src = qrImgUrl || '';
+        img.alt = 'QR';
+        img.onerror = function() { console.warn('[QR] modal not found:', qrImgUrl); this.style.display = 'none'; };
+        imgWrap.appendChild(img);
+        qrDiv.appendChild(imgWrap);
+
+        const infoDiv = document.createElement('div');
+        infoDiv.innerHTML = '<strong>' + escapeHtml(titleText || '') + '</strong><br/><small>ID: ' + escapeHtml(String(idText || '')) + '</small>';
+        qrDiv.appendChild(infoDiv);
+
+        console.log('[QR] modal img src ->', qrImgUrl);
+        return qrDiv;
+      }
+
       async function fetchAllTools() {
         if (API && typeof API.obtenerTodasHerramientas === 'function') {
           try {
             const remoto = await API.obtenerTodasHerramientas();
             return (Array.isArray(remoto) ? remoto.map(normalizeTool) : []);
           } catch (e) {
-            console.warn('Error backend, fallback to local', e);
+            console.warn('Error backend API, fallback to local', e);
             return loadToolsFromLocal();
           }
         } else {
           try {
-            const r = await fetch('http://localhost:8080/herramienta');
+            const r = await fetch(BACKEND + '/herramienta'); // intenta backend directo
             if (r.ok) {
               const arr = await r.json();
               return (Array.isArray(arr) ? arr.map(normalizeTool) : []);
@@ -239,11 +242,11 @@
         try {
           const raw = localStorage.getItem('fs_local_tools_v1');
           if (raw) return JSON.parse(raw).map(normalizeTool);
-        } catch(e){}
+        } catch (e) {}
         try {
           const raw = localStorage.getItem('herramientas');
           if (raw) return JSON.parse(raw).map(normalizeTool);
-        } catch(e){}
+        } catch (e) {}
         return [];
       }
 
@@ -251,7 +254,6 @@
         const fechaDisplay = h.fecha ? (parseIsoToDate(h.fecha) ? parseIsoToDate(h.fecha).toLocaleDateString() : h.fecha) : '-';
         const div = document.createElement('div');
         div.className = 'tarjeta herramienta-card';
-        // IMPORTANT: use idHerramienta consistently in data-id
         div.innerHTML = `
           <h3>🛠️ ${escapeHtml(h.nombre)}</h3>
           <p><strong>Estado:</strong> ${escapeHtml(h.estado)}</p>
@@ -261,11 +263,28 @@
           <p><strong>Lote:</strong> ${escapeHtml(h.lote)}</p>
           <p><strong>Cantidad:</strong> ${escapeHtml(String(h.cantidad))}</p>
           <div class="acciones">
-            <button class="btn-small detalles" data-id="${escapeHtml(h.idHerramienta || h.id)}">Ver detalles</button>
-            <button class="btn-small editar" data-id="${escapeHtml(h.idHerramienta || h.id)}">Editar</button>
+            <button class="btn-small detalles" data-id="${escapeHtml(h.idHerramienta || h.id)}" data-nombre="${escapeHtml(h.nombre)}">Ver detalles</button>
+            <button class="btn-small editar" data-id="${escapeHtml(h.idHerramienta || h.id)}" data-nombre="${escapeHtml(h.nombre)}">Editar</button>
             <button class="btn-small delete eliminar" data-id="${escapeHtml(h.idHerramienta || h.id)}">Eliminar</button>
           </div>
         `;
+
+        // mostrar QR pequeño (si hay detalles, tomar el primer detalle)
+        if (Array.isArray(h.detalles) && h.detalles.length > 0) {
+          const primerDetalle = h.detalles[0];
+          const codigo = primerDetalle.codigoUnico || primerDetalle.codigo || primerDetalle.idDetalle || null;
+          if (codigo) {
+            const qrContainer = document.createElement('div');
+            qrContainer.className = 'card-qr';
+            const smallImg = createSmallQrImg(codigo);
+            const txt = document.createElement('div');
+            txt.innerHTML = '<small>' + escapeHtml(codigo) + '</small>';
+            qrContainer.appendChild(smallImg);
+            qrContainer.appendChild(txt);
+            div.insertBefore(qrContainer, div.firstChild);
+          }
+        }
+
         return div;
       }
 
@@ -297,8 +316,8 @@
         mostrados.forEach(t => contenedor.appendChild(renderCard(t)));
       }
 
-      // modal helpers (build edit modal same as Registro Herramientas)
-      function openEditLoteModal(id) {
+      // Edit modal (simplificado) y detalles modal que muestran QR grande por unidad
+      function openEditLoteModal(id, nombre) {
         if (!id) return;
         modalTitle.textContent = 'Editar registro';
         modalContent.innerHTML = '<p>Cargando...</p>';
@@ -310,7 +329,6 @@
           try {
             if (API && typeof API.obtenerTodasHerramientas === 'function') {
               const all = await API.obtenerTodasHerramientas();
-              // normalize then find by idHerramienta or id
               found = (Array.isArray(all) ? all.map(normalizeTool).find(x => String(x.idHerramienta) === String(id) || String(x.id) === String(id)) : null);
             }
             if (!found) {
@@ -334,6 +352,10 @@
         function buildEditModalFromFound(found, isLocal) {
           modalContent.innerHTML = '';
           const container = document.createElement('div');
+
+          const qrImgUrl = qrUrlForToolName(found.nombre);
+          const qrElement = createQrElement(qrImgUrl, found.nombre || '', (found.idHerramienta || found.id));
+
           const html = '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
             '<div style="flex:1;min-width:240px;"><label>Nombre</label><input id="edit_nombre" type="text" value="' + escapeHtml(found.nombre || '') + '" /></div>' +
             '<div style="flex:1;min-width:180px;"><label>Estado</label><select id="edit_estado"><option value="">Seleccionar</option><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option><option value="No_disponible">No disponible</option></select></div>' +
@@ -348,6 +370,8 @@
             '<div style="margin-top:10px;"><label>Descripción</label><textarea id="edit_descripcion" style="width:100%;">' + escapeHtml(found.descripcion || '') + '</textarea></div>' +
             '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;"><button id="saveEditInv" class="btn-small" type="button">Guardar</button><button id="cancelEditInv" class="btn-small delete" type="button">Cancelar</button></div>';
           container.innerHTML = html;
+
+          container.insertBefore(qrElement, container.firstChild);
           modalContent.appendChild(container);
 
           try { document.getElementById('edit_estado').value = found.estado || ''; } catch(e){}
@@ -398,7 +422,7 @@
               if (API && typeof API.actualizarHerramienta === 'function') {
                 await API.actualizarHerramienta(found.idHerramienta || found.id, payload);
               } else {
-                await fetch('http://localhost:8080/herramienta/' + encodeURIComponent(found.idHerramienta || found.id), {
+                await fetch(BACKEND + '/herramienta/' + encodeURIComponent(found.idHerramienta || found.id), {
                   method: 'PUT',
                   headers: {'Content-Type':'application/json'},
                   body: JSON.stringify(payload)
@@ -427,13 +451,14 @@
         }
       }
 
-      // details modal (shows unidades / detalles)
       async function openDetallesModal(herramientaId, nombre) {
         if (!herramientaId) return;
         modalTitle.textContent = 'Detalles: ' + (nombre || '');
         modalContent.innerHTML = '<p>Cargando detalles...</p>';
         modalBackdrop.classList.add('open');
         modalBackdrop.setAttribute('aria-hidden','false');
+
+        const qrImgUrl = qrUrlForToolName(nombre);
 
         try {
           let detalles = [];
@@ -444,12 +469,12 @@
             const t = local.find(x => String(x.idHerramienta) === String(herramientaId) || String(x.id) === String(herramientaId));
             detalles = (t && t.detalles) ? t.detalles : [];
           }
-          renderDetallesList(detalles || [], herramientaId);
+          renderDetallesList(detalles || [], herramientaId, nombre, qrImgUrl);
         } catch (err) {
           console.warn('DETALLE failed', err);
           const local = loadToolsFromLocal();
           const t = local.find(x => String(x.idHerramienta) === String(herramientaId) || String(x.id) === String(herramientaId));
-          if (t) renderDetallesList(t.detalles || [], herramientaId);
+          if (t) renderDetallesList(t.detalles || [], herramientaId, nombre, qrImgUrl);
           else {
             modalBackdrop.classList.remove('open');
             modalBackdrop.setAttribute('aria-hidden','true');
@@ -457,10 +482,13 @@
           }
         }
 
-        function renderDetallesList(detalles, herramientaId) {
+        function renderDetallesList(detalles, herramientaId, nombre, qrImgUrl) {
           modalContent.innerHTML = '';
+          const qrElement = createQrElement(qrImgUrl, nombre || '', herramientaId);
+          modalContent.appendChild(qrElement);
+
           if (!Array.isArray(detalles) || detalles.length === 0) {
-            modalContent.innerHTML = '<p>No hay detalles.</p>';
+            modalContent.innerHTML += '<p>No hay detalles.</p>';
             return;
           }
           const listDiv = document.createElement('div');
@@ -468,6 +496,11 @@
           detalles.forEach(function(d, idx){
             const cont = document.createElement('div');
             cont.className = 'tarjeta';
+            cont.style.display = 'flex';
+            cont.style.justifyContent = 'space-between';
+            cont.style.alignItems = 'flex-start';
+            cont.style.gap = '12px';
+
             const left = document.createElement('div');
             left.style.flex = '1';
             const nombreUnit = (d.herramienta && d.herramienta.nombre) ? d.herramienta.nombre : ('Unidad ' + (idx + 1));
@@ -480,7 +513,23 @@
             left.appendChild(h4); left.appendChild(p1); left.appendChild(p2);
 
             const right = document.createElement('div');
-            right.className = 'actions';
+            right.style.display = 'flex';
+            right.style.flexDirection = 'column';
+            right.style.gap = '8px';
+            right.style.alignItems = 'flex-end';
+
+            // mostrar QR por código único del detalle (patrón: qr_<CODIGO>.png)
+            const codigo = d.codigoUnico || d.codigo || d.idDetalle || d.id;
+            const img = document.createElement('img');
+            img.src = codigo ? qrUrlForCodigo(codigo) : '';
+            img.alt = 'QR ' + (codigo || '');
+            img.style.width = '120px';
+            img.style.height = '120px';
+            img.style.objectFit = 'contain';
+            img.style.borderRadius = '6px';
+            img.style.border = '1px solid #eee';
+            img.onerror = function() { console.warn('[QR] detalle not found:', img.src); this.style.display = 'none'; };
+
             const btnEdit = document.createElement('button');
             btnEdit.type = 'button';
             btnEdit.className = 'btn-small';
@@ -493,8 +542,13 @@
                 p.style.display = 'block';
               } else panel.style.display = (panel.style.display === 'none' ? 'block' : 'none');
             });
+
+            right.appendChild(img);
             right.appendChild(btnEdit);
-            cont.appendChild(left); cont.appendChild(right);
+
+            cont.appendChild(left);
+            cont.appendChild(right);
+
             listDiv.appendChild(cont);
           });
           modalContent.appendChild(listDiv);
@@ -550,7 +604,7 @@
             if (API && typeof API.actualizarDetalle === 'function') {
               await API.actualizarDetalle(idD, payload, herramientaId);
             } else {
-              await fetch('http://localhost:8080/api/herramienta-detalle/' + encodeURIComponent(idD), {
+              await fetch(BACKEND + '/api/herramienta-detalle/' + encodeURIComponent(idD), {
                 method: 'PUT',
                 headers: {'Content-Type':'application/json'},
                 body: JSON.stringify(payload)
@@ -590,21 +644,21 @@
       modalBackdrop.addEventListener('click', function(ev) { if (ev.target === modalBackdrop) closeModal(); });
       document.addEventListener('keydown', function(ev) { if (ev.key === 'Escape') closeModal(); });
 
-      // Delegated actions: details / edit / delete
       contenedor.addEventListener('click', function(ev){
         const btn = ev.target.closest('button');
         if (!btn) return;
         const id = btn.dataset.id;
+        const nombre = btn.dataset.nombre;
         if (btn.classList.contains('detalles')) {
-          openDetallesModal(id);
+          openDetallesModal(id, nombre);
         } else if (btn.classList.contains('editar')) {
-          openEditLoteModal(id);
+          openEditLoteModal(id, nombre);
         } else if (btn.classList.contains('eliminar')) {
           if (!confirm('Eliminar herramienta id ' + id + '?')) return;
           (async function(){
             try {
               if (API && typeof API.eliminarHerramienta === 'function') await API.eliminarHerramienta(id);
-              else await fetch('http://localhost:8080/herramienta/' + encodeURIComponent(id), { method: 'DELETE' });
+              else await fetch(BACKEND + '/herramienta/' + encodeURIComponent(id), { method: 'DELETE' });
               mostrarInventario(filtroSelect.value);
             } catch (e) {
               console.error('Eliminar error', e);
@@ -616,7 +670,10 @@
 
       filtroSelect.addEventListener('change', function(){ mostrarInventario(this.value); });
 
-      // initial load
+      // debug: mostrar backend base en consola
+      console.log('[CONFIG] BACKEND =', BACKEND);
+
+      // inicializar
       mostrarInventario(filtroSelect.value);
     })();
   </script>
