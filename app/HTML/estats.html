@@ -64,6 +64,8 @@
 
         <div class="filtros">
           <input type="text" placeholder="Buscar...">
+          <button type="button" class="green" id="btnVerMantenimientos" style="padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-right: 10px;">📋 Ver Mantenimientos</button>
+          <button type="button" class="green" id="btnAgregarMantenimiento" style="padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; z-index: 1000;">🔧 Agregar Mantenimiento</button>
           <a href="../HTML/Estadistica.html" class="btn-informe">Generar informe</a>
           <select><option>ID herramienta</option></select>
           <select><option>Fecha</option></select>
@@ -117,8 +119,278 @@
     </main>
   </div>
 
+  <!-- Modal para agregar mantenimiento -->
+  <div id="modalMantenimiento" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: var(--bg-color, #1a1a1a); padding: 30px; border-radius: 12px; max-width: 500px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+      <h2 style="margin-top: 0; color: var(--text-color, #fff);">🔧 Agregar Estado</h2>
+      
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px; color: var(--text-color, #fff);">Codigo Herramienta (detalle):</label>
+        <input type="text" id="inputIdDetalle" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box;" required>
+      </div>
+      
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px; color: var(--text-color, #fff);">Numero Docuemnto:</label>
+        <input type="text" id="inputIdUsuario" value="48" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box;" required>
+      </div>
+      
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px; color: var(--text-color, #fff);">Tipo:</label>
+        <input type="text" id="inputTipo" value="MANTENIMIENTO" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box;" required>
+      </div>
+      
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px; color: var(--text-color, #fff);">Descripción:</label>
+        <textarea id="inputDescripcion" placeholder="Ej: Filo desgastado" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box; min-height: 80px; resize: vertical;" required></textarea>
+      </div>
+      
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 5px; color: var(--text-color, #fff);">Estado:</label>
+        <select id="inputEstado" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box;">
+          <option value="PENDIENTE">PENDIENTE</option>
+          <option value="EN_PROGRESO">EN_PROGRESO</option>
+          <option value="COMPLETADO">COMPLETADO</option>
+        </select>
+      </div>
+      
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button id="btnCancelarModal" type="button" style="padding: 10px 20px; border: none; border-radius: 6px; background: #555; color: #fff; cursor: pointer; font-weight: bold;">Cancelar</button>
+        <button id="btnGuardarMantenimiento" type="button" style="padding: 10px 20px; border: none; border-radius: 6px; background: #4CAF50; color: #fff; cursor: pointer; font-weight: bold;">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para ver mantenimientos activos -->
+  <div id="modalVerMantenimientos" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: var(--bg-color, #1a1a1a); padding: 30px; border-radius: 12px; max-width: 900px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0; color: var(--text-color, #fff);">📋 Mantenimientos Activos</h2>
+        <button id="btnCerrarListaMantenimientos" type="button" style="padding: 8px 16px; border: none; border-radius: 6px; background: #555; color: #fff; cursor: pointer; font-weight: bold;">✕ Cerrar</button>
+      </div>
+      
+      <div id="loadingMantenimientos" style="text-align: center; padding: 40px; color: var(--text-color, #fff); display: none;">
+        <p style="font-size: 18px;">⏳ Cargando mantenimientos...</p>
+      </div>
+      
+      <div id="contenidoMantenimientos">
+        <table style="width: 100%; border-collapse: collapse; color: var(--text-color, #fff);">
+          <thead>
+            <tr style="background: #2a2a2a;">
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">ID</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">Código Herramienta</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">Tipo</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">Descripción</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">Estado</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">Fecha</th>
+            </tr>
+          </thead>
+          <tbody id="tablaMantenimientos">
+            <!-- Los datos se cargarán aquí dinámicamente -->
+          </tbody>
+        </table>
+        
+        <div id="noMantenimientos" style="text-align: center; padding: 40px; color: #888; display: none;">
+          <p style="font-size: 16px;">No hay mantenimientos activos</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="../modo-oscuro.js"></script>
   <script src="../render-window.js"></script>
+  
+  <script>
+    // ===== AGREGAR MANTENIMIENTO =====
+    window.addEventListener('load', function() {
+      const btnAgregarMantenimiento = document.getElementById('btnAgregarMantenimiento');
+      const btnVerMantenimientos = document.getElementById('btnVerMantenimientos');
+      const modal = document.getElementById('modalMantenimiento');
+      const modalVer = document.getElementById('modalVerMantenimientos');
+      const btnCancelar = document.getElementById('btnCancelarModal');
+      const btnGuardar = document.getElementById('btnGuardarMantenimiento');
+      const btnCerrarLista = document.getElementById('btnCerrarListaMantenimientos');
+      
+      // ===== MODAL VER MANTENIMIENTOS =====
+      if (btnVerMantenimientos) {
+        btnVerMantenimientos.addEventListener('click', async function(e) {
+          e.preventDefault();
+          modalVer.style.display = 'flex';
+          
+          // Mostrar loading
+          document.getElementById('loadingMantenimientos').style.display = 'block';
+          document.getElementById('contenidoMantenimientos').style.display = 'none';
+          
+          try {
+            // Hacer GET request para obtener mantenimientos activos
+            const response = await fetch('http://localhost:8080/mantenimientos/activos', {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+            
+            if (!response.ok) {
+              throw new Error('Error al cargar mantenimientos');
+            }
+            
+            const mantenimientos = await response.json();
+            
+            // Ocultar loading
+            document.getElementById('loadingMantenimientos').style.display = 'none';
+            document.getElementById('contenidoMantenimientos').style.display = 'block';
+            
+            const tbody = document.getElementById('tablaMantenimientos');
+            const noMantenimientos = document.getElementById('noMantenimientos');
+            
+            if (mantenimientos && mantenimientos.length > 0) {
+              tbody.innerHTML = '';
+              noMantenimientos.style.display = 'none';
+              
+              mantenimientos.forEach(m => {
+                const estadoColor = 
+                  m.estado === 'PENDIENTE' ? '#FFA726' : 
+                  m.estado === 'EN_PROGRESO' ? '#42A5F5' : 
+                  '#66BB6A';
+                
+                const fecha = m.fechaCreacion ? new Date(m.fechaCreacion).toLocaleDateString() : '-';
+                
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid #333';
+                tr.innerHTML = `
+                  <td style="padding: 12px;">${m.id || '-'}</td>
+                  <td style="padding: 12px;">${m.codigoUnico || '-'}</td>
+                  <td style="padding: 12px;">${m.tipo || '-'}</td>
+                  <td style="padding: 12px;">${m.descripcion || '-'}</td>
+                  <td style="padding: 12px;"><span style="background: ${estadoColor}; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold;">${m.estado}</span></td>
+                  <td style="padding: 12px;">${fecha}</td>
+                `;
+                tbody.appendChild(tr);
+              });
+            } else {
+              tbody.innerHTML = '';
+              noMantenimientos.style.display = 'block';
+            }
+            
+          } catch (error) {
+            console.error('Error al cargar mantenimientos:', error);
+            document.getElementById('loadingMantenimientos').style.display = 'none';
+            document.getElementById('contenidoMantenimientos').style.display = 'block';
+            alert('❌ Error al cargar mantenimientos: ' + error.message);
+          }
+        });
+      }
+      
+      // Cerrar modal de ver mantenimientos
+      if (btnCerrarLista) {
+        btnCerrarLista.addEventListener('click', function() {
+          modalVer.style.display = 'none';
+        });
+      }
+      
+      // Cerrar modal al hacer click fuera
+      modalVer.addEventListener('click', function(e) {
+        if (e.target === modalVer) {
+          btnCerrarLista.click();
+        }
+      });
+      
+      // ===== MODAL AGREGAR MANTENIMIENTO =====
+      
+      // Abrir modal
+      if (btnAgregarMantenimiento) {
+        btnAgregarMantenimiento.addEventListener('click', function(e) {
+          e.preventDefault();
+          modal.style.display = 'flex';
+          document.getElementById('inputIdDetalle').focus();
+        });
+      }
+      
+      // Cerrar modal
+      if (btnCancelar) {
+        btnCancelar.addEventListener('click', function() {
+          modal.style.display = 'none';
+          // Limpiar campos
+          document.getElementById('inputIdDetalle').value = '';
+          document.getElementById('inputIdUsuario').value = '48';
+          document.getElementById('inputTipo').value = 'MANTENIMIENTO';
+          document.getElementById('inputDescripcion').value = '';
+          document.getElementById('inputEstado').value = 'PENDIENTE';
+        });
+      }
+      
+      // Cerrar modal al hacer click fuera
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          btnCancelar.click();
+        }
+      });
+      
+      // Guardar mantenimiento
+      if (btnGuardar) {
+        btnGuardar.addEventListener('click', async function() {
+          const idDetalle = document.getElementById('inputIdDetalle').value.trim();
+          const idUsuario = document.getElementById('inputIdUsuario').value.trim();
+          const tipo = document.getElementById('inputTipo').value.trim();
+          const descripcion = document.getElementById('inputDescripcion').value.trim();
+          const estado = document.getElementById('inputEstado').value;
+          
+          // Validar campos
+          if (!idDetalle) {
+            alert('Debe ingresar el ID de la herramienta');
+            return;
+          }
+          if (!idUsuario) {
+            alert('Debe ingresar el ID del usuario');
+            return;
+          }
+          if (!tipo) {
+            alert('Debe ingresar el tipo de mantenimiento');
+            return;
+          }
+          if (!descripcion) {
+            alert('Debe ingresar una descripción');
+            return;
+          }
+          
+          try {
+            // Crear el body JSON
+            const body = {
+              tipo: tipo,
+              descripcion: descripcion,
+              estado: estado
+            };
+            
+            console.log('Enviando mantenimiento:', body);
+            
+            // Hacer POST request
+            const response = await fetch(`http://localhost:8080/mantenimientos?codigoUnico=${idDetalle}&numeroDocumento=${idUsuario}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(body)
+            });
+            
+            if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(`Error del servidor: ${errorText}`);
+            }
+            
+            const resultado = await response.json();
+            alert('✅ Mantenimiento agregado exitosamente');
+            console.log('Resultado:', resultado);
+            
+            // Cerrar modal y limpiar
+            btnCancelar.click();
+            
+          } catch (error) {
+            console.error('Error al agregar mantenimiento:', error);
+            alert('❌ Error al agregar mantenimiento: ' + error.message);
+          }
+        });
+      }
+    });
+  </script>
 </body>
 
 </html>
