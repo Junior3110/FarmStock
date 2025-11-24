@@ -112,8 +112,13 @@
                 </div>
 
                 <div class="columna">
-                  <label for="direccion">Dirección</label>
-                  <input id="direccion" name="direccion" type="text" placeholder="Ciudad, Dirección" />
+                  <label for="tipoDocumento">Tipo de documento</label>
+                  <input id="tipoDocumento" name="tipoDocumento" type="text" readonly style="background: color-mix(in srgb, var(--surface) 90%, transparent 10%); cursor: not-allowed;" />
+                </div>
+
+                <div class="columna">
+                  <label for="numeroDocumento">Número de documento</label>
+                  <input id="numeroDocumento" name="numeroDocumento" type="text" readonly style="background: color-mix(in srgb, var(--surface) 90%, transparent 10%); cursor: not-allowed;" />
                 </div>
 
                 <div style="display:flex; gap:10px; margin-top:8px; justify-content:flex-end;">
@@ -128,29 +133,6 @@
 
       <!-- Actividad reciente -->
       <div class="area-inferior" style="margin-top:18px;">
-        <div class="herramientas-hoy">
-          <h3>Actividad reciente</h3>
-          <div class="lista-tarjetas" id="activity-list" aria-live="polite">
-            <div class="tarjeta">
-              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                <div>
-                  <h4>Actualizó inventario</h4>
-                  <p class="small-muted">Hace 2 horas — Herramienta: Pipicilina</p>
-                </div>
-                <div class="small-muted">02:14</div>
-              </div>
-            </div>
-
-            <div class="tarjeta">
-              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                <div>
-                  <h4>Generó reporte</h4>
-                  <p class="small-muted">Ayer — Reporte mensual</p>
-                </div>
-                <div class="small-muted">18:47</div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -169,5 +151,260 @@
 
   <script src="../modo-oscuro.js"></script>
   <script src="../render-window.js"></script>
+  <script src="../FSApiClient.js"></script>
+  
+  <script>
+    (function() {
+      const API = window.FSApiClient;
+      
+      // Elementos del DOM
+      const form = document.getElementById('profile-form');
+      const btnEditarPerfil = document.getElementById('editarPerfil');
+      const btnCerrarSesion = document.getElementById('cerrarSesion');
+      const btnCambiarPassword = document.getElementById('cambiarPassword');
+      const modalBackdrop = document.getElementById('modalBackdrop');
+      const closeModal = document.getElementById('closeModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalContent = document.getElementById('modalContent');
+      
+      // Usuario actual (simulado por ahora - en producción vendría del login)
+      let usuarioActual = {
+        idUsuario: 48, // ID del usuario logueado
+        nombres: '',
+        apellidos: '',
+        correo: '',
+        telefono: '',
+        numeroDocumento: '',
+        tipoDocumento: '',
+        cargo: ''
+      };
+      
+      // Función para mostrar modal
+      function mostrarModal(titulo, contenido) {
+        modalTitle.textContent = titulo;
+        modalContent.innerHTML = contenido;
+        modalBackdrop.classList.add('open');
+        modalBackdrop.setAttribute('aria-hidden', 'false');
+      }
+      
+      function cerrarModalFunc() {
+        modalBackdrop.classList.remove('open');
+        modalBackdrop.setAttribute('aria-hidden', 'true');
+      }
+      
+      closeModal.addEventListener('click', cerrarModalFunc);
+      modalBackdrop.addEventListener('click', function(e) {
+        if (e.target === modalBackdrop) cerrarModalFunc();
+      });
+      
+      // Cargar datos del usuario desde el backend
+      async function cargarDatosUsuario() {
+        try {
+          const response = await fetch(`http://localhost:8080/usuario/${usuarioActual.idUsuario}`);
+          
+          if (!response.ok) {
+            throw new Error('Usuario no encontrado');
+          }
+          
+          const usuario = await response.json();
+          usuarioActual = usuario;
+          
+          // Llenar el formulario con los datos
+          document.getElementById('nombre').value = usuario.nombres || '';
+          document.getElementById('apellido').value = usuario.apellidos || '';
+          document.getElementById('email').value = usuario.correo || '';
+          document.getElementById('telefono').value = usuario.telefono || '';
+          document.getElementById('tipoDocumento').value = usuario.tipoDocumento || '';
+          document.getElementById('numeroDocumento').value = usuario.numeroDocumento || '';
+          
+          // Actualizar nombre en la bienvenida y card
+          document.querySelector('.bienvenida p strong').textContent = `¡Hola ${usuario.nombres}!`;
+          document.querySelector('h3').textContent = `${usuario.nombres} ${usuario.apellidos}`;
+          document.querySelector('.small-muted').textContent = usuario.cargo.charAt(0).toUpperCase() + usuario.cargo.slice(1);
+          
+        } catch (error) {
+          console.error('Error al cargar usuario:', error);
+          mostrarModal('Error', 'No se pudieron cargar los datos del usuario');
+        }
+      }
+      
+      // Guardar cambios del perfil
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const datosActualizados = {
+          nombres: document.getElementById('nombre').value.trim(),
+          apellidos: document.getElementById('apellido').value.trim(),
+          correo: document.getElementById('email').value.trim(),
+          telefono: document.getElementById('telefono').value.trim(),
+          numeroDocumento: usuarioActual.numeroDocumento,
+          tipoDocumento: usuarioActual.tipoDocumento,
+          cargo: usuarioActual.cargo,
+          contrasena: usuarioActual.contrasena // Mantener la contraseña actual
+        };
+        
+        // Validaciones básicas
+        if (!datosActualizados.nombres || !datosActualizados.apellidos) {
+          mostrarModal('Error', 'El nombre y apellido son obligatorios');
+          return;
+        }
+        
+        if (!datosActualizados.correo || !datosActualizados.correo.includes('@')) {
+          mostrarModal('Error', 'Ingresa un correo válido');
+          return;
+        }
+        
+        try {
+          const response = await fetch(`http://localhost:8080/usuario/${usuarioActual.idUsuario}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datosActualizados)
+          });
+          
+          if (!response.ok) {
+            const error = await response.text();
+            throw new Error(error);
+          }
+          
+          const usuarioActualizado = await response.json();
+          usuarioActual = usuarioActualizado;
+          
+          mostrarModal('✅ Éxito', 'Perfil actualizado correctamente');
+          
+          // Actualizar interfaz
+          document.querySelector('.bienvenida p strong').textContent = `¡Hola ${usuarioActualizado.nombres}!`;
+          document.querySelector('h3').textContent = `${usuarioActualizado.nombres} ${usuarioActualizado.apellidos}`;
+          
+        } catch (error) {
+          console.error('Error al actualizar perfil:', error);
+          mostrarModal('❌ Error', 'No se pudo actualizar el perfil: ' + error.message);
+        }
+      });
+      
+      // Cambiar contraseña
+      btnCambiarPassword.addEventListener('click', function() {
+        const contenido = `
+          <div style="padding: 20px;">
+            <div style="margin-bottom: 15px;">
+              <label style="display: block; margin-bottom: 5px; font-weight: bold;">Contraseña actual:</label>
+              <input type="password" id="passwordActual" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--surface); color: var(--text);">
+            </div>
+            <div style="margin-bottom: 15px;">
+              <label style="display: block; margin-bottom: 5px; font-weight: bold;">Nueva contraseña:</label>
+              <input type="password" id="passwordNueva" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--surface); color: var(--text);">
+              <small style="color: var(--muted); font-size: 12px;">Mínimo 8 caracteres, incluir mayúscula, minúscula, número y carácter especial</small>
+            </div>
+            <div style="margin-bottom: 20px;">
+              <label style="display: block; margin-bottom: 5px; font-weight: bold;">Confirmar contraseña:</label>
+              <input type="password" id="passwordConfirm" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--surface); color: var(--text);">
+            </div>
+            <button id="btnGuardarPassword" class="btn" style="width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Cambiar contraseña</button>
+          </div>
+        `;
+        
+        mostrarModal('Cambiar contraseña', contenido);
+        
+        // Event listener para el botón de guardar
+        setTimeout(() => {
+          document.getElementById('btnGuardarPassword').addEventListener('click', async function() {
+            const actual = document.getElementById('passwordActual').value;
+            const nueva = document.getElementById('passwordNueva').value;
+            const confirmar = document.getElementById('passwordConfirm').value;
+            
+            if (!actual || !nueva || !confirmar) {
+              alert('Todos los campos son obligatorios');
+              return;
+            }
+            
+            if (actual !== usuarioActual.contrasena) {
+              alert('La contraseña actual es incorrecta');
+              return;
+            }
+            
+            if (nueva !== confirmar) {
+              alert('Las contraseñas no coinciden');
+              return;
+            }
+            
+            // Validar formato de contraseña
+            const passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!¿?*.,:;_-]).{8,}$/;
+            if (!passwordRegex.test(nueva)) {
+              alert('La contraseña debe tener mínimo 8 caracteres, incluir mayúscula, minúscula, número y carácter especial');
+              return;
+            }
+            
+            try {
+              const datosActualizados = {
+                ...usuarioActual,
+                contrasena: nueva
+              };
+              
+              const response = await fetch(`http://localhost:8080/usuario/${usuarioActual.idUsuario}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datosActualizados)
+              });
+              
+              if (!response.ok) {
+                throw new Error('Error al cambiar contraseña');
+              }
+              
+              usuarioActual.contrasena = nueva;
+              cerrarModalFunc();
+              mostrarModal('✅ Éxito', 'Contraseña cambiada correctamente');
+              
+            } catch (error) {
+              console.error('Error:', error);
+              alert('No se pudo cambiar la contraseña');
+            }
+          });
+        }, 100);
+      });
+      
+      // Cerrar sesión
+      btnCerrarSesion.addEventListener('click', function() {
+        if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+          // Limpiar datos de sesión
+          localStorage.removeItem('fs_usuario_actual');
+          // Redirigir al login
+          window.location.href = 'login.html';
+        }
+      });
+      
+      // Modo edición del perfil
+      let modoEdicion = false;
+      btnEditarPerfil.addEventListener('click', function() {
+        modoEdicion = !modoEdicion;
+        
+        const inputs = form.querySelectorAll('input');
+        inputs.forEach(input => {
+          input.disabled = !modoEdicion;
+        });
+        
+        if (modoEdicion) {
+          btnEditarPerfil.textContent = 'Cancelar';
+          btnEditarPerfil.style.background = 'var(--danger)';
+        } else {
+          btnEditarPerfil.textContent = 'Editar';
+          btnEditarPerfil.style.background = 'var(--accent)';
+          cargarDatosUsuario(); // Recargar datos originales
+        }
+      });
+      
+      // Inicializar: cargar datos del usuario
+      cargarDatosUsuario();
+      
+      // Desactivar inputs inicialmente
+      const inputs = form.querySelectorAll('input');
+      inputs.forEach(input => {
+        input.disabled = true;
+      });
+      
+    })();
+  </script>
 </body>
 </html>

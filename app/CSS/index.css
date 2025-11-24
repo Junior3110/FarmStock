@@ -129,7 +129,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 160px;
+    min-height: 100vh;
+    height: 100vh;
 }
 
 
@@ -238,9 +239,11 @@ body {
 /* Main content */
 
 .main-content {
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     padding: 6px 6px 30px 6px;
     max-width: var(--max-width-main);
+    height: 100vh;
 }
 
 
@@ -409,8 +412,14 @@ button:focus {
 }
 
 .btn-small.delete {
-    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 65%, transparent 35%), var(--accent-600));
+   background: linear-gradient(180deg,#ef5350,#d32f2f); color:#fff;;
 }
+
+.btn-small.editar{
+   background:#1976d2; 
+   color:#fff;
+}
+
 
 .btn-small:hover {
     transform: translateY(-2px);
@@ -680,8 +689,10 @@ th {
 .main-content,
 .main-panel,
 main {
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     padding: 6px 6px 30px 6px;
+    height: 100vh;
 }
 
 

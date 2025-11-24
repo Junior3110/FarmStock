@@ -8,8 +8,10 @@
     if (dark) body.classList.add('dark-mode');
     else body.classList.remove('dark-mode');
 
-    // Update logo
-    const logo = document.querySelector('.logo img');
+    // Update logo - buscar en múltiples selectores
+    const logo = document.querySelector('.logo img') || 
+                 document.querySelector('.site-brand img') || 
+                 document.querySelector('.brand img');
     if (logo) {
       logo.src = dark ? '../imagenes/logo_modonoche.png' : '../imagenes/Logo.png';
     }

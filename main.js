@@ -7,8 +7,8 @@ function createWindow() {
     const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
   win = new BrowserWindow({
-    width: Math.min(1320, width),
-    height: Math.min(900, height),
+    width: Math.min(1280, width),
+    height: Math.min(950, height),
     show: false,
     frame: false, // ⚠️ muy importante → quita los botones nativos
     titleBarStyle: "hidden", // 👈 también oculta la barra de título
@@ -56,8 +56,13 @@ ipcMain.on("window-minimize", (event) => {
 
 ipcMain.on("window-maximize", (event) => {
     const window = BrowserWindow.fromWebContents(event.sender);
-    if (window.isMaximized()) window.unmaximize();
-    else window.maximize();
+    if (window) {
+        if (window.isMaximized()) {
+            window.unmaximize();
+        } else {
+            window.maximize();
+        }
+    }
 });
 
 ipcMain.on("window-close", (event) => {

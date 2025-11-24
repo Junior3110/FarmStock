@@ -23,11 +23,13 @@
   <link rel="stylesheet" href="../CSS/index.css" />
 
   <style>
+    
     /* Ajustes locales para que coincida con la estética del resto */
     .content-box.registro {
       padding: 18px;
       border-radius: 14px;
     }
+
     .registro-header {
       display:flex;
       justify-content:space-between;
@@ -46,7 +48,10 @@
     .btn-small { padding:8px 10px; border-radius:8px; border:none; cursor:pointer; font-weight:700; }
     .btn-green { background: linear-gradient(180deg,#7bd07a,#3fa34a); color:#fff; }
     .btn-outline { background: color-mix(in srgb,var(--surface) 96%, transparent 4%); border:1px solid var(--card-border); color:var(--text); }
-
+    .btn-delete { background: linear-gradient(180deg, #f44336, #d32f2f); color:#fff; border:none; }
+    #closeRegistrar{
+      background-color: #d32f2f;
+    }
     /* Modal shared styles */
     .modal-backdrop {
       display:none;
@@ -264,7 +269,7 @@
             <td>${escapeHtml(r.horaSalida)}</td>
             <td>${escapeHtml(r.horaEntrada || '')}</td>
             <td>
-              <button class="btn-small btn-outline btn-delete" data-id="${r.id}">Eliminar</button>
+              <button class="btn-small btn-delete" data-id="${r.id}">Eliminar</button>
             </td>
           `;
           tablaBody.appendChild(tr);
