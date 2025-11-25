@@ -201,9 +201,68 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await doLoginWithAPI(payload);
       console.debug('Login result (raw):', result);
 
-      // success: store minimal session and redirect
-      try { localStorage.setItem('documento', vals.numeroDocumento); } catch (e) {}
-      try { localStorage.setItem('rol', vals.cargo || ''); } catch (e) {}
+      // success: store session info
+      localStorage.setItem('documento', vals.numeroDocumento);
+      localStorage.setItem('rol', vals.cargo || '');
+      
+      // Store user info from login response
+      if (result) {
+        console.log('Respuesta completa del login:', JSON.stringify(result));
+        
+        // Intentar extraer datos del usuario de diferentes estructuras posibles
+        let userData = null;
+        
+        if (result.usuario) {
+          userData = result.usuario;
+        } else if (result.data && result.data.usuario) {
+          userData = result.data.usuario;
+        } else if (result.nombres) {
+          userData = result;
+        }
+        
+        if (userData && userData.nombres) {
+          localStorage.setItem('fs_usuario_actual', JSON.stringify({
+            idUsuario: userData.idUsuario || userData.id || null,
+            nombres: userData.nombres,
+            apellidos: userData.apellidos || '',
+            correo: userData.correo || userData.email || '',
+            telefono: userData.telefono || '',
+            numeroDocumento: vals.numeroDocumento,
+            tipoDocumento: vals.tipoDocumento || 'CC',
+            cargo: vals.cargo || userData.cargo || ''
+          }));
+          console.log('✅ Usuario guardado con nombre:', userData.nombres);
+        } else {
+          // Si el backend no devuelve el usuario, hacer una petición adicional
+          console.warn('Login no devolvió datos del usuario, intentando buscar...');
+          try {
+            const userRes = await fetch(`http://localhost:8080/usuario/documento/${vals.numeroDocumento}`);
+            if (userRes.ok) {
+              const user = await userRes.json();
+              localStorage.setItem('fs_usuario_actual', JSON.stringify({
+                idUsuario: user.idUsuario,
+                nombres: user.nombres,
+                apellidos: user.apellidos,
+                correo: user.correo,
+                telefono: user.telefono,
+                numeroDocumento: user.numeroDocumento,
+                tipoDocumento: user.tipoDocumento,
+                cargo: user.cargo
+              }));
+              console.log('✅ Usuario obtenido del endpoint /documento:', user.nombres);
+            }
+          } catch (e) {
+            console.error('❌ No se pudo obtener datos del usuario:', e);
+            // Guardar datos mínimos
+            localStorage.setItem('fs_usuario_actual', JSON.stringify({
+              nombres: 'Usuario',
+              numeroDocumento: vals.numeroDocumento,
+              cargo: vals.cargo || ''
+            }));
+          }
+        }
+      }
+      
       window.location.replace('index.html');
     } catch (err) {
       console.error('Login error:', err);

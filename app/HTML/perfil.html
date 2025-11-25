@@ -51,7 +51,7 @@
     <main class="main-content">
       <div class="bienvenida">
         <a href="perfil.html"><img src="../imagenes/usuario.png" alt="Foto de usuario" class="foto-usuario" /></a>
-        <p><strong>¡Hola María!</strong></p>
+        <p><strong>¡Hola Usuario!</strong></p>
       </div>
 
       <!-- PERFIL: tarjeta principal con formulario y actividad, usando clases de index.css -->
@@ -69,20 +69,6 @@
                 <div style="display:flex; gap:8px; margin-top:8px;">
                   <button id="editarPerfil" class="btn-small" style="background:var(--accent)">Editar</button>
                   <button id="cerrarSesion" class="btn-small delete" style="background:var(--danger)">Cerrar sesión</button>
-                </div>
-
-                <div style="width:100%; margin-top:10px; display:flex; gap:8px; justify-content:space-between;">
-                  <div style="text-align:center; flex:1;">
-                    <div style="font-weight:700; font-size:1.05rem;">24</div>
-                    <div class="small-muted">Notificaciones</div>
-                  </div>
-                  <div style="text-align:center; flex:-1;">
-                    <div style="font-weight:00; font-size:1.05rem;"></div>
-                  </div>
-                  <div style="text-align:center; flex:1;">
-                    <div style="font-weight:700; font-size:1.05rem;">12</div>
-                    <div class="small-muted">Entradas</div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -149,6 +135,7 @@
     </div>
   </div>
 
+  <script src="../user-session.js"></script>
   <script src="../modo-oscuro.js"></script>
   <script src="../render-window.js"></script>
   <script src="../FSApiClient.js"></script>
@@ -167,17 +154,29 @@
       const modalTitle = document.getElementById('modalTitle');
       const modalContent = document.getElementById('modalContent');
       
-      // Usuario actual (simulado por ahora - en producción vendría del login)
-      let usuarioActual = {
-        idUsuario: 48, // ID del usuario logueado
-        nombres: '',
-        apellidos: '',
-        correo: '',
-        telefono: '',
-        numeroDocumento: '',
-        tipoDocumento: '',
-        cargo: ''
-      };
+      // Usuario actual - obtener del localStorage
+      let usuarioActual = null;
+      try {
+        const userData = localStorage.getItem('fs_usuario_actual');
+        if (userData) {
+          usuarioActual = JSON.parse(userData);
+        } else {
+          // Fallback si no hay datos completos
+          usuarioActual = {
+            idUsuario: 48,
+            nombres: '',
+            apellidos: '',
+            correo: '',
+            telefono: '',
+            numeroDocumento: localStorage.getItem('documento') || '',
+            tipoDocumento: '',
+            cargo: localStorage.getItem('rol') || ''
+          };
+        }
+      } catch (e) {
+        console.error('Error al leer usuario:', e);
+        usuarioActual = { idUsuario: 48, nombres: '', apellidos: '', correo: '', telefono: '', numeroDocumento: '', tipoDocumento: '', cargo: '' };
+      }
       
       // Función para mostrar modal
       function mostrarModal(titulo, contenido) {
@@ -200,6 +199,18 @@
       // Cargar datos del usuario desde el backend
       async function cargarDatosUsuario() {
         try {
+          // Si no tenemos idUsuario, intentar obtener del localStorage completo
+          if (!usuarioActual || !usuarioActual.idUsuario) {
+            const storedUser = localStorage.getItem('fs_usuario_actual');
+            if (storedUser) {
+              usuarioActual = JSON.parse(storedUser);
+            }
+          }
+          
+          if (!usuarioActual || !usuarioActual.idUsuario) {
+            throw new Error('No hay usuario logueado');
+          }
+          
           const response = await fetch(`http://localhost:8080/usuario/${usuarioActual.idUsuario}`);
           
           if (!response.ok) {
@@ -209,6 +220,9 @@
           const usuario = await response.json();
           usuarioActual = usuario;
           
+          // Actualizar localStorage con datos completos
+          localStorage.setItem('fs_usuario_actual', JSON.stringify(usuario));
+          
           // Llenar el formulario con los datos
           document.getElementById('nombre').value = usuario.nombres || '';
           document.getElementById('apellido').value = usuario.apellidos || '';
@@ -217,8 +231,7 @@
           document.getElementById('tipoDocumento').value = usuario.tipoDocumento || '';
           document.getElementById('numeroDocumento').value = usuario.numeroDocumento || '';
           
-          // Actualizar nombre en la bienvenida y card
-          document.querySelector('.bienvenida p strong').textContent = `¡Hola ${usuario.nombres}!`;
+          // Actualizar nombre en la card (NO en la bienvenida, eso lo hace user-session.js)
           document.querySelector('h3').textContent = `${usuario.nombres} ${usuario.apellidos}`;
           document.querySelector('.small-muted').textContent = usuario.cargo.charAt(0).toUpperCase() + usuario.cargo.slice(1);
           
@@ -271,11 +284,18 @@
           const usuarioActualizado = await response.json();
           usuarioActual = usuarioActualizado;
           
+          // Actualizar localStorage
+          localStorage.setItem('fs_usuario_actual', JSON.stringify(usuarioActualizado));
+          
           mostrarModal('✅ Éxito', 'Perfil actualizado correctamente');
           
-          // Actualizar interfaz
-          document.querySelector('.bienvenida p strong').textContent = `¡Hola ${usuarioActualizado.nombres}!`;
+          // Actualizar interfaz (solo la card, la bienvenida la maneja user-session.js)
           document.querySelector('h3').textContent = `${usuarioActualizado.nombres} ${usuarioActualizado.apellidos}`;
+          
+          // Actualizar también la bienvenida con el nuevo nombre
+          if (window.FSUserSession && typeof window.FSUserSession.updateUserName === 'function') {
+            window.FSUserSession.updateUserName();
+          }
           
         } catch (error) {
           console.error('Error al actualizar perfil:', error);

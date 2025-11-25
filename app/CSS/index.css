@@ -89,9 +89,11 @@ body {
     gap: 20px;
     align-items: start;
     min-height: 100vh;
+    height: 100vh;
     padding: 18px;
     max-width: calc(var(--max-width-main) + 40px);
     margin: 0 auto;
+    overflow: hidden;
 }
 
 
@@ -129,8 +131,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 100vh;
-    height: 100vh;
+    height: calc(100vh - 36px);
+    overflow-y: auto;
 }
 
 
@@ -239,11 +241,9 @@ body {
 /* Main content */
 
 .main-content {
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: visible;
     padding: 6px 6px 30px 6px;
     max-width: var(--max-width-main);
-    height: 100vh;
 }
 
 
@@ -640,7 +640,7 @@ button:focus {
 }
 
 *::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, var(--accent-400), var(--accent-600));
+    background: rgba(150, 150, 150, 0.5);
     border-radius: 10px;
 }
 
@@ -689,10 +689,8 @@ th {
 .main-content,
 .main-panel,
 main {
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: visible;
     padding: 6px 6px 30px 6px;
-    height: 100vh;
 }
 
 

@@ -8,7 +8,7 @@ function createWindow() {
 
   win = new BrowserWindow({
     width: Math.min(1280, width),
-    height: Math.min(950, height),
+    height: Math.min(900, height),
     show: false,
     frame: false, // ⚠️ muy importante → quita los botones nativos
     titleBarStyle: "hidden", // 👈 también oculta la barra de título
@@ -21,7 +21,7 @@ function createWindow() {
 
 
     // 👇 Página inicial (puedes cambiarla si lo deseas)
-    win.loadFile(path.join(__dirname, "app/HTML/index.html"));
+    win.loadFile(path.join(__dirname, "app/HTML/login.html"));
 
     win.once("ready-to-show", () => {
         win.show();
