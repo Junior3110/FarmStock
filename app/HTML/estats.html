@@ -37,7 +37,7 @@
         <div class="logo"><img src="../imagenes/Logo.png" alt="Logo del sitio" /></div>
         <ul class="menu-modulos">
           <li><a href="../HTML/index.html">Registro Herramientas</a></li>
-          <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
+          <li><a href="../HTML/registro-salida.html">Salida Herramientas</a></li>
           <li><a href="../HTML/indexInventario.html">Inventario</a></li>
           <li><a href="notificaciones.html">Notificaciones</a></li>
           <li><a href="../HTML/estats.html" class="active">Estadísticas</a></li>
@@ -125,18 +125,23 @@
       <h2 style="margin-top: 0; color: var(--text-color, #fff);"> Agregar Estado</h2>
       
       <div style="margin-bottom: 15px;">
-        <label style="display: block; margin-bottom: 5px; color: var(--text-color, #fff);">Codigo Herramienta (detalle):</label>
-        <input type="text" id="inputIdDetalle" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box;" required>
+        <label style="display: block; margin-bottom: 5px; color: var(--text-color, #fff);">Código Único de Herramienta:</label>
+        <input type="text" id="inputIdDetalle" placeholder="Ej: MART-001" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box;" required>
+        <small style="color: #888; font-size: 11px;">Ingresa el código único de la herramienta (no el ID numérico)</small>
       </div>
       
       <div style="margin-bottom: 15px;">
-        <label style="display: block; margin-bottom: 5px; color: var(--text-color, #fff);">Numero Docuemnto:</label>
-        <input type="text" id="inputIdUsuario" value="48" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box;" required>
+        <label style="display: block; margin-bottom: 5px; color: var(--text-color, #fff);">Número de Documento del Usuario:</label>
+        <input type="text" id="inputIdUsuario" placeholder="Ej: 1234567890" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box;" required>
+        <small style="color: #888; font-size: 11px;">Ingresa el número de documento (no el ID del usuario)</small>
       </div>
       
       <div style="margin-bottom: 15px;">
         <label style="display: block; margin-bottom: 5px; color: var(--text-color, #fff);">Tipo:</label>
-        <input type="text" id="inputTipo" value="MANTENIMIENTO" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box;" required>
+        <select id="inputTipo" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box;" required>
+          <option value="MANTENIMIENTO">MANTENIMIENTO</option>
+          <option value="DAÑO">DAÑO</option>
+        </select>
       </div>
       
       <div style="margin-bottom: 15px;">
@@ -148,7 +153,7 @@
         <label style="display: block; margin-bottom: 5px; color: var(--text-color, #fff);">Estado:</label>
         <select id="inputEstado" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box;">
           <option value="PENDIENTE">PENDIENTE</option>
-          <option value="EN_PROGRESO">EN_PROGRESO</option>
+          <option value="EN_PROCESO">EN_PROCESO</option>
           <option value="COMPLETADO">COMPLETADO</option>
         </select>
       </div>
@@ -250,16 +255,18 @@
               mantenimientos.forEach(m => {
                 const estadoColor = 
                   m.estado === 'PENDIENTE' ? '#FFA726' : 
-                  m.estado === 'EN_PROGRESO' ? '#42A5F5' : 
+                  m.estado === 'EN_PROCESO' ? '#42A5F5' : 
                   '#66BB6A';
                 
-                const fecha = m.fechaCreacion ? new Date(m.fechaCreacion).toLocaleDateString() : '-';
+                const fecha = m.fechaMantenimiento ? new Date(m.fechaMantenimiento).toLocaleDateString('es-CO') : '-';
+                const codigoUnico = m.herramientaDetalle?.codigoUnico || 'N/A';
+                const nombreHerramienta = m.herramienta?.nombre || 'N/A';
                 
                 const tr = document.createElement('tr');
                 tr.style.borderBottom = '1px solid #333';
                 tr.innerHTML = `
-                  <td style="padding: 12px;">${m.id || '-'}</td>
-                  <td style="padding: 12px;">${m.codigoUnico || '-'}</td>
+                  <td style="padding: 12px;">${m.idMantenimiento || '-'}</td>
+                  <td style="padding: 12px;">${codigoUnico}</td>
                   <td style="padding: 12px;">${m.tipo || '-'}</td>
                   <td style="padding: 12px;">${m.descripcion || '-'}</td>
                   <td style="padding: 12px;"><span style="background: ${estadoColor}; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold;">${m.estado}</span></td>
@@ -302,6 +309,18 @@
         btnAgregarMantenimiento.addEventListener('click', function(e) {
           e.preventDefault();
           modal.style.display = 'flex';
+          
+          // Obtener datos del usuario logueado
+          try {
+            const userData = localStorage.getItem('fs_usuario_actual');
+            if (userData) {
+              const user = JSON.parse(userData);
+              document.getElementById('inputIdUsuario').value = user.numeroDocumento || '';
+            }
+          } catch (e) {
+            console.warn('No se pudo obtener usuario logueado');
+          }
+          
           document.getElementById('inputIdDetalle').focus();
         });
       }
@@ -312,7 +331,7 @@
           modal.style.display = 'none';
           // Limpiar campos
           document.getElementById('inputIdDetalle').value = '';
-          document.getElementById('inputIdUsuario').value = '48';
+          document.getElementById('inputIdUsuario').value = '';
           document.getElementById('inputTipo').value = 'MANTENIMIENTO';
           document.getElementById('inputDescripcion').value = '';
           document.getElementById('inputEstado').value = 'PENDIENTE';
@@ -329,27 +348,23 @@
       // Guardar mantenimiento
       if (btnGuardar) {
         btnGuardar.addEventListener('click', async function() {
-          const idDetalle = document.getElementById('inputIdDetalle').value.trim();
-          const idUsuario = document.getElementById('inputIdUsuario').value.trim();
+          const codigoUnico = document.getElementById('inputIdDetalle').value.trim();
+          const numeroDocumento = document.getElementById('inputIdUsuario').value.trim();
           const tipo = document.getElementById('inputTipo').value.trim();
           const descripcion = document.getElementById('inputDescripcion').value.trim();
           const estado = document.getElementById('inputEstado').value;
           
           // Validar campos
-          if (!idDetalle) {
-            alert('Debe ingresar el ID de la herramienta');
+          if (!codigoUnico) {
+            alert('❌ Debe ingresar el código único de la herramienta');
             return;
           }
-          if (!idUsuario) {
-            alert('Debe ingresar el ID del usuario');
-            return;
-          }
-          if (!tipo) {
-            alert('Debe ingresar el tipo de mantenimiento');
+          if (!numeroDocumento) {
+            alert('❌ Debe ingresar el número de documento del usuario');
             return;
           }
           if (!descripcion) {
-            alert('Debe ingresar una descripción');
+            alert('❌ Debe ingresar una descripción del mantenimiento/daño');
             return;
           }
           
@@ -361,10 +376,14 @@
               estado: estado
             };
             
-            console.log('Enviando mantenimiento:', body);
+            console.log('📤 Enviando mantenimiento:', {
+              codigoUnico,
+              numeroDocumento,
+              body
+            });
             
             // Hacer POST request
-            const response = await fetch(`http://localhost:8080/mantenimientos?codigoUnico=${idDetalle}&numeroDocumento=${idUsuario}`, {
+            const response = await fetch(`http://localhost:8080/mantenimientos?codigoUnico=${encodeURIComponent(codigoUnico)}&numeroDocumento=${encodeURIComponent(numeroDocumento)}`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -374,19 +393,28 @@
             
             if (!response.ok) {
               const errorText = await response.text();
-              throw new Error(`Error del servidor: ${errorText}`);
+              throw new Error(errorText || 'Error del servidor');
             }
             
             const resultado = await response.json();
-            alert('✅ Mantenimiento agregado exitosamente');
-            console.log('Resultado:', resultado);
+            console.log('✅ Resultado:', resultado);
+            
+            alert('✅ ¡Mantenimiento/Daño registrado exitosamente!\n\n' +
+                  'Código: ' + codigoUnico + '\n' +
+                  'Tipo: ' + tipo + '\n' +
+                  'Estado: ' + estado + '\n\n' +
+                  'La herramienta ha sido marcada como "En Mantenimiento"');
             
             // Cerrar modal y limpiar
             btnCancelar.click();
             
           } catch (error) {
-            console.error('Error al agregar mantenimiento:', error);
-            alert('❌ Error al agregar mantenimiento: ' + error.message);
+            console.error('❌ Error al agregar mantenimiento:', error);
+            alert('❌ Error al agregar mantenimiento:\n\n' + error.message + '\n\n' +
+                  'Verifica:\n' +
+                  '• El código único existe en la base de datos\n' +
+                  '• El número de documento corresponde a un usuario registrado\n' +
+                  '• El backend está corriendo en localhost:8080');
           }
         });
       }

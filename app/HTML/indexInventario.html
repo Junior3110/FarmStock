@@ -230,7 +230,7 @@
         <div class="logo"><img src="../imagenes/Logo.png" alt="Logo" /></div>
         <ul class="menu-modulos">
           <li><a href="../HTML/index.html">Registro Herramientas</a></li>
-          <li><a href="../HTML/registro-salida.html">Historial de herramientas</a></li>
+          <li><a href="../HTML/registro-salida.html">Salida Herramientas</a></li>
           <li><a href="../HTML/indexInventario.html" class="active">Inventario</a></li>
           <li><a href="notificaciones.html">Notificaciones</a></li>
           <li><a href="../HTML/estats.html">Estadísticas</a></li>
@@ -252,15 +252,13 @@
       <div class="content-box cuadro-visual">
         <div class="encabezado-panel">
           <h1>Inventario</h1>
-          <div class="menu-verde-completo">
-            <span class="menu-verde-label">Ver desde</span>
-            <select id="filtroTiempo" class="menu-verde-select">
-              <option value="hoy">Hoy</option>
-              <option value="semana">Última semana</option>
-              <option value="mes">Último mes</option>
-              <option value="3meses" selected>3 meses</option>
-              <option value="todo">Todo</option>
-            </select>
+          <div class="search-box">
+            <input 
+              type="text" 
+              id="buscarCodigo" 
+              placeholder="🔍 Buscar por código único..." 
+              style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--surface); color: var(--text); min-width: 240px; font-size: 13px;"
+            />
           </div>
         </div>
 
@@ -303,7 +301,7 @@
     (function () {
       const API = window.FSApiClient;
       const contenedor = document.getElementById('inventarioLista');
-      const filtroSelect = document.getElementById('filtroTiempo');
+      const buscarCodigoInput = document.getElementById('buscarCodigo');
       const modalBackdrop = document.getElementById('modalBackdropInv');
       const modalContent = document.getElementById('modalContentInv');
       const modalTitle = document.getElementById('modalTitleInv');
@@ -437,6 +435,23 @@
         return qrDiv;
       }
 
+      // Obtener detalles de herramientas desde el backend
+      async function fetchAllToolsWithDetails() {
+        try {
+          const response = await fetch(BACKEND + '/api/herramienta-detalle');
+          if (response.ok) {
+            const detalles = await response.json();
+            console.log('📦 Detalles cargados:', detalles);
+            return Array.isArray(detalles) ? detalles : [];
+          }
+          console.warn('No se pudieron cargar detalles del backend');
+          return [];
+        } catch (e) {
+          console.warn('Error al cargar detalles:', e);
+          return [];
+        }
+      }
+
       async function fetchAllTools() {
         if (API && typeof API.obtenerTodasHerramientas === 'function') {
           try {
@@ -511,31 +526,56 @@
         return div;
       }
 
-      function applyTimeFilter(items, filtro) {
-        if (!Array.isArray(items)) return [];
-        if (filtro === 'todo') return items;
-        const hoy = new Date();
-        return items.filter(h => {
-          const d = parseIsoToDate(h.fecha);
-          if (!d) return false;
-          if (filtro === 'hoy') return d.toDateString() === hoy.toDateString();
-          if (filtro === 'semana') { const semana = new Date(); semana.setDate(hoy.getDate() - 7); return d >= semana; }
-          if (filtro === 'mes') { const mes = new Date(); mes.setMonth(hoy.getMonth() - 1); return d >= mes; }
-          if (filtro === '3meses') { const t = new Date(); t.setMonth(hoy.getMonth() - 3); return d >= t; }
-          return true;
+      function applyCodeFilter(items, codigoBusqueda, todosDetalles) {
+        if (!codigoBusqueda || codigoBusqueda.trim() === '') return items;
+        
+        const termino = codigoBusqueda.trim().toLowerCase();
+        console.log('🔍 Buscando por código:', termino);
+        
+        // Filtrar detalles que coincidan con el código buscado
+        const detallesFiltrados = todosDetalles.filter(detalle => {
+          const codigo = (detalle.codigoUnico || '').toLowerCase();
+          return codigo.includes(termino);
         });
+        
+        console.log('📋 Detalles encontrados:', detallesFiltrados);
+        
+        // Obtener IDs de herramientas que tienen esos códigos
+        const idsHerramientas = [...new Set(detallesFiltrados.map(d => 
+          d.herramienta?.idHerramienta || d.herramienta?.id
+        ))].filter(Boolean);
+        
+        console.log('🔑 IDs de herramientas:', idsHerramientas);
+        
+        // Filtrar herramientas que coincidan
+        return items.filter(h => 
+          idsHerramientas.includes(h.idHerramienta || h.id)
+        );
       }
 
-      async function mostrarInventario(filtro = '3meses') {
+      async function mostrarInventario(codigoBusqueda = '') {
         contenedor.innerHTML = '<p>Cargando inventario...</p>';
         let all = [];
         try { all = await fetchAllTools(); } catch (e) { all = loadToolsFromLocal(); }
-        const mostrados = applyTimeFilter(all, filtro);
+        
+        let mostrados = all;
+        
+        // Aplicar filtro de búsqueda por código único
+        if (codigoBusqueda && codigoBusqueda.trim() !== '') {
+          const todosDetalles = await fetchAllToolsWithDetails();
+          mostrados = applyCodeFilter(all, codigoBusqueda, todosDetalles);
+        }
+        
         contenedor.innerHTML = '';
         if (!mostrados || mostrados.length === 0) {
-          contenedor.innerHTML = '<p>No hay herramientas registradas en este rango de tiempo.</p>';
+          if (codigoBusqueda && codigoBusqueda.trim() !== '') {
+            contenedor.innerHTML = '<p>🔍 No se encontraron herramientas con el código "<strong>' + escapeHtml(codigoBusqueda) + '</strong>"</p>';
+          } else {
+            contenedor.innerHTML = '<p>No hay herramientas registradas.</p>';
+          }
           return;
         }
+        
         mostrados.forEach(t => contenedor.appendChild(renderCard(t)));
       }
 
@@ -643,7 +683,7 @@
               }
               alert('Registro actualizado en servidor.');
               closeModal();
-              mostrarInventario(filtroSelect.value);
+              mostrarInventario(buscarCodigoInput.value);
             } catch (e) {
               console.error('Error al actualizar:', e);
               alert('Error: ' + (e.message || e));
@@ -887,7 +927,7 @@
             try {
               if (API && typeof API.eliminarHerramienta === 'function') await API.eliminarHerramienta(id);
               else await fetch(BACKEND + '/herramienta/' + encodeURIComponent(id), { method: 'DELETE' });
-              mostrarInventario(filtroSelect.value);
+              mostrarInventario(buscarCodigoInput.value);
             } catch (e) {
               console.error('Eliminar error', e);
               alert('No se pudo eliminar. Revisa la consola.');
@@ -896,13 +936,29 @@
         }
       });
 
-      filtroSelect.addEventListener('change', function(){ mostrarInventario(this.value); });
+      // Búsqueda con debounce para mejor rendimiento
+      let timeoutBusqueda = null;
+      buscarCodigoInput.addEventListener('input', function() {
+        clearTimeout(timeoutBusqueda);
+        timeoutBusqueda = setTimeout(() => {
+          console.log('🔎 Input de búsqueda:', this.value);
+          mostrarInventario(this.value);
+        }, 300); // Esperar 300ms después de que el usuario deje de escribir
+      });
+
+      // Limpiar búsqueda al presionar Escape
+      buscarCodigoInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          this.value = '';
+          mostrarInventario('');
+        }
+      });
 
       // debug: mostrar backend base en consola
       console.log('[CONFIG] BACKEND =', BACKEND);
 
       // inicializar
-      mostrarInventario(filtroSelect.value);
+      mostrarInventario();
     })();
   </script>
 
