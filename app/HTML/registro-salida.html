@@ -133,6 +133,17 @@
             </div>
           </div>
 
+          <!-- Filtros -->
+          <div class="filtros" style="margin-bottom: 12px;">
+            <select id="filtroEstado">
+              <option value="activos">Solo Activos</option>
+              <option value="todos">Todos los Préstamos</option>
+              <option value="finalizados">Solo Devueltos</option>
+            </select>
+            <input type="text" id="filtroCodigo" placeholder="Buscar por código..." style="flex: 1; max-width: 300px;" />
+            <button id="btnLimpiarFiltros" class="btn-small btn-outline">Limpiar filtros</button>
+          </div>
+
           <!-- Tabla historial -->
           <div class="table-wrap">
             <table class="tabla" id="tablaHistorial">
@@ -206,6 +217,33 @@
     </div>
   </div>
 
+  <!-- Modal para registrar ENTRADA (devolución) -->
+  <div id="modal-entrada" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalEntradaTitle">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <h3 id="modalEntradaTitle">Registrar entrada - Escanea herramienta</h3>
+        <button id="closeEntrada" class="btn-small btn-outline">Cerrar</button>
+      </div>
+
+      <div style="margin-top:12px;">
+        <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+          <div style="flex:1; min-width:160px;">
+            <label>Acción</label>
+            <button id="btnScanEntrada" class="btn-small btn-green" style="width:100%">Escanear código</button>
+          </div>
+          <div style="flex:1;">
+            <span id="scanStatusEntrada" class="status">Listo</span>
+          </div>
+        </div>
+
+        <!-- hidden scanner input for entrada -->
+        <input id="scanner_input_entrada" type="text" style="position:absolute; left:-10000px; top:auto; width:1px; height:1px; opacity:0;" aria-hidden="true" />
+
+        <div id="scanPreviewEntrada" style="margin-top:12px; font-weight:700; color:var(--muted)"></div>
+      </div>
+    </div>
+  </div>
+
   <script src="../FSApiClient.js"></script>
   <script>
     (function () {
@@ -232,6 +270,9 @@
 
       const tablaBody = document.querySelector('#tablaHistorial tbody');
       const btnExport = document.getElementById('btnExportHist');
+      const filtroEstado = document.getElementById('filtroEstado');
+      const filtroCodigo = document.getElementById('filtroCodigo');
+      const btnLimpiarFiltros = document.getElementById('btnLimpiarFiltros');
 
       // Helpers
       function loadLS(key) {
@@ -250,42 +291,150 @@
       function escapeHtml(s){ if (s==null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
       // Render historial table
-      function renderHist(filter) {
-        const list = loadLS(LS_HIST);
-        tablaBody.innerHTML = '';
-        if (!list || list.length === 0) {
-          tablaBody.innerHTML = '<tr><td colspan="9" style="padding:14px;color:var(--muted)">No hay registros.</td></tr>';
-          return;
+      async function renderHist() {
+        tablaBody.innerHTML = '<tr><td colspan="9" style="padding:14px;color:var(--muted)">Cargando...</td></tr>';
+        
+        // Obtener filtros
+        const estadoFiltro = filtroEstado.value;
+        const codigoFiltro = filtroCodigo.value.trim().toLowerCase();
+        
+        try {
+          // Determinar qué endpoint usar según el filtro de estado
+          let endpoint = 'http://localhost:8080/prestamos/activos';
+          if (estadoFiltro === 'todos') {
+            endpoint = 'http://localhost:8080/prestamos/todos';
+          } else if (estadoFiltro === 'finalizados') {
+            endpoint = 'http://localhost:8080/prestamos/devueltos';
+          }
+          
+          console.log('📡 Cargando préstamos desde:', endpoint);
+          
+          const response = await fetch(endpoint);
+          if (response.ok) {
+            let prestamos = await response.json();
+            
+            console.log('✅ Préstamos cargados:', prestamos.length);
+            
+            // Filtrar por código si hay texto en el filtro
+            if (codigoFiltro) {
+              prestamos = prestamos.filter(p => {
+                const codigo = (p.herramientaDetalle?.codigoUnico || '').toLowerCase();
+                const nombre = (p.herramienta?.nombre || '').toLowerCase();
+                return codigo.includes(codigoFiltro) || nombre.includes(codigoFiltro);
+              });
+              console.log('🔍 Préstamos después de filtrar por código:', prestamos.length);
+            }
+            
+            tablaBody.innerHTML = '';
+            if (!prestamos || prestamos.length === 0) {
+              tablaBody.innerHTML = '<tr><td colspan="9" style="padding:14px;color:var(--muted)">No hay préstamos que coincidan con los filtros.</td></tr>';
+              return;
+            }
+            
+            prestamos.forEach(p => {
+              const tr = document.createElement('tr');
+              
+              // Formatear fechas
+              const fechaPrestamo = p.fechaPrestamo ? new Date(p.fechaPrestamo) : null;
+              const fechaDevolucion = p.fechaDevolucion ? new Date(p.fechaDevolucion) : null;
+              
+              const fecha = fechaPrestamo ? fechaPrestamo.toLocaleDateString('es-CO') : '';
+              const horaSalida = fechaPrestamo ? fechaPrestamo.toLocaleTimeString('es-CO', {hour:'2-digit', minute:'2-digit'}) : '';
+              const horaEntrada = fechaDevolucion ? fechaDevolucion.toLocaleTimeString('es-CO', {hour:'2-digit', minute:'2-digit'}) : '';
+              
+              // Celda de hora entrada: mostrar hora o botón
+              let horaEntradaHTML = '';
+              if (horaEntrada) {
+                horaEntradaHTML = escapeHtml(horaEntrada);
+              } else {
+                horaEntradaHTML = `<button class="btn-small btn-green btn-registrar-entrada" data-codigo="${escapeHtml(p.herramientaDetalle?.codigoUnico || '')}">Registrar Entrada</button>`;
+              }
+              
+              tr.innerHTML = `
+                <td>${escapeHtml(p.idPrestamo)}</td>
+                <td>${escapeHtml(p.herramienta?.nombre || 'N/A')}</td>
+                <td>${escapeHtml(p.estado)}</td>
+                <td>${escapeHtml(p.aprendiz?.numeroDocumento || 'N/A')}</td>
+                <td>${escapeHtml(p.aprendiz?.numeroFicha || 'N/A')}</td>
+                <td>${escapeHtml(fecha)}</td>
+                <td>${escapeHtml(horaSalida)}</td>
+                <td>${horaEntradaHTML}</td>
+                <td>
+                  <button class="btn-small btn-delete" data-id="${p.idPrestamo}">Eliminar</button>
+                </td>
+              `;
+              tablaBody.appendChild(tr);
+            });
+          } else {
+            throw new Error('Backend no disponible');
+          }
+        } catch (error) {
+          console.warn('No se pudo cargar préstamos del backend, usando localStorage:', error);
+          // Fallback a localStorage
+          const list = loadLS(LS_HIST);
+          tablaBody.innerHTML = '';
+          if (!list || list.length === 0) {
+            tablaBody.innerHTML = '<tr><td colspan="9" style="padding:14px;color:var(--muted)">No hay registros.</td></tr>';
+            return;
+          }
+          list.forEach(r => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${escapeHtml(r.id)}</td>
+              <td>${escapeHtml(r.nombre)}</td>
+              <td>${escapeHtml(r.estado)}</td>
+              <td>${escapeHtml(r.cc)}</td>
+              <td>${escapeHtml(r.ficha)}</td>
+              <td>${escapeHtml(r.fecha)}</td>
+              <td>${escapeHtml(r.horaSalida)}</td>
+              <td>${escapeHtml(r.horaEntrada || '')}</td>
+              <td>
+                <button class="btn-small btn-delete" data-id="${r.id}">Eliminar</button>
+              </td>
+            `;
+            tablaBody.appendChild(tr);
+          });
         }
-        list.forEach(r => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${escapeHtml(r.id)}</td>
-            <td>${escapeHtml(r.nombre)}</td>
-            <td>${escapeHtml(r.estado)}</td>
-            <td>${escapeHtml(r.cc)}</td>
-            <td>${escapeHtml(r.ficha)}</td>
-            <td>${escapeHtml(r.fecha)}</td>
-            <td>${escapeHtml(r.horaSalida)}</td>
-            <td>${escapeHtml(r.horaEntrada || '')}</td>
-            <td>
-              <button class="btn-small btn-delete" data-id="${r.id}">Eliminar</button>
-            </td>
-          `;
-          tablaBody.appendChild(tr);
-        });
       }
 
       // Wire table delete
-      tablaBody.addEventListener('click', function (ev) {
+      tablaBody.addEventListener('click', async function (ev) {
         const btn = ev.target.closest('button.btn-delete');
         if (!btn) return;
+        
         const id = btn.dataset.id;
-        if (!confirm('Eliminar registro ' + id + '?')) return;
-        let list = loadLS(LS_HIST);
-        list = list.filter(x => x.id !== id);
-        saveLS(LS_HIST, list);
-        renderHist();
+        const isNumericId = !isNaN(parseInt(id));
+        
+        if (!confirm('¿Eliminar préstamo ' + id + '?')) return;
+        
+        try {
+          if (isNumericId) {
+            // Es un ID del backend, usar API
+            const response = await fetch(`http://localhost:8080/prestamos/${id}`, {
+              method: 'DELETE'
+            });
+            
+            if (response.ok || response.status === 204) {
+              alert('✅ Préstamo eliminado exitosamente');
+              renderHist(); // Recargar tabla
+            } else {
+              const error = await response.text();
+              throw new Error(error || 'Error al eliminar préstamo');
+            }
+          } else {
+            // Es un ID local, eliminar de localStorage
+            let list = loadLS(LS_HIST);
+            list = list.filter(x => x.id !== id);
+            saveLS(LS_HIST, list);
+            renderHist();
+          }
+        } catch (error) {
+          console.error('Error al eliminar préstamo:', error);
+          alert('❌ ERROR AL ELIMINAR PRÉSTAMO\n\n' + error.message + '\n\n' +
+                'Verifica:\n' +
+                '• Backend corriendo en localhost:8080\n' +
+                '• El préstamo existe en la base de datos');
+        }
       });
 
       // Open/close modal
@@ -556,6 +705,180 @@
         setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 1000);
       });
 
+      // ============ LÓGICA MODAL DE ENTRADA (DEVOLUCIÓN) ============
+      const modalEntrada = document.getElementById('modal-entrada');
+      const closeEntrada = document.getElementById('closeEntrada');
+      const scannerInputEntrada = document.getElementById('scanner_input_entrada');
+      const btnScanEntrada = document.getElementById('btnScanEntrada');
+      const scanStatusEntrada = document.getElementById('scanStatusEntrada');
+      const scanPreviewEntrada = document.getElementById('scanPreviewEntrada');
+
+      let codigoParaDevolver = null;
+      let waitingScanEntrada = false;
+
+      // Abrir modal de entrada
+      function openModalEntrada(codigo) {
+        codigoParaDevolver = codigo;
+        modalEntrada.classList.add('open');
+        modalEntrada.setAttribute('aria-hidden', 'false');
+        scanPreviewEntrada.textContent = `Preparando para registrar devolución del código: ${codigo}`;
+      }
+
+      // Cerrar modal de entrada
+      function closeModalEntrada() {
+        modalEntrada.classList.remove('open');
+        modalEntrada.setAttribute('aria-hidden', 'true');
+        stopWaitingScanEntrada();
+        codigoParaDevolver = null;
+        scanPreviewEntrada.textContent = '';
+      }
+
+      closeEntrada.addEventListener('click', closeModalEntrada);
+      modalEntrada.addEventListener('click', function(ev) {
+        if (ev.target === modalEntrada) closeModalEntrada();
+      });
+
+      // Escanear código para entrada
+      function startWaitingScanEntrada() {
+        waitingScanEntrada = true;
+        scanStatusEntrada.textContent = 'Esperando escaneo...';
+        scanStatusEntrada.style.color = '#ffd54f';
+        scannerInputEntrada.value = '';
+        scannerInputEntrada.focus();
+        console.log('🎯 Escáner de entrada activado. Esperando código QR...');
+        console.log('🎯 Código esperado:', codigoParaDevolver);
+      }
+
+      function stopWaitingScanEntrada() {
+        waitingScanEntrada = false;
+        scanStatusEntrada.textContent = 'Listo';
+        scanStatusEntrada.style.color = '';
+        scannerInputEntrada.blur();
+        scannerInputEntrada.value = '';
+        console.log('🛑 Escáner de entrada desactivado');
+      }
+
+      btnScanEntrada.addEventListener('click', function() {
+        console.log('🖱️ Botón "Escanear código" clickeado');
+        startWaitingScanEntrada();
+      });
+
+      // Manejar escaneo de entrada
+      scannerInputEntrada.addEventListener('keydown', function(ev) {
+        console.log('🔑 Tecla presionada en entrada:', ev.key, 'Valor actual:', scannerInputEntrada.value);
+        if (!waitingScanEntrada) {
+          console.warn('⚠️ No estamos esperando escaneo (waitingScanEntrada=false)');
+          return;
+        }
+        if (ev.key === 'Enter') {
+          ev.preventDefault();
+          const scanned = scannerInputEntrada.value.trim();
+          console.log('✅ Enter detectado. Código escaneado:', scanned);
+          if (scanned) handleScannedEntrada(scanned);
+        }
+      });
+
+      scannerInputEntrada.addEventListener('input', function() {
+        const v = scannerInputEntrada.value;
+        console.log('📝 Input cambió en entrada. Valor:', v, 'Longitud:', v.length);
+        if (!waitingScanEntrada) return;
+        if (v.includes('\n') || v.includes('\r') || v.length > 20) {
+          const cleaned = v.replace(/[\r\n]+/g, '').trim();
+          console.log('✅ Código detectado por longitud/newline:', cleaned);
+          if (cleaned) handleScannedEntrada(cleaned);
+        }
+      });
+
+      // Procesar código escaneado para entrada
+      async function handleScannedEntrada(code) {
+        stopWaitingScanEntrada();
+        
+        // Normalizar código: limpiar espacios y normalizar formato
+        const codigoLimpio = code.trim().replace(/\s+/g, '');
+        const codigoNormalizado = codigoLimpio.replace(/\//g, '-');
+        
+        scanPreviewEntrada.textContent = 'Código leído: ' + codigoLimpio;
+        
+        console.log('🔍 Código escaneado:', codigoLimpio);
+        console.log('🔍 Código normalizado:', codigoNormalizado);
+        console.log('🔍 Código esperado:', codigoParaDevolver);
+        
+        // Comparar ambos códigos normalizados
+        const codigoEsperadoNormalizado = codigoParaDevolver ? codigoParaDevolver.replace(/\//g, '-') : '';
+        
+        if (codigoNormalizado !== codigoEsperadoNormalizado) {
+          const confirmar = confirm(
+            '⚠️ ADVERTENCIA: El código escaneado no coincide exactamente\n\n' +
+            'Código escaneado: ' + codigoLimpio + '\n' +
+            'Código esperado: ' + codigoParaDevolver + '\n\n' +
+            '¿Deseas intentar registrar la devolución de todas formas?'
+          );
+          if (!confirmar) return;
+        }
+
+        try {
+          // Llamar al endpoint de devolución con el código normalizado
+          const response = await fetch(`http://localhost:8080/prestamos/devolver/codigo/${encodeURIComponent(codigoNormalizado)}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (response.ok) {
+            const prestamoActualizado = await response.json();
+            alert('✅ ¡DEVOLUCIÓN REGISTRADA EXITOSAMENTE!\n\n' +
+                  'Herramienta: ' + (prestamoActualizado.herramienta?.nombre || 'N/A') + '\n' +
+                  'Código: ' + codigoNormalizado + '\n' +
+                  'Estado: ' + prestamoActualizado.estado + '\n' +
+                  'Fecha devolución: ' + new Date(prestamoActualizado.fechaDevolucion).toLocaleString('es-CO'));
+            
+            closeModalEntrada();
+            renderHist(); // Recargar tabla
+          } else {
+            const error = await response.text();
+            throw new Error(error || 'Error al registrar devolución');
+          }
+        } catch (error) {
+          console.error('Error al registrar entrada:', error);
+          alert('❌ ERROR AL REGISTRAR DEVOLUCIÓN\n\n' + error.message + '\n\n' +
+                'Verifica:\n' +
+                '• Backend corriendo en localhost:8080\n' +
+                '• El préstamo existe y está activo\n' +
+                '• El código es correcto');
+        }
+      }
+
+      // Manejar clic en botones de "Registrar Entrada"
+      tablaBody.addEventListener('click', function(ev) {
+        const btnEntrada = ev.target.closest('button.btn-registrar-entrada');
+        if (btnEntrada) {
+          const codigo = btnEntrada.dataset.codigo;
+          if (codigo) {
+            openModalEntrada(codigo);
+          }
+        }
+      });
+
+      // Event listeners para filtros
+      filtroEstado.addEventListener('change', function() {
+        renderHist();
+      });
+
+      filtroCodigo.addEventListener('input', function() {
+        // Debounce para no recargar en cada tecla
+        clearTimeout(window.filtroCodigoTimeout);
+        window.filtroCodigoTimeout = setTimeout(() => {
+          renderHist();
+        }, 500);
+      });
+
+      btnLimpiarFiltros.addEventListener('click', function() {
+        filtroEstado.value = 'activos';
+        filtroCodigo.value = '';
+        renderHist();
+      });
+
       // Initialize: render existing historial
       renderHist();
 
@@ -563,6 +886,7 @@
       document.addEventListener('keydown', function (ev) {
         if (ev.key === 'Escape') {
           if (modal.classList.contains('open')) closeModal();
+          if (modalEntrada.classList.contains('open')) closeModalEntrada();
         }
       });
 
