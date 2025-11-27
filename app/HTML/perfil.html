@@ -67,8 +67,8 @@
                   <div class="small-muted">Administrador</div>
                 </div>
                 <div style="display:flex; gap:8px; margin-top:8px;">
-                  <button id="editarPerfil" class="btn-small" style="background:var(--accent)">Editar</button>
-                  <button id="cerrarSesion" class="btn-small delete" style="background:var(--danger)">Cerrar sesión</button>
+                  <button id="editarPerfil" class="btn-small" style="background:#10b981; color:#fff; font-weight:600;">Editar</button>
+                  <button id="cerrarSesion" class="btn-small delete" style="background:#ef4444; color:#fff; font-weight:600;">Cerrar sesión</button>
                 </div>
               </div>
             </div>
@@ -79,37 +79,37 @@
               <form id="profile-form" class="formulario-horizontal" style="grid-template-columns: 1fr; gap:12px;" novalidate>
                 <div class="columna">
                   <label for="nombre">Nombre</label>
-                  <input id="nombre" name="nombre" type="text" value="María" placeholder="Nombre" />
+                  <input id="nombre" name="nombre" type="text" value="María" placeholder="Nombre" style="border: 1px solid var(--card-border); background: var(--surface); color: var(--text); padding: 10px; border-radius: 6px;" />
                 </div>
 
                 <div class="columna">
                   <label for="apellido">Apellido</label>
-                  <input id="apellido" name="apellido" type="text" value="Gafaro" placeholder="Apellido" />
+                  <input id="apellido" name="apellido" type="text" value="Gafaro" placeholder="Apellido" style="border: 1px solid var(--card-border); background: var(--surface); color: var(--text); padding: 10px; border-radius: 6px;" />
                 </div>
 
                 <div class="columna">
                   <label for="email">Correo</label>
-                  <input id="email" name="email" type="email" value="maria@ejemplo.com" placeholder="correo@dominio.com" />
+                  <input id="email" name="email" type="email" value="maria@ejemplo.com" placeholder="correo@dominio.com" style="border: 1px solid var(--card-border); background: var(--surface); color: var(--text); padding: 10px; border-radius: 6px;" />
                 </div>
 
                 <div class="columna">
                   <label for="telefono">Teléfono</label>
-                  <input id="telefono" name="telefono" type="tel" placeholder="(+57) 300 000 0000" />
+                  <input id="telefono" name="telefono" type="tel" placeholder="(+57) 300 000 0000" style="border: 1px solid var(--card-border); background: var(--surface); color: var(--text); padding: 10px; border-radius: 6px;" />
                 </div>
 
                 <div class="columna">
                   <label for="tipoDocumento">Tipo de documento</label>
-                  <input id="tipoDocumento" name="tipoDocumento" type="text" readonly style="background: color-mix(in srgb, var(--surface) 90%, transparent 10%); cursor: not-allowed;" />
+                  <input id="tipoDocumento" name="tipoDocumento" type="text" readonly style="background: color-mix(in srgb, var(--surface) 90%, var(--card-border) 10%); border: 1px solid var(--card-border); color: var(--muted); cursor: not-allowed; padding: 10px; border-radius: 6px;" />
                 </div>
 
                 <div class="columna">
                   <label for="numeroDocumento">Número de documento</label>
-                  <input id="numeroDocumento" name="numeroDocumento" type="text" readonly style="background: color-mix(in srgb, var(--surface) 90%, transparent 10%); cursor: not-allowed;" />
+                  <input id="numeroDocumento" name="numeroDocumento" type="text" readonly style="background: color-mix(in srgb, var(--surface) 90%, var(--card-border) 10%); border: 1px solid var(--card-border); color: var(--muted); cursor: not-allowed; padding: 10px; border-radius: 6px;" />
                 </div>
 
                 <div style="display:flex; gap:10px; margin-top:8px; justify-content:flex-end;">
-                  <button type="submit" class="btn">Guardar cambios</button>
-                  <button type="button" id="cambiarPassword" class="btn" style="background:var(--surface); color:var(--text); border:1px solid var(--card-border);">Cambiar contraseña</button>
+                  <button type="submit" class="btn" style="background:#10b981; color:#fff; font-weight:600; border:none;">Guardar cambios</button>
+                  <button type="button" id="cambiarPassword" class="btn" style="background:#3b82f6; color:#fff; border:none; font-weight:600;">Cambiar contraseña</button>
                 </div>
               </form>
             </div>
@@ -307,20 +307,20 @@
       btnCambiarPassword.addEventListener('click', function() {
         const contenido = `
           <div style="padding: 20px;">
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">Contraseña actual:</label>
-              <input type="password" id="passwordActual" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--surface); color: var(--text);">
+            <div style="margin-bottom: 18px;">
+              <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text); font-size: 14px;">Contraseña actual:</label>
+              <input type="password" id="passwordActual" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #cbd5e1; background: #ffffff; color: #1e293b; font-size: 14px; box-sizing: border-box; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#cbd5e1'">
             </div>
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">Nueva contraseña:</label>
-              <input type="password" id="passwordNueva" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--surface); color: var(--text);">
-              <small style="color: var(--muted); font-size: 12px;">Mínimo 8 caracteres, incluir mayúscula, minúscula, número y carácter especial</small>
+            <div style="margin-bottom: 18px;">
+              <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text); font-size: 14px;">Nueva contraseña:</label>
+              <input type="password" id="passwordNueva" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #cbd5e1; background: #ffffff; color: #1e293b; font-size: 14px; box-sizing: border-box; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#cbd5e1'">
+              <small style="color: #64748b; font-size: 12px; display: block; margin-top: 6px;">Mínimo 8 caracteres, incluir mayúscula, minúscula, número y carácter especial</small>
             </div>
-            <div style="margin-bottom: 20px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">Confirmar contraseña:</label>
-              <input type="password" id="passwordConfirm" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--surface); color: var(--text);">
+            <div style="margin-bottom: 24px;">
+              <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text); font-size: 14px;">Confirmar contraseña:</label>
+              <input type="password" id="passwordConfirm" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #cbd5e1; background: #ffffff; color: #1e293b; font-size: 14px; box-sizing: border-box; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#cbd5e1'">
             </div>
-            <button id="btnGuardarPassword" class="btn" style="width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Cambiar contraseña</button>
+            <button id="btnGuardarPassword" class="btn" style="width: 100%; padding: 14px; background: #10b981; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 15px; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);">Cambiar contraseña</button>
           </div>
         `;
         

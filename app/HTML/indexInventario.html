@@ -453,26 +453,49 @@
       }
 
       async function fetchAllTools() {
-        if (API && typeof API.obtenerTodasHerramientas === 'function') {
-          try {
-            const remoto = await API.obtenerTodasHerramientas();
-            return (Array.isArray(remoto) ? remoto.map(normalizeTool) : []);
-          } catch (e) {
-            console.warn('Error backend API, fallback to local', e);
-            return loadToolsFromLocal();
+        try {
+          console.log('📡 Cargando herramientas desde:', BACKEND + '/herramienta');
+          const response = await fetch(BACKEND + '/herramienta');
+          
+          if (!response.ok) {
+            throw new Error('Backend no responde: ' + response.status);
           }
-        } else {
-          try {
-            const r = await fetch(BACKEND + '/herramienta'); // intenta backend directo
-            if (r.ok) {
-              const arr = await r.json();
-              return (Array.isArray(arr) ? arr.map(normalizeTool) : []);
-            }
-            return loadToolsFromLocal();
-          } catch (e) {
-            console.warn('Fetch failed', e);
-            return loadToolsFromLocal();
-          }
+          
+          const herramientas = await response.json();
+          console.log('✅ Herramientas recibidas:', herramientas.length);
+          
+          // Cargar detalles para cada herramienta
+          const herramientasConDetalles = await Promise.all(
+            herramientas.map(async (h) => {
+              const normalized = normalizeTool(h);
+              try {
+                const detailsUrl = BACKEND + '/api/herramienta-detalle/herramienta/' + h.idHerramienta;
+                console.log('📦 Cargando detalles de:', h.nombre, 'desde:', detailsUrl);
+                const detailsResponse = await fetch(detailsUrl);
+                
+                if (detailsResponse.ok) {
+                  const detalles = await detailsResponse.json();
+                  normalized.detalles = detalles;
+                  console.log('✅ Detalles cargados para', h.nombre + ':', detalles.length, 'unidades');
+                } else {
+                  console.warn('⚠️ No hay detalles para', h.nombre);
+                  normalized.detalles = [];
+                }
+              } catch (err) {
+                console.warn('❌ Error al cargar detalles de', h.nombre + ':', err);
+                normalized.detalles = [];
+              }
+              return normalized;
+            })
+          );
+          
+          console.log('🎉 Total herramientas con detalles:', herramientasConDetalles.length);
+          return herramientasConDetalles;
+          
+        } catch (e) {
+          console.error('❌ Error al conectar con backend:', e);
+          console.log('📂 Intentando cargar desde localStorage...');
+          return loadToolsFromLocal();
         }
       }
 
@@ -555,8 +578,16 @@
 
       async function mostrarInventario(codigoBusqueda = '') {
         contenedor.innerHTML = '<p>Cargando inventario...</p>';
+        console.log('🔄 Iniciando carga de inventario...');
+        
         let all = [];
-        try { all = await fetchAllTools(); } catch (e) { all = loadToolsFromLocal(); }
+        try { 
+          all = await fetchAllTools(); 
+          console.log('✅ Herramientas cargadas:', all.length);
+        } catch (e) { 
+          console.error('❌ Error:', e);
+          all = loadToolsFromLocal(); 
+        }
         
         let mostrados = all;
         
@@ -571,11 +602,12 @@
           if (codigoBusqueda && codigoBusqueda.trim() !== '') {
             contenedor.innerHTML = '<p>🔍 No se encontraron herramientas con el código "<strong>' + escapeHtml(codigoBusqueda) + '</strong>"</p>';
           } else {
-            contenedor.innerHTML = '<p>No hay herramientas registradas.</p>';
+            contenedor.innerHTML = '<p>No hay herramientas registradas. Verifica que el backend esté corriendo en ' + BACKEND + '</p>';
           }
           return;
         }
         
+        console.log('📊 Mostrando', mostrados.length, 'herramientas');
         mostrados.forEach(t => contenedor.appendChild(renderCard(t)));
       }
 
@@ -735,56 +767,81 @@
           const listDiv = document.createElement('div');
           listDiv.className = 'modal-list';
           detalles.forEach(function(d, idx){
+            // Contenedor principal que incluirá tanto la tarjeta como el panel de edición
+            const itemWrapper = document.createElement('div');
+            itemWrapper.style.marginBottom = '20px';
+            
             const cont = document.createElement('div');
             cont.className = 'tarjeta';
-            cont.style.display = 'flex';
-            cont.style.justifyContent = 'space-between';
-            cont.style.alignItems = 'flex-start';
-            cont.style.gap = '12px';
+            cont.style.display = 'grid';
+            cont.style.gridTemplateColumns = '1fr 2fr 1fr';
+            cont.style.gap = '30px';
+            cont.style.alignItems = 'center';
+            cont.style.padding = '20px';
 
-            const left = document.createElement('div');
-            left.style.flex = '1';
-            const nombreUnit = (d.herramienta && d.herramienta.nombre) ? d.herramienta.nombre : ('Unidad ' + (idx + 1));
-            const h4 = document.createElement('h4');
-            h4.textContent = nombreUnit + ' — ' + (d.codigoUnico || '');
-            const p1 = document.createElement('p');
-            p1.innerHTML = '<strong>Estado:</strong> ' + escapeHtml(d.estado || '-');
-            const p2 = document.createElement('p');
-            p2.innerHTML = '<strong>Disponible:</strong> ' + (d.disponible ? 'Sí' : 'No') + ' • <strong>Fecha ingreso:</strong> ' + (d.fechaIngreso || '-');
-            left.appendChild(h4); left.appendChild(p1); left.appendChild(p2);
+            // COLUMNA IZQUIERDA: QR centrado con diseño de caja
+            const leftColumn = document.createElement('div');
+            leftColumn.style.display = 'flex';
+            leftColumn.style.flexDirection = 'column';
+            leftColumn.style.alignItems = 'center';
+            leftColumn.style.justifyContent = 'center';
+            leftColumn.style.padding = '20px';
+            leftColumn.style.backgroundColor = '#f5f5f5';
+            leftColumn.style.borderRadius = '10px';
+            leftColumn.style.border = '2px solid #ddd';
+            leftColumn.style.minHeight = '150px';
 
-            const right = document.createElement('div');
-            right.style.display = 'flex';
-            right.style.flexDirection = 'column';
-            right.style.gap = '8px';
-            right.style.alignItems = 'flex-end';
-
-            // mostrar QR por código único del detalle (patrón: qr_<CODIGO>.png)
+            // mostrar QR por código único del detalle
             const codigo = d.codigoUnico || d.codigo || d.idDetalle || d.id;
-            
-            // Contenedor para QR + botón de imprimir
-            const qrWrapper = document.createElement('div');
-            qrWrapper.style.display = 'flex';
-            qrWrapper.style.flexDirection = 'column';
-            qrWrapper.style.gap = '8px';
-            qrWrapper.style.alignItems = 'center';
-            
             const img = document.createElement('img');
             img.src = codigo ? qrUrlForCodigo(codigo) : '';
             img.alt = 'QR ' + (codigo || '');
-            img.style.width = '120px';
-            img.style.height = '120px';
+            img.style.width = '100px';
+            img.style.height = '100px';
             img.style.objectFit = 'contain';
-            img.style.borderRadius = '6px';
-            img.style.border = '1px solid #eee';
+            img.style.backgroundColor = '#fff';
+            img.style.padding = '8px';
+            img.style.borderRadius = '8px';
+            img.style.border = '1px solid #e0e0e0';
             img.onerror = function() { console.warn('[QR] detalle not found:', img.src); this.style.display = 'none'; };
-            
+            leftColumn.appendChild(img);
+
+            // COLUMNA CENTRO: Información
+            const centerColumn = document.createElement('div');
+            centerColumn.style.display = 'flex';
+            centerColumn.style.flexDirection = 'column';
+            centerColumn.style.gap = '8px';
+            const nombreUnit = (d.herramienta && d.herramienta.nombre) ? d.herramienta.nombre : ('Unidad ' + (idx + 1));
+            const h4 = document.createElement('h4');
+            h4.textContent = nombreUnit + ' — ' + (d.codigoUnico || '');
+            h4.style.margin = '0';
+            const p1 = document.createElement('p');
+            p1.innerHTML = '<strong>Estado:</strong> ' + escapeHtml(d.estado || '-');
+            p1.style.margin = '4px 0';
+            const p2 = document.createElement('p');
+            p2.innerHTML = '<strong>Disponible:</strong> ' + (d.disponible ? 'Sí' : 'No') + ' • <strong>Fecha ingreso:</strong> ' + (d.fechaIngreso || '-');
+            p2.style.margin = '4px 0';
+            centerColumn.appendChild(h4);
+            centerColumn.appendChild(p1);
+            centerColumn.appendChild(p2);
+
+            // COLUMNA DERECHA: Botones
+            const rightColumn = document.createElement('div');
+            rightColumn.style.display = 'flex';
+            rightColumn.style.flexDirection = 'column';
+            rightColumn.style.gap = '10px';
+            rightColumn.style.alignItems = 'stretch';
+
             const btnPrintQR = document.createElement('button');
             btnPrintQR.type = 'button';
             btnPrintQR.className = 'btn-small';
             btnPrintQR.style.background = '#4CAF50';
-            btnPrintQR.style.fontSize = '11px';
-            btnPrintQR.style.padding = '4px 8px';
+            btnPrintQR.style.color = '#fff';
+            btnPrintQR.style.fontSize = '12px';
+            btnPrintQR.style.padding = '8px 12px';
+            btnPrintQR.style.border = 'none';
+            btnPrintQR.style.borderRadius = '5px';
+            btnPrintQR.style.cursor = 'pointer';
             btnPrintQR.textContent = '🖨️ Imprimir';
             btnPrintQR.addEventListener('click', async function(){
               const codigoPrint = d.codigoUnico || d.codigo;
@@ -810,56 +867,59 @@
                   <!DOCTYPE html>
                   <html>
                   <head>
-                    <title>QR - ${codigoPrint}</title>
+                    <title>Imprimir QR - ${codigoPrint}</title>
                     <style>
-                      * {
-                        margin: 0;
-                        padding: 0;
-                        box-sizing: border-box;
-                      }
-                      @page {
-                        size: 50mm auto;
-                        margin: 0;
-                      }
+                      @page { margin: 1cm; }
                       body {
-                        width: 50mm;
                         margin: 0;
-                        padding: 1mm;
-                        font-family: Arial, sans-serif;
+                        padding: 20px;
                         display: flex;
                         flex-direction: column;
                         align-items: center;
+                        justify-content: center;
+                        font-family: Arial, sans-serif;
                       }
-                      .ticket-container {
-                        width: 100%;
+                      .qr-container {
                         text-align: center;
-                        border: 1px solid #000;
-                        padding: 2mm;
+                        page-break-after: avoid;
                       }
                       .qr-code {
-                        width: 35mm;
-                        height: 35mm;
-                        margin: 0 auto 2mm auto;
+                        width: 300px;
+                        height: 300px;
+                        margin: 20px auto;
                         display: block;
                       }
-                      .codigo-text {
-                        font-size: 8px;
+                      .qr-info {
+                        margin-top: 15px;
+                      }
+                      .qr-code-text {
+                        font-size: 18px;
                         font-weight: bold;
-                        color: #000;
-                        word-wrap: break-word;
-                        line-height: 1.1;
+                        margin: 10px 0;
+                      }
+                      .qr-herramienta {
+                        font-size: 16px;
+                        color: #555;
+                        margin: 5px 0;
+                      }
+                      .qr-date {
+                        font-size: 12px;
+                        color: #888;
+                        margin-top: 10px;
                       }
                       @media print {
-                        body {
-                          width: 50mm;
-                        }
+                        body { padding: 0; }
                       }
                     </style>
                   </head>
                   <body>
-                    <div class="ticket-container">
-                      <img class="qr-code" src="${imgUrl}" alt="QR">
-                      <div class="codigo-text">${codigoPrint}</div>
+                    <div class="qr-container">
+                      <img class="qr-code" src="${imgUrl}" alt="Código QR">
+                      <div class="qr-info">
+                        <div class="qr-code-text">${codigoPrint}</div>
+                        <div class="qr-herramienta">${nombreUnit}</div>
+                        <div class="qr-date">Impreso: ${new Date().toLocaleDateString('es-ES')} ${new Date().toLocaleTimeString('es-ES')}</div>
+                      </div>
                     </div>
                     <script>
                       window.onload = function() {
@@ -881,21 +941,23 @@
                 alert('❌ Error al imprimir el código QR. Verifica que el backend esté corriendo.');
               }
             });
-            
-            qrWrapper.appendChild(img);
-            qrWrapper.appendChild(btnPrintQR);
 
             const btnEdit = document.createElement('button');
             btnEdit.type = 'button';
             btnEdit.className = 'btn-small';
+            btnEdit.style.padding = '8px 12px';
+            btnEdit.style.fontSize = '12px';
+            btnEdit.style.borderRadius = '5px';
+            btnEdit.style.cursor = 'pointer';
             btnEdit.textContent = 'Editar unidad';
             btnEdit.addEventListener('click', function(){
-              const panel = cont.querySelector('.edit-panel');
-              if (!panel) {
+              const existingPanel = itemWrapper.querySelector('.edit-panel');
+              if (existingPanel) {
+                existingPanel.remove();
+              } else {
                 const p = buildDetalleEditPanel(d, herramientaId);
-                cont.appendChild(p);
-                p.style.display = 'block';
-              } else panel.style.display = (panel.style.display === 'none' ? 'block' : 'none');
+                itemWrapper.appendChild(p);
+              }
             });
 
             const btnDelete = document.createElement('button');
@@ -916,41 +978,49 @@
               if (!confirmed) return;
 
               try {
-                if (API && typeof API.eliminarDetalle === 'function') {
-                  await API.eliminarDetalle(idD);
-                } else {
-                  const response = await fetch(BACKEND + '/api/herramienta-detalle/' + encodeURIComponent(idD), {
-                    method: 'DELETE'
-                  });
-                  if (!response.ok) {
-                    const errorData = await response.text();
-                    let errorMessage = 'Error al eliminar';
-                    try {
-                      const errorJson = JSON.parse(errorData);
-                      errorMessage = errorJson.message || errorJson.error || errorData;
-                    } catch(e) {
-                      errorMessage = errorData || `Error HTTP ${response.status}`;
-                    }
-                    throw new Error(errorMessage);
+                console.log('🗑️ Eliminando unidad:', idD);
+                
+                const response = await fetch(BACKEND + '/api/herramienta-detalle/' + encodeURIComponent(idD), {
+                  method: 'DELETE'
+                });
+                
+                if (!response.ok && response.status !== 204) {
+                  const errorData = await response.text();
+                  let errorMessage = 'Error al eliminar';
+                  try {
+                    const errorJson = JSON.parse(errorData);
+                    errorMessage = errorJson.message || errorJson.error || errorData;
+                  } catch(e) {
+                    errorMessage = errorData || `Error HTTP ${response.status}`;
                   }
+                  throw new Error(errorMessage);
                 }
-                alert('Unidad eliminada exitosamente');
-                // Recargar detalles usando el nombre de la herramienta del detalle
-                openDetallesModal(herramientaId, nombreUnidad);
+                
+                console.log('✅ Unidad eliminada');
+                alert('✅ Unidad eliminada exitosamente');
+                
+                // Recargar el modal de detalles
+                await openDetallesModal(herramientaId, nombre);
+                
+                // Recargar también el inventario principal en segundo plano
+                mostrarInventario(buscarCodigoInput.value);
+                
               } catch (e) {
-                console.error('Error al eliminar detalle:', e);
-                alert('Error: ' + (e.message || e));
+                console.error('❌ Error al eliminar detalle:', e);
+                alert('❌ Error al eliminar:\n\n' + (e.message || e));
               }
             });
 
-            right.appendChild(qrWrapper);
-            right.appendChild(btnEdit);
-            right.appendChild(btnDelete);
+            rightColumn.appendChild(btnPrintQR);
+            rightColumn.appendChild(btnEdit);
+            rightColumn.appendChild(btnDelete);
 
-            cont.appendChild(left);
-            cont.appendChild(right);
+            cont.appendChild(leftColumn);
+            cont.appendChild(centerColumn);
+            cont.appendChild(rightColumn);
 
-            listDiv.appendChild(cont);
+            itemWrapper.appendChild(cont);
+            listDiv.appendChild(itemWrapper);
           });
           modalContent.appendChild(listDiv);
         }
@@ -960,19 +1030,30 @@
         const panel = document.createElement('div');
         panel.className = 'edit-panel';
         panel.style.display = 'block';
-        panel.innerHTML = '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
-          '<div style="min-width:160px;"><label>Estado</label><select class="up_estado"><option value="">Seleccionar</option><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option><option value="No_disponible">No disponible</option></select></div>' +
-          '<div style="min-width:160px;"><label>Disponible</label><select class="up_disponible"><option value="true">Sí</option><option value="false">No</option></select></div>' +
-          '<div style="min-width:160px;"><label>Fecha ingreso</label><input class="up_fecha" type="date" /></div>' +
-          '</div><div style="margin-top:8px;"><label>Comentario</label><textarea class="up_comentario" style="width:100%;"></textarea></div>' +
-          '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;"><button class="up_save btn-small" type="button">Guardar</button><button class="up_cancel btn-small delete" type="button">Cancelar</button></div>';
+        panel.style.marginTop = '20px';
+        panel.style.padding = '25px';
+        panel.style.backgroundColor = 'var(--surface)';
+        panel.style.borderRadius = '12px';
+        panel.style.border = '1px solid var(--card-border)';
+        panel.style.width = '100%';
+        panel.style.boxSizing = 'border-box';
+        panel.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+        
+        panel.innerHTML = '<h4 style="margin-top:0;margin-bottom:20px;color:var(--text);font-size:18px;font-weight:600;">Editar Unidad</h4>' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:20px;">' +
+          '<div><label style="display:block;margin-bottom:8px;font-weight:600;color:var(--text);font-size:13px;">Estado</label><select class="up_estado" style="width:100%;padding:10px;border:1px solid var(--card-border);border-radius:6px;font-size:14px;background:var(--surface);color:var(--text);"><option value="">Seleccionar</option><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option><option value="No_disponible">No disponible</option></select></div>' +
+          '<div><label style="display:block;margin-bottom:8px;font-weight:600;color:var(--text);font-size:13px;">Disponible</label><select class="up_disponible" style="width:100%;padding:10px;border:1px solid var(--card-border);border-radius:6px;font-size:14px;background:var(--surface);color:var(--text);"><option value="true">Sí</option><option value="false">No</option></select></div>' +
+          '<div><label style="display:block;margin-bottom:8px;font-weight:600;color:var(--text);font-size:13px;">Fecha ingreso</label><input class="up_fecha" type="date" style="width:100%;padding:10px;border:1px solid var(--card-border);border-radius:6px;font-size:14px;background:var(--surface);color:var(--text);" /></div>' +
+          '</div>' +
+          '<div style="margin-bottom:20px;"><label style="display:block;margin-bottom:8px;font-weight:600;color:var(--text);font-size:13px;">Comentario</label><textarea class="up_comentario" style="width:100%;padding:12px;border:1px solid var(--card-border);border-radius:6px;min-height:100px;resize:vertical;font-size:14px;background:var(--surface);color:var(--text);font-family:inherit;"></textarea></div>' +
+          '<div style="display:flex;gap:12px;justify-content:flex-end;"><button class="up_save btn-small" type="button" style="background:#4CAF50;color:#fff;padding:10px 24px;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:14px;">Guardar</button><button class="up_cancel btn-small delete" type="button" style="background:#f44336;color:#fff;padding:10px 24px;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:14px;">Cancelar</button></div>';
 
         try { panel.querySelector('.up_estado').value = detalle.estado || ''; } catch(e){}
         try { panel.querySelector('.up_disponible').value = detalle.disponible ? 'true' : 'false'; } catch(e){}
         try { panel.querySelector('.up_fecha').value = detalle.fechaIngreso || ''; } catch(e){}
         try { panel.querySelector('.up_comentario').value = detalle.comentario || ''; } catch(e){}
 
-        panel.querySelector('.up_cancel').addEventListener('click', function(){ panel.style.display='none'; });
+        panel.querySelector('.up_cancel').addEventListener('click', function(){ panel.remove(); });
 
         panel.querySelector('.up_save').addEventListener('click', async function(){
           const payload = {
@@ -1006,6 +1087,7 @@
               }
             }
             alert('Unidad actualizada');
+            panel.remove();
             openDetallesModal(herramientaId);
           } catch (e) {
             console.error('Error al actualizar detalle:', e);
@@ -1026,29 +1108,83 @@
       modalBackdrop.addEventListener('click', function(ev) { if (ev.target === modalBackdrop) closeModal(); });
       document.addEventListener('keydown', function(ev) { if (ev.key === 'Escape') closeModal(); });
 
+      let eliminandoEnProceso = false;
+
       contenedor.addEventListener('click', function(ev){
         const btn = ev.target.closest('button');
         if (!btn) return;
+        
         const id = btn.dataset.id;
         const nombre = btn.dataset.nombre;
+        
+        console.log('🖱️ Click en botón:', btn.className, 'ID:', id);
+        
         if (btn.classList.contains('detalles')) {
           openDetallesModal(id, nombre);
         } else if (btn.classList.contains('editar')) {
           openEditLoteModal(id, nombre);
         } else if (btn.classList.contains('eliminar')) {
-          if (!confirm('Eliminar herramienta id ' + id + '?')) return;
-          (async function(){
-            try {
-              if (API && typeof API.eliminarHerramienta === 'function') await API.eliminarHerramienta(id);
-              else await fetch(BACKEND + '/herramienta/' + encodeURIComponent(id), { method: 'DELETE' });
-              mostrarInventario(buscarCodigoInput.value);
-            } catch (e) {
-              console.error('Eliminar error', e);
-              alert('No se pudo eliminar. Revisa la consola.');
-            }
-          })();
+          if (eliminandoEnProceso) {
+            console.warn('⏳ Ya hay una eliminación en proceso');
+            return;
+          }
+          eliminarHerramienta(id, nombre);
         }
       });
+
+      async function eliminarHerramienta(id, nombre) {
+        if (!id) {
+          console.error('❌ No hay ID para eliminar');
+          return;
+        }
+        
+        if (eliminandoEnProceso) {
+          console.warn('⏳ Eliminación ya en proceso');
+          return;
+        }
+        
+        console.log('🗑️ Iniciando eliminación de:', id, nombre);
+        
+        const confirmed = await showConfirmModal(
+          '¿Está seguro de que desea eliminar esta herramienta completa?',
+          `${nombre} (ID: ${id})\n\nEsto eliminará la herramienta y todas sus unidades.`
+        );
+        
+        if (!confirmed) {
+          console.log('❌ Usuario canceló la eliminación');
+          return;
+        }
+        
+        eliminandoEnProceso = true;
+        console.log('🔒 Bloqueando botones...');
+        
+        try {
+          console.log('📤 Enviando DELETE a:', BACKEND + '/herramienta/' + id);
+          const response = await fetch(BACKEND + '/herramienta/' + encodeURIComponent(id), { 
+            method: 'DELETE' 
+          });
+          
+          if (!response.ok && response.status !== 204) {
+            const errorData = await response.text();
+            throw new Error(errorData || 'Error al eliminar');
+          }
+          
+          console.log('✅ Herramienta eliminada del backend');
+          alert('✅ Herramienta eliminada exitosamente');
+          
+          // Forzar recarga completa del inventario
+          console.log('🔄 Recargando inventario...');
+          await mostrarInventario(buscarCodigoInput.value);
+          console.log('✅ Inventario recargado');
+          
+        } catch (e) {
+          console.error('❌ Error al eliminar:', e);
+          alert('❌ Error al eliminar la herramienta:\n\n' + (e.message || e));
+        } finally {
+          eliminandoEnProceso = false;
+          console.log('🔓 Botones desbloqueados');
+        }
+      }
 
       // Búsqueda con debounce para mejor rendimiento
       let timeoutBusqueda = null;
