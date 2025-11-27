@@ -761,6 +761,14 @@
 
             // mostrar QR por código único del detalle (patrón: qr_<CODIGO>.png)
             const codigo = d.codigoUnico || d.codigo || d.idDetalle || d.id;
+            
+            // Contenedor para QR + botón de imprimir
+            const qrWrapper = document.createElement('div');
+            qrWrapper.style.display = 'flex';
+            qrWrapper.style.flexDirection = 'column';
+            qrWrapper.style.gap = '8px';
+            qrWrapper.style.alignItems = 'center';
+            
             const img = document.createElement('img');
             img.src = codigo ? qrUrlForCodigo(codigo) : '';
             img.alt = 'QR ' + (codigo || '');
@@ -770,6 +778,112 @@
             img.style.borderRadius = '6px';
             img.style.border = '1px solid #eee';
             img.onerror = function() { console.warn('[QR] detalle not found:', img.src); this.style.display = 'none'; };
+            
+            const btnPrintQR = document.createElement('button');
+            btnPrintQR.type = 'button';
+            btnPrintQR.className = 'btn-small';
+            btnPrintQR.style.background = '#4CAF50';
+            btnPrintQR.style.fontSize = '11px';
+            btnPrintQR.style.padding = '4px 8px';
+            btnPrintQR.textContent = '🖨️ Imprimir';
+            btnPrintQR.addEventListener('click', async function(){
+              const codigoPrint = d.codigoUnico || d.codigo;
+              if (!codigoPrint) {
+                alert('❌ No se encontró el código único');
+                return;
+              }
+              
+              console.log('🖨️ Imprimiendo QR:', codigoPrint);
+              
+              try {
+                const qrUrl = BACKEND + '/api/herramienta-detalle/qr/' + encodeURIComponent(codigoPrint);
+                const response = await fetch(qrUrl);
+                if (!response.ok) {
+                  throw new Error('No se pudo obtener el código QR');
+                }
+                
+                const blob = await response.blob();
+                const imgUrl = URL.createObjectURL(blob);
+                
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                  <!DOCTYPE html>
+                  <html>
+                  <head>
+                    <title>QR - ${codigoPrint}</title>
+                    <style>
+                      * {
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                      }
+                      @page {
+                        size: 50mm auto;
+                        margin: 0;
+                      }
+                      body {
+                        width: 50mm;
+                        margin: 0;
+                        padding: 1mm;
+                        font-family: Arial, sans-serif;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                      }
+                      .ticket-container {
+                        width: 100%;
+                        text-align: center;
+                        border: 1px solid #000;
+                        padding: 2mm;
+                      }
+                      .qr-code {
+                        width: 35mm;
+                        height: 35mm;
+                        margin: 0 auto 2mm auto;
+                        display: block;
+                      }
+                      .codigo-text {
+                        font-size: 8px;
+                        font-weight: bold;
+                        color: #000;
+                        word-wrap: break-word;
+                        line-height: 1.1;
+                      }
+                      @media print {
+                        body {
+                          width: 50mm;
+                        }
+                      }
+                    </style>
+                  </head>
+                  <body>
+                    <div class="ticket-container">
+                      <img class="qr-code" src="${imgUrl}" alt="QR">
+                      <div class="codigo-text">${codigoPrint}</div>
+                    </div>
+                    <script>
+                      window.onload = function() {
+                        setTimeout(function() {
+                          window.print();
+                        }, 500);
+                      };
+                      window.onafterprint = function() {
+                        window.close();
+                      };
+                    <\/script>
+                  </body>
+                  </html>
+                `);
+                printWindow.document.close();
+                
+              } catch (error) {
+                console.error('❌ Error al imprimir:', error);
+                alert('❌ Error al imprimir el código QR. Verifica que el backend esté corriendo.');
+              }
+            });
+            
+            qrWrapper.appendChild(img);
+            qrWrapper.appendChild(btnPrintQR);
 
             const btnEdit = document.createElement('button');
             btnEdit.type = 'button';
@@ -829,7 +943,7 @@
               }
             });
 
-            right.appendChild(img);
+            right.appendChild(qrWrapper);
             right.appendChild(btnEdit);
             right.appendChild(btnDelete);
 
