@@ -1,28 +1,67 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Notificaciones - FarmStock</title>
 
-  <!-- Prevenir flashazo del modo oscuro -->
-  <script>
-    (function() {
-      const saved = localStorage.getItem('fs_dark_mode');
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const shouldBeDark = saved === null ? prefersDark : saved === 'true';
-      if (shouldBeDark) {
-        document.documentElement.classList.add('dark-mode');
-        document.body.classList.add('dark-mode');
-      }
-    })();
-  </script>
-
-  <!-- Solo la hoja global: ahora Notificaciones reutiliza index.css exactamente como las demás -->
+  <!-- Hoja de estilos global y específica -->
   <link rel="stylesheet" href="../CSS/index.css" />
-</head>
+  <link rel="stylesheet" href="../CSS/Notificaciones.css" />
 
+  <!-- Small helper styles for compose window + toasts (si no has pegado los CSS de toasts en tus archivos, están aquí) -->
+  <style>
+    /* Compose window tweaks */
+    .compose-window {
+      width: 720px;
+      max-width: calc(100% - 32px);
+      border-radius: 12px;
+      background: var(--surface);
+      box-shadow: 0 18px 60px rgba(6,10,8,0.28);
+      border: 1px solid var(--card-border);
+      padding: 0;
+      overflow: hidden;
+      font-family: inherit;
+    }
+    .compose-header{
+      display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--card-border);
+      background: linear-gradient(180deg,color-mix(in srgb,var(--surface) 98%, transparent 2%), transparent);
+    }
+    .compose-body{ padding: 12px 16px; }
+    .row { display:flex; gap:8px; align-items:center; }
+    .field-label{ min-width:70px; color:var(--muted); font-weight:700; font-size:13px; }
+    .input-mail, .input-subject {
+      width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--card-border);
+      background: color-mix(in srgb, var(--surface) 96%, transparent 4%); font-size:14px;
+    }
+    .editor {
+      width:100%; min-height:160px; padding:12px; border-radius:8px; border:1px solid var(--card-border);
+      background: color-mix(in srgb,var(--surface) 98%, transparent 2%); resize:vertical; font-size:14px;
+    }
+    .compose-actions { display:flex; gap:8px; align-items:center; margin-top:10px; }
+    .attach-preview { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .attach-item { background: color-mix(in srgb,var(--surface) 96%, transparent 4%); padding:8px;border-radius:8px;border:1px solid var(--card-border); font-size:13px; display:flex; gap:8px; align-items:center; }
+    .btn-send { background: linear-gradient(180deg,var(--accent),var(--accent-600)); color:white; border-radius:8px; padding:8px 14px; font-weight:800; border:none; cursor:pointer; }
+
+    /* Toasts (fallback inline in case not added to CSS files) */
+    .fs-toast {
+      position: fixed; right: 20px; bottom: 20px; display: flex; gap: 10px; align-items: center;
+      min-width: 220px; max-width: 420px; padding: 10px 12px; border-radius: 10px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.35); transform: translateY(18px); opacity: 0;
+      transition: transform .28s cubic-bezier(.2,.9,.2,1), opacity .28s ease; z-index: 14000;
+      color: #fff; font-weight: 700; font-size: 14px; overflow: hidden;
+    }
+    .fs-toast--show { transform: translateY(0); opacity: 1; }
+    .fs-toast--hide { transform: translateY(18px); opacity: 0; }
+    .fs-toast--success { background: linear-gradient(180deg,#2ecc71,#21a65b); }
+    .fs-toast--error   { background: linear-gradient(180deg,#ff6b6b,#d94343); }
+    .fs-toast__icon { width: 28px; height: 28px; display:flex; align-items:center; justify-content:center; font-size:13px; opacity:0.95; }
+    .fs-toast__text { flex: 1; text-align: left; font-weight:700; color: #fff; }
+    .fs-toast__close { background: transparent; border: none; color: rgba(255,255,255,0.95); font-size: 18px; padding: 4px 6px; cursor: pointer; opacity: 0.95; }
+    .btn-spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.35); border-top-color: rgba(255,255,255,0.95); border-radius: 50%; margin-right: 8px; vertical-align: middle; animation: fs-spin .9s linear infinite; }
+    @keyframes fs-spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
 <body>
   <div class="window-controls">
     <button id="minimize" title="Minimizar" type="button">─</button>
@@ -33,9 +72,7 @@
   <div class="container">
     <aside class="sidebar">
       <div class="top-section">
-        <div class="logo">
-          <img src="../imagenes/Logo.png" alt="Logo del sitio" />
-        </div>
+        <div class="logo"><img src="../imagenes/Logo.png" alt="Logo del sitio" /></div>
         <ul class="menu-modulos">
           <li><a href="../HTML/index.html">Registro Herramientas</a></li>
           <li><a href="../HTML/registro-salida.html">Salida Herramientas</a></li>
@@ -54,48 +91,78 @@
 
     <main class="main-content">
       <div class="bienvenida">
-        <a href="perfil.html">
-          <img src="../imagenes/usuario.png" alt="Foto de usuario" class="foto-usuario" />
-        </a>
+        <a href="perfil.html"><img src="../imagenes/usuario.png" alt="Foto de usuario" class="foto-usuario" /></a>
         <p><strong>¡Hola Usuario!</strong></p>
       </div>
 
       <div class="content-box">
         <div class="content-header">
           <h1>Notificaciones</h1>
-          <button id="btn-crear-reporte" class="boton-verde btn-reporte">Crear reporte</button>
+          <button id="btn-crear-reporte" class="boton-verde btn-reporte">Redactar correo</button>
         </div>
 
-        <!-- Aquí irá el contenido principal de notificaciones -->
+        <p class="small-muted">Envía notificaciones por correo usando Resend. Adjunta archivos si lo deseas.</p>
       </div>
     </main>
   </div>
 
-  <!-- Modal: oculto por defecto (solo se muestra al abrir con la clase .open) -->
-  <div id="modal-reporte" aria-hidden="true" class="modal-backdrop">
-    <div class="modal-contenido" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <button id="cerrar-modal" class="cerrar-modal" aria-label="Cerrar modal">✖</button>
-      <h2 id="modalTitle">Nuevo reporte</h2>
-      <form id="formReporte">
-        <label>Destinatario:</label>
-        <input id="rep_email" type="email" required placeholder="correo@ejemplo.com">
-        <label>Asunto:</label>
-        <input id="rep_asunto" type="text" required>
-        <label>Descripción:</label>
-        <textarea id="rep_descripcion" required></textarea>
-        <label>Adjuntar archivos:</label>
-        <input id="rep_files" type="file" multiple>
-        <button type="submit" class="boton-verde">Enviar</button>
-      </form>
+  <!-- Modal / Componer correo -->
+  <div id="modal-reporte" aria-hidden="true" class="modal-backdrop" role="dialog">
+    <div class="compose-window modal-contenido" role="document" aria-labelledby="modalTitle">
+      <div class="compose-header">
+        <strong id="modalTitle">Redactar correo</strong>
+        <div>
+          <button id="cerrar-modal" class="cerrar-modal" aria-label="Cerrar modal">✖</button>
+        </div>
+      </div>
+
+      <div class="compose-body">
+        <form id="formReporte" enctype="multipart/form-data">
+          <div class="row">
+            <div class="field-label">Para</div>
+            <input id="rep_email" class="input-mail" name="destinatario" type="email" required placeholder="ejemplo@dominio.com" />
+          </div>
+
+          <div style="height:8px"></div>
+
+          <div class="row">
+            <div class="field-label">Asunto</div>
+            <input id="rep_asunto" class="input-subject" name="asunto" type="text" required placeholder="Asunto del correo" />
+          </div>
+
+          <div style="height:8px"></div>
+
+          <div>
+            <div class="field-label" style="display:inline-block; margin-right:8px;">Mensaje</div>
+            <textarea id="rep_descripcion" name="descripcion" class="editor" required placeholder="Escribe tu mensaje aquí..."></textarea>
+          </div>
+
+          <div style="height:8px"></div>
+
+          <label class="small-muted">Adjuntar archivos (usa el selector) — máximo 5 archivos, 10 MB cada uno</label>
+          <input id="rep_files" name="files" type="file" multiple style="margin-top:8px;" />
+
+          <div class="attach-preview" id="attachPreview" aria-live="polite"></div>
+
+          <div class="compose-actions">
+            <button type="submit" id="btnSend" class="btn-send">Enviar</button>
+            <button type="button" id="btnCancelar" class="btn-small" style="background:transparent;border:1px solid var(--card-border);color:var(--text)">Cancelar</button>
+            <div style="flex:1"></div>
+            <span class="small-muted" id="sendStatus"></span>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
+  <!-- Scripts: modal behavior, app scripts y el frontend sender -->
   <script>
-    // Modal open/close logic (keeps functionality local to this page)
+    // Modal open/close logic
     (function () {
       const btn = document.getElementById('btn-crear-reporte');
       const modal = document.getElementById('modal-reporte');
       const closeBtn = document.getElementById('cerrar-modal');
+      const cancelar = document.getElementById('btnCancelar');
       const form = document.getElementById('formReporte');
 
       function openModal() {
@@ -111,23 +178,22 @@
 
       if (btn) btn.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
       if (closeBtn) closeBtn.addEventListener('click', (e) => { e.preventDefault(); closeModal(); });
+      if (cancelar) cancelar.addEventListener('click', (e) => { e.preventDefault(); closeModal(); });
       if (modal) modal.addEventListener('click', (ev) => { if (ev.target === modal) closeModal(); });
       document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeModal(); });
 
       if (form) {
-        form.addEventListener('submit', function (ev) {
-          ev.preventDefault();
-          // aquí podrías enviar por fetch/ajax
-          form.reset();
-          closeModal();
-        });
+        // Keep default behavior to be handled by send-notificacion.js
       }
     })();
   </script>
 
+  <!-- Dependencias/otros scripts del proyecto -->
   <script src="../user-session.js"></script>
   <script src="../modo-oscuro.js"></script>
   <script src="../render-window.js"></script>
-</body>
 
+  <!-- Script que envía el formulario y muestra toasts (reemplaza por tu archivo JS si ya lo añadiste) -->
+  <script src="../notificaciones-send.js"></script>
+</body>
 </html>
