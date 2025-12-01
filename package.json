@@ -5,76 +5,15 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder",
-    "build:win": "electron-builder --win --x64",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "FarmStock Team",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^37.2.1",
-    "electron-builder": "^26.0.12"
+    "electron": "^37.2.1"
   },
   "dependencies": {
     "prompt-sync": "^4.2.0"
-  },
-  "build": {
-    "appId": "com.farmstock.app",
-    "productName": "FarmStock",
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "main.js",
-      "preload.js",
-      "app/**/*",
-      "backend/**/*",
-      "package.json",
-      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
-      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
-      "!**/node_modules/*.d.ts",
-      "!**/node_modules/.bin",
-      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
-      "!.editorconfig",
-      "!**/._*",
-      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
-      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
-      "!**/{appveyor.yml,.travis.yml,circle.yml}",
-      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
-    ],
-    "extraResources": [
-      {
-        "from": "../backend_farmStock/target/FarmStock-0.0.1-SNAPSHOT.jar",
-        "to": "backend/FarmStock-0.0.1-SNAPSHOT.jar",
-        "filter": ["**/*"]
-      },
-      {
-        "from": "backend/farmstock.sql",
-        "to": "backend/farmstock.sql"
-      }
-    ],
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": ["x64"]
-        }
-      ],
-      "artifactName": "${productName}-${version}-Setup.${ext}",
-      "signAndEditExecutable": false
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "allowElevation": true,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "FarmStock",
-      "deleteAppDataOnUninstall": false
-    },
-    "compression": "normal",
-    "asar": true
   }
 }

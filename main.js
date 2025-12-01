@@ -1,11 +1,13 @@
-const { app, BrowserWindow, screen, ipcMain } = require("electron");
+const { app, BrowserWindow, screen, ipcMain, dialog } = require("electron");
 const path = require("path");
-const { spawn, exec } = require("child_process");
+// const { spawn, exec } = require("child_process"); // ❌ Ya no se necesita
 
 let win;
-let backendProcess = null;
+// let backendProcess = null; // ❌ Deshabilitado: Backend se gestiona externamente
 
+// ❌ DESHABILITADO: Backend se gestiona externamente
 // Función para matar procesos en el puerto 8080
+/*
 function killProcessOnPort(port) {
     return new Promise((resolve) => {
         if (process.platform === 'win32') {
@@ -35,8 +37,11 @@ function killProcessOnPort(port) {
         }
     });
 }
+*/
 
+// ❌ DESHABILITADO: Backend se gestiona externamente
 // Función para detener el backend
+/*
 async function stopBackend() {
     console.log('🛑 Deteniendo backend...');
     
@@ -58,21 +63,16 @@ async function stopBackend() {
     await killProcessOnPort(8080);
     console.log('✅ Backend detenido');
 }
+*/
 
+// ❌ DESHABILITADO: Backend se gestiona externamente
 // Función para iniciar el backend Spring Boot
+/*
 function startBackend() {
     return new Promise((resolve, reject) => {
-        const isDev = !app.isPackaged;
         let javaPath = 'java';
-        let jarPath;
-
-        if (isDev) {
-            // Ruta en desarrollo (ajústala según tu estructura)
-            jarPath = path.join(__dirname, '../backend_farmStock/target/FarmStock-0.0.1-SNAPSHOT.jar');
-        } else {
-            // Ruta en producción (dentro de resources)
-            jarPath = path.join(process.resourcesPath, 'backend', 'FarmStock-0.0.1-SNAPSHOT.jar');
-        }
+        // Ruta en desarrollo
+        const jarPath = path.join(__dirname, '../backend_farmStock/target/FarmStock-0.0.1-SNAPSHOT.jar');
 
         console.log('Iniciando backend desde:', jarPath);
 
@@ -119,6 +119,7 @@ function startBackend() {
         }, 30000);
     });
 }
+*/
 
 function createWindow() {
     const { width, height } = screen.getPrimaryDisplay().workAreaSize;
@@ -149,44 +150,37 @@ function createWindow() {
     // win.webContents.openDevTools(); // opcional
 }
 
-app.whenReady().then(async () => {
+app.whenReady().then(() => {
     console.log('🚀 Iniciando FarmStock...');
+    console.log('ℹ️  Backend debe estar corriendo externamente en localhost:8080');
     
-    // Limpiar puerto 8080 por si quedó algún proceso previo
-    await killProcessOnPort(8080);
-    
-    try {
-        // Iniciar el backend primero
-        await startBackend();
-        console.log('✅ Backend listo');
-        
-        // Luego crear la ventana
-        createWindow();
-    } catch (error) {
-        console.error('❌ Error al iniciar backend:', error);
-        // Crear ventana de todos modos (podrías mostrar un mensaje de error)
-        createWindow();
-    }
+    // Crear la ventana directamente
+    createWindow();
 });
 
+// ❌ DESHABILITADO: Backend se gestiona externamente
 // Cerrar el backend cuando se cierre la aplicación
+/*
 app.on('before-quit', async (event) => {
     event.preventDefault();
     await stopBackend();
     app.exit(0);
 });
+*/
 
-app.on('window-all-closed', async () => {
-    await stopBackend();
+app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
     }
 });
 
+// ❌ DESHABILITADO: Backend se gestiona externamente
 // Asegurar limpieza al salir
+/*
 app.on('will-quit', async () => {
     await stopBackend();
 });
+*/
 
 // 🔹 Navegación
 ipcMain.on("ir-a-registro", () =>

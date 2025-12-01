@@ -19,9 +19,7 @@
     })();
   </script>
 
-  <!-- Solo CSS global para unificar apariencia -->
   <link rel="stylesheet" href="../CSS/index.css" />
-
 </head>
 
 <body>
@@ -36,12 +34,12 @@
       <div class="top-section">
         <div class="logo"><img src="../imagenes/Logo.png" alt="Logo del sitio" /></div>
         <ul class="menu-modulos">
-          <li><a href="../HTML/index.html">Registro Herramientas</a></li>
-          <li><a href="../HTML/registro-salida.html">Salida Herramientas</a></li>
-          <li><a href="../HTML/indexInventario.html">Inventario</a></li>
-          <li><a href="notificaciones.html">Notificaciones</a></li>
-          <li><a href="../HTML/estats.html" class="active">Estadísticas</a></li>
-          <li><a href="../HTML/registro-aprendices.html">Aprendices</a></li>
+          <li><a href="index.html">Registro Herramientas</a></li>
+          <li><a href="registro-salida.html">Salida Herramientas</a></li>
+          <li><a href="indexInventario.html">Inventario</a></li>
+          <li><a href="Notificaciones.html">Notificaciones</a></li>
+          <li><a href="estats.html" class="active">Estadísticas</a></li>
+          <li><a href="registro-aprendices.html">Aprendices</a></li>
         </ul>
       </div>
 
@@ -56,61 +54,56 @@
         <a href="perfil.html">
           <img src="../imagenes/usuario.png" alt="Foto de usuario" class="foto-usuario" />
         </a>
-        <p><strong>¡Hola Usuario!</strong></p>
+        <p><strong>¡Hola Mario!</strong></p>
       </div>
 
       <div class="content-box">
         <h1>Estadísticas</h1>
 
         <div class="filtros">
-          <input type="text" placeholder="Buscar...">
-          <button type="button" class="green" id="btnVerMantenimientos" style="padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-right: 10px;">📋 Ver Mantenimientos</button>
-          <button type="button" class="green" id="btnAgregarMantenimiento" style="padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; z-index: 1000;">🔧 Agregar Mantenimiento</button>
-          <a href="../HTML/Estadistica.html" class="btn-informe">Generar informe</a>
-          <select><option>ID herramienta</option></select>
-          <select><option>Fecha</option></select>
+          <input type="text" id="buscarHerramienta" placeholder="Buscar herramienta...">
+          <button type="button" class="green" onclick="abrirModalVerMantenimientos()" style="padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-right: 10px;">📋 Ver Mantenimientos</button>
+          <button type="button" class="green" onclick="abrirModalAgregarMantenimiento()" style="padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">🔧 Agregar Mantenimiento</button>
+          <button type="button" class="blue" onclick="generarInforme()" style="padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; background: #2196F3; color: white;">📊 Generar Informe</button>
+          <button type="button" class="blue" onclick="actualizarEstadisticas()" style="padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; background: #4CAF50; color: white;">🔄 Actualizar</button>
+        </div>
+
+        <div style="margin: 20px 0; padding: 15px; background: var(--surface); border-radius: 8px; border: 1px solid var(--card-border);">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div style="text-align: center;">
+              <div style="font-size: 32px; font-weight: bold; color: #4CAF50;" id="totalHerramientas">0</div>
+              <div style="color: var(--muted); font-size: 14px;">Total Herramientas</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 32px; font-weight: bold; color: #2196F3;" id="totalPrestamos">0</div>
+              <div style="color: var(--muted); font-size: 14px;">Total Préstamos</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 32px; font-weight: bold; color: #FF9800;" id="totalDanos">0</div>
+              <div style="color: var(--muted); font-size: 14px;">Total Daños</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 32px; font-weight: bold; color: #9C27B0;" id="totalMantenimientos">0</div>
+              <div style="color: var(--muted); font-size: 14px;">Total Mantenimientos</div>
+            </div>
+          </div>
         </div>
 
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th></th>
-                <th>ID estadística</th>
+                <th>ID</th>
                 <th>Herramienta</th>
                 <th>Préstamos</th>
                 <th>Daños</th>
                 <th>Mantenimientos</th>
-                <th></th>
+                <th>Acciones</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="tablaEstadisticas">
               <tr>
-                <td><input type="checkbox"></td>
-                <td>1002</td>
-                <td>Pala</td>
-                <td>24</td>
-                <td>2</td>
-                <td>10</td>
-                <td class="acciones">🗑️</td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>1002</td>
-                <td>Motosierra</td>
-                <td>24</td>
-                <td>2</td>
-                <td>10</td>
-                <td class="acciones">🗑️</td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>1003</td>
-                <td>Picos</td>
-                <td>24</td>
-                <td>2</td>
-                <td>10</td>
-                <td class="acciones">🗑️</td>
+                <td colspan="6" style="text-align: center; padding: 40px;">⏳ Cargando estadísticas...</td>
               </tr>
             </tbody>
           </table>
@@ -120,20 +113,20 @@
   </div>
 
   <!-- Modal para agregar mantenimiento -->
-  <div id="modalMantenimiento" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
-    <div style="background: var(--bg-color, #1a1a1a); padding: 30px; border-radius: 12px; max-width: 500px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
-      <h2 style="margin-top: 0; color: var(--text-color, #fff);"> Agregar Estado</h2>
+  <div id="modalMantenimiento" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-color, #1a1a1a); padding: 30px; border-radius: 12px; max-width: 500px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+      <h2 style="margin-top: 0; color: var(--text-color, #fff);">🔧 Agregar Mantenimiento/Daño</h2>
       
       <div style="margin-bottom: 15px;">
         <label style="display: block; margin-bottom: 5px; color: var(--text-color, #fff);">Código Único de Herramienta:</label>
-        <input type="text" id="inputIdDetalle" placeholder="Ej: MART-001" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box;" required>
-        <small style="color: #888; font-size: 11px;">Ingresa el código único de la herramienta (no el ID numérico)</small>
+        <input type="text" id="inputCodigoUnico" placeholder="Ej: MART-001" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box;" required>
+        <small style="color: #888; font-size: 11px;">Ingresa el código único de la herramienta</small>
       </div>
       
       <div style="margin-bottom: 15px;">
         <label style="display: block; margin-bottom: 5px; color: var(--text-color, #fff);">Número de Documento del Usuario:</label>
-        <input type="text" id="inputIdUsuario" placeholder="Ej: 1234567890" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box;" required>
-        <small style="color: #888; font-size: 11px;">Ingresa el número de documento (no el ID del usuario)</small>
+        <input type="text" id="inputNumeroDocumento" placeholder="Ej: 1234567890" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box;" required>
+        <small style="color: #888; font-size: 11px;">Ingresa el número de documento</small>
       </div>
       
       <div style="margin-bottom: 15px;">
@@ -146,7 +139,7 @@
       
       <div style="margin-bottom: 15px;">
         <label style="display: block; margin-bottom: 5px; color: var(--text-color, #fff);">Descripción:</label>
-        <textarea id="inputDescripcion" placeholder="Ej: Filo desgastado" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box; min-height: 80px; resize: vertical;" required></textarea>
+        <textarea id="inputDescripcion" placeholder="Describe el mantenimiento o daño..." style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: #fff; box-sizing: border-box; min-height: 80px; resize: vertical;" required></textarea>
       </div>
       
       <div style="margin-bottom: 20px;">
@@ -159,18 +152,18 @@
       </div>
       
       <div style="display: flex; gap: 10px; justify-content: flex-end;">
-        <button id="btnCancelarModal" type="button" style="padding: 10px 20px; border: none; border-radius: 6px; background: #555; color: #fff; cursor: pointer; font-weight: bold;">Cancelar</button>
-        <button id="btnGuardarMantenimiento" type="button" style="padding: 10px 20px; border: none; border-radius: 6px; background: #4CAF50; color: #fff; cursor: pointer; font-weight: bold;">Guardar</button>
+        <button onclick="cerrarModalMantenimiento()" type="button" style="padding: 10px 20px; border: none; border-radius: 6px; background: #555; color: #fff; cursor: pointer; font-weight: bold;">Cancelar</button>
+        <button onclick="guardarMantenimiento()" type="button" style="padding: 10px 20px; border: none; border-radius: 6px; background: #4CAF50; color: #fff; cursor: pointer; font-weight: bold;">Guardar</button>
       </div>
     </div>
   </div>
 
   <!-- Modal para ver mantenimientos activos -->
-  <div id="modalVerMantenimientos" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
-    <div style="background: var(--bg-color, #1a1a1a); padding: 30px; border-radius: 12px; max-width: 900px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+  <div id="modalVerMantenimientos" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-color, #1a1a1a); padding: 30px; border-radius: 12px; max-width: 900px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="margin: 0; color: var(--text-color, #fff);"> Mantenimientos Activos</h2>
-        <button id="btnCerrarListaMantenimientos" type="button" style="padding: 8px 16px; border: none; border-radius: 6px; background: #555; color: #fff; cursor: pointer; font-weight: bold;">✕ Cerrar</button>
+        <h2 style="margin: 0; color: var(--text-color, #fff);">📋 Mantenimientos Activos</h2>
+        <button onclick="cerrarModalVerMantenimientos()" type="button" style="padding: 8px 16px; border: none; border-radius: 6px; background: #555; color: #fff; cursor: pointer; font-weight: bold;">✕ Cerrar</button>
       </div>
       
       <div id="loadingMantenimientos" style="text-align: center; padding: 40px; color: var(--text-color, #fff); display: none;">
@@ -182,16 +175,14 @@
           <thead>
             <tr style="background: #2a2a2a;">
               <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">ID</th>
-              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">Código Herramienta</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">Código</th>
               <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">Tipo</th>
               <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">Descripción</th>
               <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">Estado</th>
               <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">Fecha</th>
             </tr>
           </thead>
-          <tbody id="tablaMantenimientos">
-            <!-- Los datos se cargarán aquí dinámicamente -->
-          </tbody>
+          <tbody id="tablaMantenimientos"></tbody>
         </table>
         
         <div id="noMantenimientos" style="text-align: center; padding: 40px; color: #888; display: none;">
@@ -206,220 +197,347 @@
   <script src="../render-window.js"></script>
   
   <script>
-    // ===== AGREGAR MANTENIMIENTO =====
-    window.addEventListener('load', function() {
-      const btnAgregarMantenimiento = document.getElementById('btnAgregarMantenimiento');
-      const btnVerMantenimientos = document.getElementById('btnVerMantenimientos');
+    // ===== VARIABLES GLOBALES =====
+    let estadisticasCompletas = [];
+    let prestamosData = [];
+
+    // ===== FUNCIONES DE MODALES =====
+    function abrirModalAgregarMantenimiento() {
+      console.log('➕ Abriendo modal Agregar Mantenimiento...');
       const modal = document.getElementById('modalMantenimiento');
+      modal.style.display = 'block';
+      
+      // Cargar usuario actual
+      try {
+        const userData = localStorage.getItem('fs_usuario_actual');
+        if (userData) {
+          const user = JSON.parse(userData);
+          document.getElementById('inputNumeroDocumento').value = user.numeroDocumento || '';
+        }
+      } catch (e) {
+        console.warn('No se pudo obtener usuario logueado');
+      }
+      
+      document.getElementById('inputCodigoUnico').focus();
+    }
+
+    function cerrarModalMantenimiento() {
+      document.getElementById('modalMantenimiento').style.display = 'none';
+      // Limpiar campos
+      document.getElementById('inputCodigoUnico').value = '';
+      document.getElementById('inputNumeroDocumento').value = '';
+      document.getElementById('inputTipo').value = 'MANTENIMIENTO';
+      document.getElementById('inputDescripcion').value = '';
+      document.getElementById('inputEstado').value = 'PENDIENTE';
+    }
+
+    async function guardarMantenimiento() {
+      const codigoUnico = document.getElementById('inputCodigoUnico').value.trim();
+      const numeroDocumento = document.getElementById('inputNumeroDocumento').value.trim();
+      const tipo = document.getElementById('inputTipo').value;
+      const descripcion = document.getElementById('inputDescripcion').value.trim();
+      const estado = document.getElementById('inputEstado').value;
+      
+      if (!codigoUnico) {
+        alert('❌ Debe ingresar el código único de la herramienta');
+        return;
+      }
+      if (!numeroDocumento) {
+        alert('❌ Debe ingresar el número de documento del usuario');
+        return;
+      }
+      if (!descripcion) {
+        alert('❌ Debe ingresar una descripción');
+        return;
+      }
+      
+      try {
+        const body = { tipo, descripcion, estado };
+        
+        console.log('📤 Enviando:', { codigoUnico, numeroDocumento, body });
+        
+        const response = await fetch(`http://localhost:8080/mantenimientos?codigoUnico=${encodeURIComponent(codigoUnico)}&numeroDocumento=${encodeURIComponent(numeroDocumento)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || 'Error del servidor');
+        }
+        
+        const resultado = await response.json();
+        console.log('✅ Guardado:', resultado);
+        
+        alert(`✅ ¡${tipo} registrado exitosamente!\n\nCódigo: ${codigoUnico}\nEstado: ${estado}\n\nLa herramienta ha sido marcada como "En Mantenimiento"`);
+        
+        cerrarModalMantenimiento();
+        await cargarEstadisticas();
+      } catch (error) {
+        console.error('❌ Error:', error);
+        alert('❌ Error al agregar mantenimiento:\n\n' + error.message + 
+              '\n\nVerifica:\n• El código único existe\n• El número de documento es válido\n• El backend está corriendo');
+      }
+    }
+
+    async function abrirModalVerMantenimientos() {
+      console.log('🔍 Abriendo modal Ver Mantenimientos...');
       const modalVer = document.getElementById('modalVerMantenimientos');
-      const btnCancelar = document.getElementById('btnCancelarModal');
-      const btnGuardar = document.getElementById('btnGuardarMantenimiento');
-      const btnCerrarLista = document.getElementById('btnCerrarListaMantenimientos');
+      modalVer.style.display = 'block';
       
-      // ===== MODAL VER MANTENIMIENTOS =====
-      if (btnVerMantenimientos) {
-        btnVerMantenimientos.addEventListener('click', async function(e) {
-          e.preventDefault();
-          modalVer.style.display = 'flex';
+      document.getElementById('loadingMantenimientos').style.display = 'block';
+      document.getElementById('contenidoMantenimientos').style.display = 'none';
+      
+      try {
+        const response = await fetch('http://localhost:8080/mantenimientos/activos');
+        if (!response.ok) throw new Error('Error al cargar mantenimientos');
+        
+        const mantenimientos = await response.json();
+        console.log('📋 Mantenimientos cargados:', mantenimientos);
+        
+        document.getElementById('loadingMantenimientos').style.display = 'none';
+        document.getElementById('contenidoMantenimientos').style.display = 'block';
+        
+        const tbody = document.getElementById('tablaMantenimientos');
+        const noMantenimientos = document.getElementById('noMantenimientos');
+        
+        if (mantenimientos && mantenimientos.length > 0) {
+          tbody.innerHTML = '';
+          noMantenimientos.style.display = 'none';
           
-          // Mostrar loading
-          document.getElementById('loadingMantenimientos').style.display = 'block';
-          document.getElementById('contenidoMantenimientos').style.display = 'none';
-          
-          try {
-            // Hacer GET request para obtener mantenimientos activos
-            const response = await fetch('http://localhost:8080/mantenimientos/activos', {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            });
+          mantenimientos.forEach(m => {
+            const estadoColor = 
+              m.estado === 'PENDIENTE' ? '#FFA726' : 
+              m.estado === 'EN_PROCESO' ? '#42A5F5' : '#66BB6A';
             
-            if (!response.ok) {
-              throw new Error('Error al cargar mantenimientos');
-            }
+            const fecha = m.fechaMantenimiento ? new Date(m.fechaMantenimiento).toLocaleDateString('es-CO') : '-';
+            const codigoUnico = m.herramientaDetalle?.codigoUnico || 'N/A';
             
-            const mantenimientos = await response.json();
-            
-            // Ocultar loading
-            document.getElementById('loadingMantenimientos').style.display = 'none';
-            document.getElementById('contenidoMantenimientos').style.display = 'block';
-            
-            const tbody = document.getElementById('tablaMantenimientos');
-            const noMantenimientos = document.getElementById('noMantenimientos');
-            
-            if (mantenimientos && mantenimientos.length > 0) {
-              tbody.innerHTML = '';
-              noMantenimientos.style.display = 'none';
-              
-              mantenimientos.forEach(m => {
-                const estadoColor = 
-                  m.estado === 'PENDIENTE' ? '#FFA726' : 
-                  m.estado === 'EN_PROCESO' ? '#42A5F5' : 
-                  '#66BB6A';
-                
-                const fecha = m.fechaMantenimiento ? new Date(m.fechaMantenimiento).toLocaleDateString('es-CO') : '-';
-                const codigoUnico = m.herramientaDetalle?.codigoUnico || 'N/A';
-                const nombreHerramienta = m.herramienta?.nombre || 'N/A';
-                
-                const tr = document.createElement('tr');
-                tr.style.borderBottom = '1px solid #333';
-                tr.innerHTML = `
-                  <td style="padding: 12px;">${m.idMantenimiento || '-'}</td>
-                  <td style="padding: 12px;">${codigoUnico}</td>
-                  <td style="padding: 12px;">${m.tipo || '-'}</td>
-                  <td style="padding: 12px;">${m.descripcion || '-'}</td>
-                  <td style="padding: 12px;"><span style="background: ${estadoColor}; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold;">${m.estado}</span></td>
-                  <td style="padding: 12px;">${fecha}</td>
-                `;
-                tbody.appendChild(tr);
-              });
-            } else {
-              tbody.innerHTML = '';
-              noMantenimientos.style.display = 'block';
-            }
-            
-          } catch (error) {
-            console.error('Error al cargar mantenimientos:', error);
-            document.getElementById('loadingMantenimientos').style.display = 'none';
-            document.getElementById('contenidoMantenimientos').style.display = 'block';
-            alert('❌ Error al cargar mantenimientos: ' + error.message);
-          }
-        });
-      }
-      
-      // Cerrar modal de ver mantenimientos
-      if (btnCerrarLista) {
-        btnCerrarLista.addEventListener('click', function() {
-          modalVer.style.display = 'none';
-        });
-      }
-      
-      // Cerrar modal al hacer click fuera
-      modalVer.addEventListener('click', function(e) {
-        if (e.target === modalVer) {
-          btnCerrarLista.click();
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid #333';
+            tr.innerHTML = `
+              <td style='padding: 12px;'>${m.idMantenimiento || '-'}</td>
+              <td style='padding: 12px;'>${codigoUnico}</td>
+              <td style='padding: 12px;'>${m.tipo || '-'}</td>
+              <td style='padding: 12px;'>${m.descripcion || '-'}</td>
+              <td style='padding: 12px;'><span style='background: ${estadoColor}; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white;'>${m.estado}</span></td>
+              <td style='padding: 12px;'>${fecha}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        } else {
+          tbody.innerHTML = '';
+          noMantenimientos.style.display = 'block';
         }
-      });
-      
-      // ===== MODAL AGREGAR MANTENIMIENTO =====
-      
-      // Abrir modal
-      if (btnAgregarMantenimiento) {
-        btnAgregarMantenimiento.addEventListener('click', function(e) {
-          e.preventDefault();
-          modal.style.display = 'flex';
-          
-          // Obtener datos del usuario logueado
-          try {
-            const userData = localStorage.getItem('fs_usuario_actual');
-            if (userData) {
-              const user = JSON.parse(userData);
-              document.getElementById('inputIdUsuario').value = user.numeroDocumento || '';
-            }
-          } catch (e) {
-            console.warn('No se pudo obtener usuario logueado');
-          }
-          
-          document.getElementById('inputIdDetalle').focus();
-        });
+      } catch (error) {
+        console.error('❌ Error:', error);
+        document.getElementById('loadingMantenimientos').style.display = 'none';
+        document.getElementById('contenidoMantenimientos').style.display = 'block';
+        alert('❌ Error al cargar mantenimientos: ' + error.message);
       }
-      
-      // Cerrar modal
-      if (btnCancelar) {
-        btnCancelar.addEventListener('click', function() {
-          modal.style.display = 'none';
-          // Limpiar campos
-          document.getElementById('inputIdDetalle').value = '';
-          document.getElementById('inputIdUsuario').value = '';
-          document.getElementById('inputTipo').value = 'MANTENIMIENTO';
-          document.getElementById('inputDescripcion').value = '';
-          document.getElementById('inputEstado').value = 'PENDIENTE';
-        });
+    }
+
+    function cerrarModalVerMantenimientos() {
+      document.getElementById('modalVerMantenimientos').style.display = 'none';
+    }
+
+    // ===== FUNCIONES DE CARGA DE DATOS =====
+    async function cargarEstadisticas() {
+      try {
+        const tbody = document.getElementById('tablaEstadisticas');
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--muted);">⏳ Cargando estadísticas...</td></tr>';
+
+        const response = await fetch('http://localhost:8080/mantenimientos/estadisticas');
+        if (!response.ok) throw new Error('Error al cargar estadísticas');
+        
+        estadisticasCompletas = await response.json();
+        console.log('📊 Estadísticas cargadas:', estadisticasCompletas);
+        
+        renderizarTabla(estadisticasCompletas);
+        actualizarResumen(estadisticasCompletas);
+      } catch (error) {
+        console.error('❌ Error:', error);
+        document.getElementById('tablaEstadisticas').innerHTML = 
+          '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #f44336;">❌ Error al cargar estadísticas</td></tr>';
       }
-      
-      // Cerrar modal al hacer click fuera
-      modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-          btnCancelar.click();
+    }
+
+    async function cargarPrestamos() {
+      try {
+        const response = await fetch('http://localhost:8080/salidas');
+        if (response.ok) {
+          prestamosData = await response.json();
+          console.log('📦 Préstamos cargados:', prestamosData.length);
         }
-      });
-      
-      // Guardar mantenimiento
-      if (btnGuardar) {
-        btnGuardar.addEventListener('click', async function() {
-          const codigoUnico = document.getElementById('inputIdDetalle').value.trim();
-          const numeroDocumento = document.getElementById('inputIdUsuario').value.trim();
-          const tipo = document.getElementById('inputTipo').value.trim();
-          const descripcion = document.getElementById('inputDescripcion').value.trim();
-          const estado = document.getElementById('inputEstado').value;
-          
-          // Validar campos
-          if (!codigoUnico) {
-            alert('❌ Debe ingresar el código único de la herramienta');
-            return;
-          }
-          if (!numeroDocumento) {
-            alert('❌ Debe ingresar el número de documento del usuario');
-            return;
-          }
-          if (!descripcion) {
-            alert('❌ Debe ingresar una descripción del mantenimiento/daño');
-            return;
-          }
-          
-          try {
-            // Crear el body JSON
-            const body = {
-              tipo: tipo,
-              descripcion: descripcion,
-              estado: estado
-            };
-            
-            console.log('📤 Enviando mantenimiento:', {
-              codigoUnico,
-              numeroDocumento,
-              body
-            });
-            
-            // Hacer POST request
-            const response = await fetch(`http://localhost:8080/mantenimientos?codigoUnico=${encodeURIComponent(codigoUnico)}&numeroDocumento=${encodeURIComponent(numeroDocumento)}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(body)
-            });
-            
-            if (!response.ok) {
-              const errorText = await response.text();
-              throw new Error(errorText || 'Error del servidor');
-            }
-            
-            const resultado = await response.json();
-            console.log('✅ Resultado:', resultado);
-            
-            alert('✅ ¡Mantenimiento/Daño registrado exitosamente!\n\n' +
-                  'Código: ' + codigoUnico + '\n' +
-                  'Tipo: ' + tipo + '\n' +
-                  'Estado: ' + estado + '\n\n' +
-                  'La herramienta ha sido marcada como "En Mantenimiento"');
-            
-            // Cerrar modal y limpiar
-            btnCancelar.click();
-            
-          } catch (error) {
-            console.error('❌ Error al agregar mantenimiento:', error);
-            alert('❌ Error al agregar mantenimiento:\n\n' + error.message + '\n\n' +
-                  'Verifica:\n' +
-                  '• El código único existe en la base de datos\n' +
-                  '• El número de documento corresponde a un usuario registrado\n' +
-                  '• El backend está corriendo en localhost:8080');
-          }
-        });
+      } catch (error) {
+        console.warn('⚠️ No se pudieron cargar préstamos:', error);
       }
+    }
+
+    function renderizarTabla(datos) {
+      const tbody = document.getElementById('tablaEstadisticas');
+      
+      if (!datos || datos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px;">No hay estadísticas disponibles</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = '';
+      
+      datos.forEach(stat => {
+        const prestamosHerramienta = prestamosData.filter(p => 
+          p.herramienta?.idHerramienta === stat.idHerramienta
+        ).length;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${stat.idHerramienta || '-'}</td>
+          <td><strong>${stat.nombreHerramienta || 'Sin nombre'}</strong></td>
+          <td><span style="background: #2196F3; color: white; padding: 4px 12px; border-radius: 12px; font-weight: bold;">${prestamosHerramienta}</span></td>
+          <td><span style="background: #FF9800; color: white; padding: 4px 12px; border-radius: 12px; font-weight: bold;">${stat.totalDanos || 0}</span></td>
+          <td><span style="background: #9C27B0; color: white; padding: 4px 12px; border-radius: 12px; font-weight: bold;">${stat.totalMantenimientos || 0}</span></td>
+          <td class="acciones">
+            <button onclick="verDetalle(${stat.idHerramienta})" style="background: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">👁️ Ver</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function actualizarResumen(datos) {
+      const totalHerramientas = datos.length;
+      const totalDanos = datos.reduce((sum, item) => sum + (item.totalDanos || 0), 0);
+      const totalMantenimientos = datos.reduce((sum, item) => sum + (item.totalMantenimientos || 0), 0);
+      const totalPrestamos = prestamosData.length;
+      
+      document.getElementById('totalHerramientas').textContent = totalHerramientas;
+      document.getElementById('totalPrestamos').textContent = totalPrestamos;
+      document.getElementById('totalDanos').textContent = totalDanos;
+      document.getElementById('totalMantenimientos').textContent = totalMantenimientos;
+    }
+
+    async function actualizarEstadisticas() {
+      await cargarEstadisticas();
+      await cargarPrestamos();
+    }
+
+    function verDetalle(idHerramienta) {
+      alert(`Ver detalle de herramienta ID: ${idHerramienta}\n\nFuncionalidad pendiente de implementación.`);
+    }
+
+    function generarInforme() {
+      if (!estadisticasCompletas || estadisticasCompletas.length === 0) {
+        alert('❌ No hay datos para generar el informe');
+        return;
+      }
+
+      const fecha = new Date().toLocaleDateString('es-CO');
+      
+      let html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Informe de Estadísticas - FarmStock</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #fff; color: #000; }
+    h1 { text-align: center; color: #4CAF50; }
+    .fecha { text-align: center; color: #666; margin-bottom: 30px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+    th { background: #4CAF50; color: white; }
+    tr:nth-child(even) { background: #f9f9f9; }
+    .totales { margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 8px; }
+    .totales div { display: inline-block; margin: 10px 20px; }
+    @media print { .btn-print { display: none; } }
+  </style>
+</head>
+<body>
+  <h1>📊 Informe de Estadísticas de Herramientas</h1>
+  <p class="fecha">Fecha de generación: ${fecha}</p>
+  
+  <div class="totales">
+    <div><strong>Total Herramientas:</strong> ${estadisticasCompletas.length}</div>
+    <div><strong>Total Préstamos:</strong> ${prestamosData.length}</div>
+    <div><strong>Total Daños:</strong> ${estadisticasCompletas.reduce((s, i) => s + (i.totalDanos || 0), 0)}</div>
+    <div><strong>Total Mantenimientos:</strong> ${estadisticasCompletas.reduce((s, i) => s + (i.totalMantenimientos || 0), 0)}</div>
+  </div>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Herramienta</th>
+        <th>Préstamos</th>
+        <th>Daños</th>
+        <th>Mantenimientos</th>
+      </tr>
+    </thead>
+    <tbody>
+`;
+
+      estadisticasCompletas.forEach(stat => {
+        const prestamos = prestamosData.filter(p => p.herramienta?.idHerramienta === stat.idHerramienta).length;
+        html += `
+      <tr>
+        <td>${stat.idHerramienta}</td>
+        <td>${stat.nombreHerramienta}</td>
+        <td>${prestamos}</td>
+        <td>${stat.totalDanos || 0}</td>
+        <td>${stat.totalMantenimientos || 0}</td>
+      </tr>
+`;
+      });
+
+      html += `
+    </tbody>
+  </table>
+  
+  <button class="btn-print" onclick="window.print()" style="margin-top: 20px; padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">🖨️ Imprimir</button>
+</body>
+</html>
+`;
+
+      const ventana = window.open('', '_blank');
+      ventana.document.write(html);
+      ventana.document.close();
+    }
+
+    // ===== BÚSQUEDA =====
+    document.getElementById('buscarHerramienta').addEventListener('input', function(e) {
+      const termino = e.target.value.toLowerCase().trim();
+      
+      if (!termino) {
+        renderizarTabla(estadisticasCompletas);
+        actualizarResumen(estadisticasCompletas);
+        return;
+      }
+      
+      const filtradas = estadisticasCompletas.filter(stat => 
+        stat.nombreHerramienta?.toLowerCase().includes(termino) ||
+        stat.idHerramienta?.toString().includes(termino)
+      );
+      
+      renderizarTabla(filtradas);
+      actualizarResumen(filtradas);
+    });
+
+    // ===== CERRAR MODALES AL HACER CLICK FUERA =====
+    document.getElementById('modalMantenimiento').addEventListener('click', function(e) {
+      if (e.target === this) cerrarModalMantenimiento();
+    });
+
+    document.getElementById('modalVerMantenimientos').addEventListener('click', function(e) {
+      if (e.target === this) cerrarModalVerMantenimientos();
+    });
+
+    // ===== CARGAR AL INICIAR =====
+    window.addEventListener('load', async function() {
+      console.log('🚀 Iniciando módulo de estadísticas...');
+      await cargarEstadisticas();
+      await cargarPrestamos();
     });
   </script>
 </body>
-
 </html>
