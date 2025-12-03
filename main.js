@@ -217,3 +217,67 @@ ipcMain.on("window-close", (event) => {
     const window = BrowserWindow.fromWebContents(event.sender);
     if (window) window.close();
 });
+
+// 🔹 Generar PDF
+ipcMain.on("generar-pdf", async (event, { html, fecha }) => {
+    try {
+        const fs = require('fs');
+        const os = require('os');
+        
+        // Crear ventana oculta para renderizar el HTML
+        const pdfWindow = new BrowserWindow({
+            show: false,
+            webPreferences: {
+                nodeIntegration: false
+            }
+        });
+        
+        // Cargar el HTML
+        await pdfWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`);
+        
+        // Esperar a que cargue completamente
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Generar nombre del archivo
+        const fechaFormato = new Date().toISOString().split('T')[0];
+        const nombreArchivo = `Estadisticas_FarmStock_${fechaFormato}.pdf`;
+        
+        // Mostrar diálogo para guardar
+        const { filePath, canceled } = await dialog.showSaveDialog({
+            title: 'Guardar Informe PDF',
+            defaultPath: path.join(os.homedir(), 'Downloads', nombreArchivo),
+            filters: [
+                { name: 'PDF', extensions: ['pdf'] }
+            ]
+        });
+        
+        if (!canceled && filePath) {
+            // Generar el PDF
+            const data = await pdfWindow.webContents.printToPDF({
+                printBackground: true,
+                pageSize: 'A4',
+                margins: {
+                    top: 0.5,
+                    bottom: 0.5,
+                    left: 0.5,
+                    right: 0.5
+                }
+            });
+            
+            // Guardar el archivo
+            fs.writeFileSync(filePath, data);
+            
+            // Cerrar ventana temporal
+            pdfWindow.close();
+            
+            // Notificar éxito
+            event.reply('pdf-generado', filePath);
+        } else {
+            pdfWindow.close();
+            event.reply('pdf-generado', null);
+        }
+    } catch (error) {
+        console.error('Error generando PDF:', error);
+        event.reply('pdf-generado', null);
+    }
+});

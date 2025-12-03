@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FarmStock - Equipos de Cómputo</title>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const saved = localStorage.getItem('fs_dark_mode');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const shouldBeDark = saved === null ? prefersDark : saved === 'true';
+      if (shouldBeDark) {
+        document.documentElement.classList.add('dark-mode');
+        document.body.classList.add('dark-mode');
+      }
+      var nightModeBtn = document.querySelector('.night-mode');
+      if (nightModeBtn) {
+        nightModeBtn.onclick = function() {
+          const isDark = document.documentElement.classList.toggle('dark-mode');
+          document.body.classList.toggle('dark-mode', isDark);
+          localStorage.setItem('fs_dark_mode', isDark);
+        };
+      }
+    });
+  </script>
+
+  <link rel="stylesheet" href="../CSS/index.css" />
+  <script src="../render-window.js"></script>
+  <style>
+    .content-box.registro { padding: 18px; border-radius: 14px; }
+    .registro-header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
+    .registro-header h2 { margin:0; font-weight:900; color:var(--text); }
+    .grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px; }
+    .grid label { font-weight:700; font-size:13px; color:var(--muted); margin-bottom:6px; display:block; }
+    .grid input { padding:9px 10px; border-radius:10px; border:1px solid var(--card-border); background: color-mix(in srgb,var(--surface) 96%, transparent 4%); color:var(--text); }
+    .controls { display:flex; gap:8px; margin-top:12px; }
+    .btn { padding:10px 12px; border-radius:10px; border:none; cursor:pointer; font-weight:800; }
+    .btn-green { background: linear-gradient(180deg,#7bd07a,#3fa34a); color:#fff; }
+    .btn-outline { background: color-mix(in srgb,var(--surface) 96%, transparent 4%); border:1px solid var(--card-border); color:var(--text); }
+    .status { margin-left:8px; font-weight:700; color:var(--muted); font-size:13px; }
+    .tabla { width:100%; border-collapse:collapse; margin-top:14px; }
+    .tabla thead th { text-align:left; padding:10px; color:var(--muted); font-weight:800; }
+    .tabla tbody td { padding:10px; border-top:1px solid rgba(255,255,255,0.06); color:var(--text); }
+    @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+
+<body>
+  <div class="window-controls">
+    <button id="minimize" title="Minimizar" type="button">─</button>
+    <button id="maximize" title="Maximizar" type="button">▢</button>
+    <button id="close" title="Cerrar" type="button">✕</button>
+  </div>
+
+  <div class="container">
+    <aside class="sidebar">
+      <div class="top-section">
+        <div class="logo"><img src="../imagenes/Logo.png" alt="Logo del sitio" /></div>
+        <ul class="menu-modulos">
+          <li><a href="index.html">Registro Herramientas</a></li>
+          <li><a href="registro-salida.html">Salida Herramientas</a></li>
+          <li><a href="indexInventario.html">Inventario</a></li>
+          <li><a href="Notificaciones.html">Notificaciones</a></li>
+          <li><a href="estats.html">Estadísticas</a></li>
+          <li><a href="registro-aprendices.html">Aprendices</a></li>
+          <li><a href="equipos-computos.html" class="active">Equipos de Cómputo</a></li>
+          <li><a href="equipos-movimientos.html">Movimientos Equipos</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-bottom">
+        <a href="quienes-somos.html" class="somos">👥 Quiénes Somos</a>
+        <div class="night-mode"><span>🌙 Modo noche</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="bienvenida">
+        <a href="perfil.html" class="profile">Mi perfil</a>
+        <h1>Equipos de Cómputo</h1>
+        <p class="sub">Registrar y consultar equipos asignados</p>
+      </div>
+
+      <section class="content-box registro" style="margin-top:32px;">
+        <div class="registro-header">
+          <h2>Registrar equipo</h2>
+          <div class="status" id="statusMsg"></div>
+        </div>
+        <form id="frmEquipo">
+          <div class="grid">
+            <div>
+              <label>Nombre Persona</label>
+              <input type="text" id="nombre_persona" required />
+            </div>
+            <div>
+              <label>Cédula</label>
+              <input type="text" id="cedula" required />
+            </div>
+            <div>
+              <label>Nombre Equipo</label>
+              <input type="text" id="nombre_equipo" required />
+            </div>
+            <div>
+              <label>Código Equipo</label>
+              <input type="text" id="codigo_equipo" required />
+            </div>
+            <div>
+              <label>Fecha Registro</label>
+              <input type="datetime-local" id="fecha_registro" />
+            </div>
+          </div>
+          <div class="controls">
+            <button type="submit" class="btn btn-green">Guardar</button>
+            <button type="reset" class="btn btn-outline">Limpiar</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="content-box registro" style="margin-top:32px;">
+        <div class="registro-header">
+          <h2>Equipos registrados</h2>
+          <div class="filtros" style="display:flex; align-items:center; gap:8px;">
+            <input id="fCodigo" placeholder="Ingrese código" style="display:inline-block;" />
+            <input id="fCedula" placeholder="Ingrese cédula" style="display:none;" />
+            <select id="filtroTipo" style="width:140px; margin:0;"> <!-- ancho reducido -->
+              <option value="codigo">Buscar por código</option>
+              <option value="cedula">Buscar por cédula</option>
+            </select>
+            <button class="btn btn-outline" id="btnBuscar">Buscar</button>
+            <button class="btn btn-outline" id="btnRefrescar">Refrescar</button>
+          </div>
+        </div>
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>ID</th><th>Persona</th><th>Cédula</th><th>Equipo</th><th>Código</th><th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody id="tblEquipos"></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const API_BASE = 'http://localhost:8080';
+    const EQUIPOS_URL = API_BASE + '/equipos-computos';
+
+    function fmtDateTimeLocal(dtStr) {
+      try {
+        if (!dtStr) return null;
+        const d = new Date(dtStr);
+        const pad = n => String(n).padStart(2,'0');
+        return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+      } catch { return null; }
+    }
+
+    async function registrarEquipo(e) {
+      e.preventDefault();
+      const data = {
+        nombre_persona: document.getElementById('nombre_persona').value.trim(),
+        cedula: document.getElementById('cedula').value.trim(),
+        nombre_equipo: document.getElementById('nombre_equipo').value.trim(),
+        codigo_equipo: document.getElementById('codigo_equipo').value.trim(),
+        fecha_registro: fmtDateTimeLocal(document.getElementById('fecha_registro').value)
+      };
+
+      if (!data.nombre_persona) return alert('❌ El nombre de la persona es requerido');
+      if (!data.cedula) return alert('❌ La cédula es requerida');
+      if (!data.nombre_equipo) return alert('❌ El nombre del equipo es requerido');
+      if (!data.codigo_equipo) return alert('❌ El código del equipo es requerido');
+
+      try {
+        const res = await fetch(EQUIPOS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(body && body.message ? body.message : (typeof body === 'string' ? body : 'Error al registrar'));
+        document.getElementById('statusMsg').textContent = '✅ Equipo registrado';
+        document.getElementById('frmEquipo').reset();
+        cargarEquipos();
+      } catch (err) {
+        alert('⚠️ ' + err.message);
+      }
+    }
+
+    async function cargarEquipos() {
+      try {
+        const res = await fetch(EQUIPOS_URL);
+        const equipos = await res.json();
+        const tbody = document.getElementById('tblEquipos');
+        tbody.innerHTML = equipos.map(e => `
+          <tr>
+            <td>${e.id_equipo ?? ''}</td>
+            <td>${e.nombre_persona}</td>
+            <td>${e.cedula}</td>
+            <td>${e.nombre_equipo}</td>
+            <td><a href="#" data-codigo="${e.codigo_equipo}" class="lnkCodigo">${e.codigo_equipo}</a></td>
+            <td>${e.fecha_registro ?? ''}</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function buscar() {
+      const filtro = document.getElementById('filtroTipo').value;
+      const codigo = document.getElementById('fCodigo').value.trim();
+      const cedula = document.getElementById('fCedula').value.trim();
+      const tbody = document.getElementById('tblEquipos');
+      try {
+        if (filtro === 'codigo' && codigo) {
+          const res = await fetch(`${EQUIPOS_URL}/codigo/${encodeURIComponent(codigo)}`);
+          const equipo = await res.json();
+          if (res.ok) {
+            tbody.innerHTML = `
+              <tr>
+                <td>${equipo.id_equipo ?? ''}</td>
+                <td>${equipo.nombre_persona}</td>
+                <td>${equipo.cedula}</td>
+                <td>${equipo.nombre_equipo}</td>
+                <td>${equipo.codigo_equipo}</td>
+                <td>${equipo.fecha_registro ?? ''}</td>
+              </tr>`;
+          } else {
+            alert(typeof equipo === 'string' ? equipo : 'No encontrado');
+          }
+          return;
+        }
+        if (filtro === 'cedula' && cedula) {
+          const res = await fetch(`${EQUIPOS_URL}/cedula/${encodeURIComponent(cedula)}`);
+          const equipos = await res.json();
+          tbody.innerHTML = equipos.map(e => `
+            <tr>
+              <td>${e.id_equipo ?? ''}</td>
+              <td>${e.nombre_persona}</td>
+              <td>${e.cedula}</td>
+              <td>${e.nombre_equipo}</td>
+              <td>${e.codigo_equipo}</td>
+              <td>${e.fecha_registro ?? ''}</td>
+            </tr>
+          `).join('');
+          return;
+        }
+        cargarEquipos();
+      } catch (err) {
+        alert('⚠️ Error en búsqueda');
+      }
+    }
+
+    document.getElementById('filtroTipo').addEventListener('change', function() {
+      const filtro = this.value;
+      document.getElementById('fCodigo').style.display = filtro === 'codigo' ? 'inline-block' : 'none';
+      document.getElementById('fCedula').style.display = filtro === 'cedula' ? 'inline-block' : 'none';
+      document.getElementById('fCodigo').value = '';
+      document.getElementById('fCedula').value = '';
+    });
+
+    document.getElementById('frmEquipo').addEventListener('submit', registrarEquipo);
+    document.getElementById('btnBuscar').addEventListener('click', buscar);
+    document.getElementById('btnRefrescar').addEventListener('click', cargarEquipos);
+    document.addEventListener('click', (ev) => {
+      const a = ev.target.closest('.lnkCodigo');
+      if (a) {
+        ev.preventDefault();
+        const codigo = a.getAttribute('data-codigo');
+        window.location.href = `equipos-movimientos.html?codigo=${encodeURIComponent(codigo)}`;
+      }
+    });
+
+    cargarEquipos();
+  </script>
+</body>
+
+</html>

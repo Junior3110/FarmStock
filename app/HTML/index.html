@@ -110,6 +110,8 @@
           <li><a href="Notificaciones.html">Notificaciones</a></li>
           <li><a href="estats.html">Estadísticas</a></li>
           <li><a href="registro-aprendices.html">Aprendices</a></li>
+                    <li><a href="equipos-computos.html">Equipos de Cómputo</a></li>
+                    <li><a href="equipos-movimientos.html">Movimientos Equipos</a></li>
         </ul>
       </div>
       <div class="sidebar-bottom">
@@ -234,11 +236,15 @@
   <!-- Principal: usa la versión consolidada (offline + backend) -->
   <script>
     (function() {
-      // Se conserva el IIFE completo ya presente en el archivo original (lógica de fetch, localStorage, modales y sync).
-      // Para ahorrar espacio aquí: pega el IIFE largo que estaba en tu archivo original (desde 'var API_BASE = ...' hasta 'obtenerHerramientasHoy();')
       var API_BASE = 'http://localhost:8080';
       var HERR_URL = API_BASE + '/herramienta';
       var DETALLE_URL_BASE = API_BASE + '/api/herramienta-detalle';
+
+      console.log('🔧 API configurada:', {
+        base: API_BASE,
+        herramientas: HERR_URL,
+        detalles: DETALLE_URL_BASE
+      });
 
       // Elementos UI
       var form = document.getElementById('formHerramienta');
@@ -249,9 +255,6 @@
       var closeModalBtn = document.getElementById('closeModal');
       var fechaInput = document.getElementById('fecha_registro');
       var errorMsg = document.getElementById('errorMsg');
-
-      // Local storage key
-      var LS_KEY = 'fs_local_tools_v1';
 
       // Helpers ---------------------------------------------------------
       function showError(msg) {
@@ -285,112 +288,6 @@
               } catch (e) {}
               return text || ('Error ' + res.status);
           });
-      }
-
-      // Local storage management ---------------------------------------
-      function loadLocalTools() {
-          try {
-              var raw = localStorage.getItem(LS_KEY);
-              return raw ? JSON.parse(raw) : [];
-          } catch (e) {
-              console.error('Error parseando localStorage', e);
-              return [];
-          }
-      }
-
-      function saveLocalTools(list) {
-          localStorage.setItem(LS_KEY, JSON.stringify(list || []));
-      }
-
-      function pushLocalTool(tool) {
-          var list = loadLocalTools();
-          list.unshift(tool);
-          saveLocalTools(list);
-      }
-
-      function updateLocalToolById(id, updater) {
-          var list = loadLocalTools();
-          var idx = list.findIndex(function(t) {
-              return String(t.idHerramienta) === String(id);
-          });
-          if (idx === -1) return false;
-          list[idx] = updater(list[idx]);
-          saveLocalTools(list);
-          return true;
-      }
-
-      function removeLocalToolById(id) {
-          var list = loadLocalTools();
-          var newList = list.filter(function(t) {
-              return String(t.idHerramienta) !== String(id);
-          });
-          saveLocalTools(newList);
-          return list.length !== newList.length;
-      }
-
-      function findLocalToolById(id) {
-          var list = loadLocalTools();
-          return list.find(function(t) {
-              return String(t.idHerramienta) === String(id);
-          }) || null;
-      }
-
-      // Generate local ids and detail codes
-      var localIdCounter = (function() {
-          // Start with timestamp to avoid collisions
-          var base = Date.now();
-          return function() {
-              base -= 1;
-              return 'local-' + base;
-          };
-      })();
-
-      function genDetalleCodes(tool) {
-          var detalles = [];
-          var cantidad = tool.cantidad || 0;
-          for (var i = 1; i <= cantidad; i++) {
-              var idDetalle = 'ld-' + (Date.now()) + '-' + i + '-' + Math.floor(Math.random() * 1000);
-              var codigoUnico = (tool.nombre || 'LOCAL').toUpperCase().replace(/\s+/g, '_') + '-' + (tool.idHerramienta) + '-' + String(i).padStart(3, '0');
-              detalles.push({
-                  idDetalle: idDetalle,
-                  codigoUnico: codigoUnico,
-                  estado: 'Disponible',
-                  disponible: true,
-                  fechaIngreso: tool.fecha_registro || nowIsoDate(),
-                  herramienta: {
-                      idHerramienta: tool.idHerramienta,
-                      nombre: tool.nombre
-                  }
-              });
-          }
-          return detalles;
-      }
-
-      // Detect backend availability (simple ping)
-      function isBackendAvailable() {
-          // Try a quick HEAD to /herramienta/hoy (some servers don't support HEAD, so use GET with small timeout)
-          // We'll implement timeouts with Promise.race
-          var controller = null;
-          try {
-              // Use fetch with timeout
-              var timeout = new Promise(function(_, reject) {
-                  setTimeout(function() {
-                      reject(new Error('timeout'));
-                  }, 800);
-              });
-              var req = fetch(HERR_URL + '/hoy', {
-                  method: 'GET'
-              });
-              return Promise.race([req, timeout])
-                  .then(function(res) {
-                      return !!res && res.ok;
-                  })
-                  .catch(function() {
-                      return false;
-                  });
-          } catch (e) {
-              return Promise.resolve(false);
-          }
       }
 
       // UI rendering ---------------------------------------------------
@@ -473,55 +370,41 @@
           });
       }
 
-      // Obtén herramientas de hoy — intenta backend, si falla usa local
+      // Obtener herramientas de hoy desde el backend
       function obtenerHerramientasHoy() {
           hideError();
-          listaHoy.innerHTML = '<p>Cargando...</p>';
+          listaHoy.innerHTML = '<p>⏳ Cargando...</p>';
 
-          fetch(HERR_URL + '/hoy')
+          console.log('🔄 Conectando a:', HERR_URL + '/hoy');
+
+          fetch(HERR_URL + '/hoy', {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json'
+              }
+          })
               .then(function(res) {
-                  if (!res.ok) return readErrorMessage(res).then(function(msg) {
-                      throw new Error(msg);
-                  });
+                  console.log('✅ Respuesta:', res.status, res.statusText);
+                  if (!res.ok) {
+                      return readErrorMessage(res).then(function(msg) {
+                          throw new Error(msg);
+                      });
+                  }
                   return res.json();
               })
               .then(function(herramientas) {
-                  // Merge local tools for today on top of backend tools (so you can see offline entries too)
-                  var local = loadLocalTools().filter(function(t) {
-                      // Only include local items with today's date (or optionally include all)
-                      try {
-                          return (t.fecha_registro === nowIsoDate());
-                      } catch (e) {
-                          return false;
-                      }
-                  }).map(function(t) {
-                      t._local = true;
-                      return t;
-                  });
-
-                  // Show local ones first, then backend ones — avoid duplicates by id
-                  var ids = new Set(local.map(function(x) {
-                      return String(x.idHerramienta);
-                  }));
-                  var merged = local.concat((herramientas || []).filter(function(h) {
-                      return !ids.has(String(h.idHerramienta));
-                  }));
-
-                  renderToolsListFromArray(merged);
+                  console.log('📦 Herramientas recibidas:', herramientas ? herramientas.length : 0);
+                  renderToolsListFromArray(herramientas || []);
+                  hideError();
               })
               .catch(function(err) {
-                  console.warn('Backend unavailable, using local data:', err);
-                  // show local-only
-                  var localAll = loadLocalTools().map(function(t) {
-                      t._local = true;
-                      return t;
-                  });
-                  renderToolsListFromArray(localAll);
-                  showError('Backend no disponible. Trabajando en modo local/offline.');
+                  console.error('❌ Error:', err.message || err);
+                  listaHoy.innerHTML = '<p style="color: var(--danger);">⚠️ Error al conectar con el servidor</p>';
+                  showError('No se pudo conectar con el servidor. Verifica que el backend esté corriendo.');
               });
       }
 
-      // Create: try backend, on failure save locally
+      // Crear herramienta
       form.addEventListener('submit', function(ev) {
           ev.preventDefault();
           hideError();
@@ -535,10 +418,37 @@
           if (!data.fecha_registro) data.fecha_registro = nowIsoDate();
           data.cantidad = parseInt(data.cantidad, 10) || 0;
 
-          if (!data.nombre || !data.estado) {
-              alert('Por favor completa al menos el nombre y el estado.');
+          // Validar campos obligatorios
+          if (!data.nombre || data.nombre.trim() === '') {
+              alert('❌ El nombre es obligatorio');
               return;
           }
+          if (!data.estado || data.estado === '') {
+              alert('❌ El estado es obligatorio');
+              return;
+          }
+          if (!data.tipo || data.tipo === '') {
+              alert('❌ El tipo es obligatorio');
+              return;
+          }
+          if (!data.ubicacion || data.ubicacion === '') {
+              alert('❌ La ubicación es obligatoria');
+              return;
+          }
+          if (!data.numero_lote || data.numero_lote === '') {
+              alert('❌ El número de lote es obligatorio');
+              return;
+          }
+          if (!data.cantidad || data.cantidad <= 0) {
+              alert('❌ La cantidad debe ser mayor a 0');
+              return;
+          }
+          if (!data.fecha_registro) {
+              alert('❌ La fecha de registro es obligatoria');
+              return;
+          }
+
+          console.log('📤 Enviando herramienta:', JSON.stringify(data, null, 2));
 
           fetch(HERR_URL, {
                   method: 'POST',
@@ -548,133 +458,93 @@
                   body: JSON.stringify(data)
               })
               .then(function(res) {
-                  if (res.status === 201 || res.ok) return res.json().catch(function() {
-                      return null;
-                  });
+                  console.log('✅ Respuesta POST:', res.status);
+                  if (res.status === 201 || res.ok) {
+                      return res.json().catch(function() {
+                          return null;
+                      });
+                  }
                   return readErrorMessage(res).then(function(msg) {
                       throw new Error(msg);
                   });
               })
               .then(function(created) {
-                  // If backend created successfully, refresh list. Also remove any local duplicate by name+date optionally.
+                  console.log('✅ Herramienta creada:', created);
                   obtenerHerramientasHoy();
-                  alert('✅ Herramienta registrada en servidor');
+                  alert('✅ Herramienta registrada exitosamente');
                   form.reset();
                   if (fechaInput) fechaInput.value = nowIsoDate();
               })
               .catch(function(err) {
-                  // Save locally
-                  var localId = localIdCounter();
-                  var localTool = {
-                      idHerramienta: localId,
-                      nombre: data.nombre,
-                      descripcion: data.descripcion || '',
-                      estado: data.estado,
-                      tipo: data.tipo || 'Manual',
-                      ubicacion: data.ubicacion || 'Bodega',
-                      numero_lote: data.numero_lote || data.numeroLote || 'Lote 1',
-                      cantidad: data.cantidad || 0,
-                      fecha_registro: data.fecha_registro,
-                      _local: true
-                  };
-                  // create detalles locally
-                  localTool.detalles = genDetalleCodes(localTool);
-
-                  pushLocalTool(localTool);
-                  obtenerHerramientasHoy();
-                  alert('Guardado localmente. Backend no disponible. (Modo offline)');
-                  form.reset();
-                  if (fechaInput) fechaInput.value = nowIsoDate();
+                  console.error('❌ Error al crear:', err);
+                  alert('❌ Error al registrar herramienta: ' + err.message);
               });
       });
 
-      // Delete: try backend, fallback to local
+      // Eliminar herramienta
       function eliminarLote(id) {
           if (!id) {
-              alert('ID inválido');
+              alert('❌ ID inválido');
               return;
           }
-          if (!confirm('¿Eliminar registro id ' + id + '?')) return;
+          if (!confirm('¿Estás seguro de eliminar la herramienta ' + id + '?')) return;
 
-          // If ID is local (starts with 'local-') delete local immediately
-          if (String(id).startsWith('local-')) {
-              removeLocalToolById(id);
-              obtenerHerramientasHoy();
-              alert('Registro local eliminado');
-              return;
-          }
+          console.log('🗑️ Eliminando herramienta:', id);
 
           fetch(HERR_URL + '/' + encodeURIComponent(id), {
                   method: 'DELETE'
               })
               .then(function(res) {
-                  if (!res.ok) return readErrorMessage(res).then(function(msg) {
-                      throw new Error(msg);
-                  });
+                  if (!res.ok) {
+                      return readErrorMessage(res).then(function(msg) {
+                          throw new Error(msg);
+                      });
+                  }
+                  console.log('✅ Herramienta eliminada');
                   obtenerHerramientasHoy();
+                  alert('✅ Herramienta eliminada');
               })
               .catch(function(err) {
-                  console.warn('DELETE failed, trying local delete if exists', err);
-                  // try local delete as last resort
-                  if (removeLocalToolById(id)) {
-                      obtenerHerramientasHoy();
-                      alert('Registro eliminado localmente');
-                  } else {
-                      alert('No se pudo eliminar: ' + (err && err.message ? err.message : 'error'));
-                  }
+                  console.error('❌ Error al eliminar:', err);
+                  alert('❌ Error al eliminar: ' + err.message);
               });
       }
 
-      // Open edit modal: if backend returns 500 or not found, try local
+      // Abrir modal para editar
       function openEditLoteModal(id) {
           if (!id) return;
           hideError();
           modalTitle.textContent = 'Editar registro';
-          modalContent.innerHTML = '<p>Cargando...</p>';
+          modalContent.innerHTML = '<p>⏳ Cargando...</p>';
           modalBackdrop.style.display = 'flex';
           modalBackdrop.setAttribute('aria-hidden', 'false');
 
-          // If local id, directly load from local storage
-          if (String(id).startsWith('local-')) {
-              var foundLocal = findLocalToolById(id);
-              if (!foundLocal) {
-                  closeModal();
-                  alert('No se encontró el registro local');
-                  return;
-              }
-              buildEditModalFromFound(foundLocal, true);
-              return;
-          }
+          console.log('📝 Cargando herramienta para editar:', id);
 
           fetch(HERR_URL + '/' + encodeURIComponent(id))
               .then(function(res) {
-                  if (!res.ok) return readErrorMessage(res).then(function(msg) {
-                      throw new Error(msg);
-                  });
+                  if (!res.ok) {
+                      return readErrorMessage(res).then(function(msg) {
+                          throw new Error(msg);
+                      });
+                  }
                   return res.json();
               })
               .then(function(found) {
                   if (!found) {
                       closeModal();
-                      alert('No se encontró el registro');
+                      alert('❌ No se encontró el registro');
                       return;
                   }
-                  buildEditModalFromFound(found, false);
+                  buildEditModalFromFound(found);
               })
               .catch(function(err) {
-                  console.warn('GET /herramienta/{id} failed, try local', err);
-                  // try to find in local storage (maybe created offline)
-                  var foundLocal = findLocalToolById(id);
-                  if (foundLocal) {
-                      buildEditModalFromFound(foundLocal, true);
-                  } else {
-                      closeModal();
-                      showError('No se pudo cargar el registro para editar: ' + (err && err.message ? err.message : 'error'));
-                  }
+                  console.error('❌ Error al cargar:', err);
+                  closeModal();
+                  showError('No se pudo cargar el registro: ' + (err && err.message ? err.message : 'error'));
               });
 
-          // helper to build the modal and wire saving for both local and remote edits
-          function buildEditModalFromFound(found, isLocal) {
+          function buildEditModalFromFound(found) {
               modalContent.innerHTML = '';
               var container = document.createElement('div');
 
@@ -725,28 +595,13 @@
                   };
 
                   if (!payload.nombre || !payload.estado) {
-                      alert('Completa al menos nombre y estado.');
+                      alert('❌ Completa al menos nombre y estado.');
                       return;
                   }
 
-                  if (isLocal || String(found.idHerramienta).startsWith('local-')) {
-                      // update local
-                      updateLocalToolById(found.idHerramienta, function(old) {
-                          var updated = Object.assign({}, old, payload);
-                          // if cantidad changed, regenerate detalles simple heuristic (drops old detalles)
-                          if ((old.cantidad || 0) !== (payload.cantidad || 0)) {
-                              updated.cantidad = payload.cantidad;
-                              updated.detalles = genDetalleCodes(updated);
-                          }
-                          return updated;
-                      });
-                      alert('✅ Registro actualizado (local)');
-                      closeModal();
-                      obtenerHerramientasHoy();
-                      return;
-                  }
+                  console.log('📤 Actualizando herramienta:', payload);
 
-                  // Remote update
+                  // Actualizar en el backend
                   fetch(HERR_URL + '/' + encodeURIComponent(found.idHerramienta), {
                           method: 'PUT',
                           headers: {
@@ -755,62 +610,47 @@
                           body: JSON.stringify(payload)
                       })
                       .then(function(res) {
-                          if (!res.ok) return readErrorMessage(res).then(function(msg) {
-                              throw new Error(msg);
-                          });
+                          if (!res.ok) {
+                              return readErrorMessage(res).then(function(msg) {
+                                  throw new Error(msg);
+                              });
+                          }
                           return res.json().catch(function() {
                               return null;
                           });
                       })
                       .then(function() {
-                          alert('✅ Registro actualizado');
+                          console.log('✅ Herramienta actualizada');
+                          alert('✅ Registro actualizado exitosamente');
                           closeModal();
                           obtenerHerramientasHoy();
                       })
                       .catch(function(err) {
-                          console.warn('PUT failed, saving locally instead', err);
-                          // fallback: save locally as offline edited item
-                          // convert to local item
-                          var localId = localIdCounter();
-                          var localTool = Object.assign({}, payload, {
-                              idHerramienta: localId,
-                              _local: true
-                          });
-                          localTool.detalles = genDetalleCodes(localTool);
-                          pushLocalTool(localTool);
-                          alert('No se pudo actualizar en servidor. Se guardó una copia local para sincronizar más tarde.');
-                          closeModal();
-                          obtenerHerramientasHoy();
+                          console.error('❌ Error al actualizar:', err);
+                          alert('❌ Error al actualizar: ' + err.message);
                       });
               });
           }
       }
 
-      // DETAILS modal: try backend, else local
+      // Modal de detalles
       function openDetallesModal(herramientaId, nombreLote) {
           if (!herramientaId) return;
           hideError();
           modalTitle.textContent = 'Detalles: ' + (nombreLote || '');
-          modalContent.innerHTML = '<p>Cargando detalles...</p>';
+          modalContent.innerHTML = '<p>⏳ Cargando detalles...</p>';
           modalBackdrop.style.display = 'flex';
           modalBackdrop.setAttribute('aria-hidden', 'false');
 
-          // local case
-          if (String(herramientaId).startsWith('local-')) {
-              var local = findLocalToolById(herramientaId);
-              if (!local) {
-                  modalContent.innerHTML = '<p>No hay detalles.</p>';
-                  return;
-              }
-              renderDetallesList(local.detalles || []);
-              return;
-          }
+          console.log('📋 Cargando detalles de herramienta:', herramientaId);
 
           fetch(DETALLE_URL_BASE + '/herramienta/' + encodeURIComponent(herramientaId))
               .then(function(res) {
-                  if (!res.ok) return readErrorMessage(res).then(function(msg) {
-                      throw new Error(msg);
-                  });
+                  if (!res.ok) {
+                      return readErrorMessage(res).then(function(msg) {
+                          throw new Error(msg);
+                      });
+                  }
                   return res.json();
               })
               .then(function(detalles) {
@@ -818,18 +658,11 @@
                   renderDetallesList(detalles || []);
               })
               .catch(function(err) {
-                  console.warn('DETALLE endpoint failed, trying local', err);
-                  // try local
-                  var local = findLocalToolById(herramientaId);
-                  if (local) {
-                      renderDetallesList(local.detalles || []);
-                  } else {
-                      modalBackdrop.style.display = 'none';
-                      modalBackdrop.setAttribute('aria-hidden', 'true');
-                      modalContent.innerHTML = '';
-                      showError('No se pudieron cargar los detalles: ' + (err && err.message ? err.message : 'error'));
-                  }
+                  console.error('❌ Error al cargar detalles:', err);
+                  alert('❌ Error al cargar detalles: ' + err.message);
+                  modalBackdrop.style.display = 'none';
               });
+      }
 
           function renderDetallesList(detalles) {
               modalContent.innerHTML = '';
@@ -877,7 +710,6 @@
               });
               modalContent.appendChild(listDiv);
           }
-      }
 
       // Edit panel builder for detalle (uses DETALLE_URL_BASE PUT or local edit)
       function buildDetalleEditPanel(detalle) {

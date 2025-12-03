@@ -40,6 +40,8 @@
           <li><a href="Notificaciones.html">Notificaciones</a></li>
           <li><a href="estats.html" class="active">Estadísticas</a></li>
           <li><a href="registro-aprendices.html">Aprendices</a></li>
+          <li><a href="equipos-computos.html">Equipos de Cómputo</a></li>
+          <li><a href="equipos-movimientos.html">Movimientos Equipos</a></li>
         </ul>
       </div>
 
@@ -89,24 +91,34 @@
           </div>
         </div>
 
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Herramienta</th>
-                <th>Préstamos</th>
-                <th>Daños</th>
-                <th>Mantenimientos</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tablaEstadisticas">
-              <tr>
-                <td colspan="6" style="text-align: center; padding: 40px;">⏳ Cargando estadísticas...</td>
-              </tr>
-            </tbody>
-          </table>
+        <div style="display: grid; grid-template-columns: 1fr 400px; gap: 20px; margin-top: 20px;">
+          <!-- Tabla con scroll -->
+          <div class="table-wrap" style="max-height: 500px; overflow-y: auto; border: 1px solid var(--card-border); border-radius: 8px;">
+            <table>
+              <thead style="position: sticky; top: 0; background: var(--surface); z-index: 10;">
+                <tr>
+                  <th>ID</th>
+                  <th>Herramienta</th>
+                  <th>Préstamos</th>
+                  <th>Daños</th>
+                  <th>Mantenimientos</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tablaEstadisticas">
+                <tr>
+                  <td colspan="6" style="text-align: center; padding: 40px;">⏳ Cargando estadísticas...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Gráfica de pastel -->
+          <div style="background: var(--surface); border-radius: 8px; padding: 20px; border: 1px solid var(--card-border); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <h3 style="margin: 0 0 20px 0; color: var(--text-color); text-align: center;">📊 Distribución</h3>
+            <canvas id="graficoEstadisticas" width="300" height="300"></canvas>
+            <div id="leyendaGrafico" style="margin-top: 20px; width: 100%;"></div>
+          </div>
         </div>
       </div>
     </main>
@@ -180,6 +192,7 @@
               <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">Descripción</th>
               <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">Estado</th>
               <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">Fecha</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #444;">Acción</th>
             </tr>
           </thead>
           <tbody id="tablaMantenimientos"></tbody>
@@ -197,6 +210,14 @@
   <script src="../render-window.js"></script>
   
   <script>
+    // ===== VERIFICAR API DE PDF =====
+    console.log('🔍 Verificando API de PDF:', typeof window.pdf);
+    if (typeof window.pdf === 'undefined') {
+      console.warn('⚠️ API de PDF no disponible, se usará método alternativo');
+    } else {
+      console.log('✅ API de PDF disponible');
+    }
+
     // ===== VARIABLES GLOBALES =====
     let estadisticasCompletas = [];
     let prestamosData = [];
@@ -386,9 +407,8 @@
       tbody.innerHTML = '';
       
       datos.forEach(stat => {
-        const prestamosHerramienta = prestamosData.filter(p => 
-          p.herramienta?.idHerramienta === stat.idHerramienta
-        ).length;
+        // Usar totalPrestamos del backend
+        const prestamosHerramienta = stat.totalPrestamos || 0;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -398,7 +418,7 @@
           <td><span style="background: #FF9800; color: white; padding: 4px 12px; border-radius: 12px; font-weight: bold;">${stat.totalDanos || 0}</span></td>
           <td><span style="background: #9C27B0; color: white; padding: 4px 12px; border-radius: 12px; font-weight: bold;">${stat.totalMantenimientos || 0}</span></td>
           <td class="acciones">
-            <button onclick="verDetalle(${stat.idHerramienta})" style="background: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">👁️ Ver</button>
+            <button onclick="verMantenimientosHerramienta(${stat.idHerramienta}, '${stat.nombreHerramienta.replace(/'/g, "\\'")}')" style="background: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">🔧 Gestionar</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -407,33 +427,239 @@
 
     function actualizarResumen(datos) {
       const totalHerramientas = datos.length;
+      const totalPrestamos = datos.reduce((sum, item) => sum + (item.totalPrestamos || 0), 0);
       const totalDanos = datos.reduce((sum, item) => sum + (item.totalDanos || 0), 0);
       const totalMantenimientos = datos.reduce((sum, item) => sum + (item.totalMantenimientos || 0), 0);
-      const totalPrestamos = prestamosData.length;
       
       document.getElementById('totalHerramientas').textContent = totalHerramientas;
       document.getElementById('totalPrestamos').textContent = totalPrestamos;
       document.getElementById('totalDanos').textContent = totalDanos;
       document.getElementById('totalMantenimientos').textContent = totalMantenimientos;
+      
+      // Actualizar gráfico de pastel
+      dibujarGraficoPastel(totalHerramientas, totalPrestamos, totalDanos, totalMantenimientos);
+    }
+
+    function dibujarGraficoPastel(herramientas, prestamos, danos, mantenimientos) {
+      const canvas = document.getElementById('graficoEstadisticas');
+      const ctx = canvas.getContext('2d');
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = 120;
+      
+      // Datos y colores
+      const datos = [
+        { valor: herramientas, color: '#4CAF50', label: 'Herramientas' },
+        { valor: prestamos, color: '#2196F3', label: 'Préstamos' },
+        { valor: danos, color: '#FF9800', label: 'Daños' },
+        { valor: mantenimientos, color: '#9C27B0', label: 'Mantenimientos' }
+      ];
+      
+      const total = datos.reduce((sum, item) => sum + item.valor, 0);
+      
+      if (total === 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#666';
+        ctx.font = '14px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Sin datos', centerX, centerY);
+        return;
+      }
+      
+      // Limpiar canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Dibujar gráfico de pastel
+      let startAngle = -Math.PI / 2;
+      
+      datos.forEach(item => {
+        const sliceAngle = (item.valor / total) * 2 * Math.PI;
+        
+        // Dibujar rebanada
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
+        ctx.closePath();
+        ctx.fillStyle = item.color;
+        ctx.fill();
+        
+        // Borde blanco
+        ctx.strokeStyle = '#1a1a1a';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // Etiqueta de porcentaje
+        const percentage = ((item.valor / total) * 100).toFixed(1);
+        if (percentage > 5) { // Solo mostrar si es mayor al 5%
+          const labelAngle = startAngle + sliceAngle / 2;
+          const labelX = centerX + Math.cos(labelAngle) * (radius * 0.7);
+          const labelY = centerY + Math.sin(labelAngle) * (radius * 0.7);
+          
+          ctx.fillStyle = '#fff';
+          ctx.font = 'bold 14px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(`${percentage}%`, labelX, labelY);
+        }
+        
+        startAngle += sliceAngle;
+      });
+      
+      // Actualizar leyenda
+      const leyenda = document.getElementById('leyendaGrafico');
+      leyenda.innerHTML = datos.map(item => {
+        const percentage = ((item.valor / total) * 100).toFixed(1);
+        return `
+          <div style="display: flex; align-items: center; margin: 8px 0; font-size: 13px;">
+            <div style="width: 16px; height: 16px; background: ${item.color}; border-radius: 3px; margin-right: 8px;"></div>
+            <span style="color: var(--text-color); flex: 1;">${item.label}</span>
+            <span style="color: var(--muted); font-weight: bold;">${item.valor} (${percentage}%)</span>
+          </div>
+        `;
+      }).join('');
     }
 
     async function actualizarEstadisticas() {
       await cargarEstadisticas();
-      await cargarPrestamos();
     }
 
-    function verDetalle(idHerramienta) {
-      alert(`Ver detalle de herramienta ID: ${idHerramienta}\n\nFuncionalidad pendiente de implementación.`);
+    async function verMantenimientosHerramienta(idHerramienta, nombreHerramienta) {
+      console.log(`🔍 Abriendo mantenimientos de: ${nombreHerramienta} (ID: ${idHerramienta})`);
+      
+      const modalVer = document.getElementById('modalVerMantenimientos');
+      modalVer.style.display = 'block';
+      
+      // Actualizar título
+      const titulo = modalVer.querySelector('h2');
+      titulo.textContent = `🔧 Mantenimientos de ${nombreHerramienta}`;
+      
+      document.getElementById('loadingMantenimientos').style.display = 'block';
+      document.getElementById('contenidoMantenimientos').style.display = 'none';
+      
+      try {
+        const response = await fetch(`http://localhost:8080/mantenimientos/herramienta/${idHerramienta}`);
+        if (!response.ok) throw new Error('Error al cargar mantenimientos');
+        
+        const mantenimientos = await response.json();
+        console.log('📋 Mantenimientos de la herramienta:', mantenimientos);
+        
+        document.getElementById('loadingMantenimientos').style.display = 'none';
+        document.getElementById('contenidoMantenimientos').style.display = 'block';
+        
+        const tbody = document.getElementById('tablaMantenimientos');
+        const noMantenimientos = document.getElementById('noMantenimientos');
+        
+        if (mantenimientos && mantenimientos.length > 0) {
+          tbody.innerHTML = '';
+          noMantenimientos.style.display = 'none';
+          
+          mantenimientos.forEach(m => {
+            const estadoColor = 
+              m.estado === 'PENDIENTE' ? '#FFA726' : 
+              m.estado === 'EN_PROCESO' ? '#42A5F5' : '#66BB6A';
+            
+            const fecha = m.fechaMantenimiento ? new Date(m.fechaMantenimiento).toLocaleDateString('es-CO') : '-';
+            const codigoUnico = m.herramientaDetalle?.codigoUnico || 'N/A';
+            
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid #333';
+            tr.innerHTML = `
+              <td style='padding: 12px;'>${m.idMantenimiento || '-'}</td>
+              <td style='padding: 12px;'>${codigoUnico}</td>
+              <td style='padding: 12px;'>${m.tipo || '-'}</td>
+              <td style='padding: 12px; max-width: 200px; overflow: hidden; text-overflow: ellipsis;'>${m.descripcion || '-'}</td>
+              <td style='padding: 12px;'><span style='background: ${estadoColor}; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white;'>${m.estado}</span></td>
+              <td style='padding: 12px;'>${fecha}</td>
+              <td style='padding: 12px;'>
+                <select onchange="cambiarEstadoMantenimiento(${m.idMantenimiento}, this.value, ${idHerramienta}, '${nombreHerramienta.replace(/'/g, "\\'")}', event)" 
+                        style='background: #2a2a2a; color: white; border: 1px solid #444; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;'
+                        ${m.estado === 'COMPLETADO' ? 'disabled' : ''}>
+                  <option value=''>-- Cambiar estado --</option>
+                  <option value='PENDIENTE' ${m.estado === 'PENDIENTE' ? 'disabled' : ''}>⏳ PENDIENTE</option>
+                  <option value='EN_PROCESO' ${m.estado === 'EN_PROCESO' ? 'disabled' : ''}>▶️ EN_PROCESO</option>
+                  <option value='COMPLETADO'>✅ COMPLETADO</option>
+                </select>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        } else {
+          tbody.innerHTML = '';
+          noMantenimientos.style.display = 'block';
+          noMantenimientos.querySelector('p').textContent = `No hay mantenimientos registrados para ${nombreHerramienta}`;
+        }
+      } catch (error) {
+        console.error('❌ Error:', error);
+        document.getElementById('loadingMantenimientos').style.display = 'none';
+        document.getElementById('contenidoMantenimientos').style.display = 'block';
+        alert('❌ Error al cargar mantenimientos: ' + error.message);
+      }
     }
 
-    function generarInforme() {
+    async function cambiarEstadoMantenimiento(idMantenimiento, nuevoEstado, idHerramienta, nombreHerramienta, event) {
+      event.stopPropagation();
+      
+      if (!nuevoEstado) {
+        return; // Usuario seleccionó la opción por defecto
+      }
+      
+      const mensajes = {
+        'PENDIENTE': '¿Desea marcar este mantenimiento como PENDIENTE?',
+        'EN_PROCESO': '¿Desea marcar este mantenimiento como EN PROCESO?',
+        'COMPLETADO': '¿Desea marcar este mantenimiento como COMPLETADO?\n\nLa herramienta volverá a estar DISPONIBLE automáticamente.'
+      };
+      
+      if (!confirm(mensajes[nuevoEstado])) {
+        event.target.value = ''; // Resetear el select
+        return;
+      }
+      
+      try {
+        console.log(`🔄 Cambiando estado a: ${nuevoEstado}`);
+        
+        // Usar PUT con el cuerpo completo del mantenimiento
+        const response = await fetch(`http://localhost:8080/mantenimientos/${idMantenimiento}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ estado: nuevoEstado })
+        });
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || 'Error al cambiar estado');
+        }
+        
+        const resultado = await response.json();
+        console.log('✅ Estado actualizado:', resultado);
+        
+        alert(`✅ Estado actualizado a: ${nuevoEstado}\n\n` + 
+              (nuevoEstado === 'COMPLETADO' ? 'La herramienta ahora está DISPONIBLE' : 'Estado actualizado correctamente'));
+        
+        // Recargar la lista de mantenimientos de esta herramienta
+        await verMantenimientosHerramienta(idHerramienta, nombreHerramienta);
+        
+        // Actualizar estadísticas generales
+        await cargarEstadisticas();
+        await cargarPrestamos();
+      } catch (error) {
+        console.error('❌ Error:', error);
+        alert('❌ Error al cambiar estado:\n\n' + error.message);
+        event.target.value = ''; // Resetear el select en caso de error
+      }
+    }
+
+    async function generarInforme() {
       if (!estadisticasCompletas || estadisticasCompletas.length === 0) {
         alert('❌ No hay datos para generar el informe');
         return;
       }
 
       const fecha = new Date().toLocaleDateString('es-CO');
+      const totalPrestamos = estadisticasCompletas.reduce((s, i) => s + (i.totalPrestamos || 0), 0);
+      const totalDanos = estadisticasCompletas.reduce((s, i) => s + (i.totalDanos || 0), 0);
+      const totalMantenimientos = estadisticasCompletas.reduce((s, i) => s + (i.totalMantenimientos || 0), 0);
       
+      // Crear el HTML del reporte
       let html = `
 <!DOCTYPE html>
 <html>
@@ -441,27 +667,113 @@
   <meta charset="UTF-8">
   <title>Informe de Estadísticas - FarmStock</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #fff; color: #000; }
-    h1 { text-align: center; color: #4CAF50; }
-    .fecha { text-align: center; color: #666; margin-bottom: 30px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-    th { background: #4CAF50; color: white; }
-    tr:nth-child(even) { background: #f9f9f9; }
-    .totales { margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 8px; }
-    .totales div { display: inline-block; margin: 10px 20px; }
-    @media print { .btn-print { display: none; } }
+    body { 
+      font-family: 'Arial', sans-serif; 
+      margin: 40px; 
+      background: #fff; 
+      color: #000; 
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 3px solid #4CAF50;
+      padding-bottom: 20px;
+    }
+    h1 { 
+      color: #4CAF50; 
+      margin: 0;
+      font-size: 28px;
+    }
+    .fecha { 
+      color: #666; 
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    .totales { 
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin: 30px 0;
+      padding: 20px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+    .total-item {
+      text-align: center;
+      padding: 15px;
+      background: white;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .total-item .valor {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .total-item.herramientas .valor { color: #4CAF50; }
+    .total-item.prestamos .valor { color: #2196F3; }
+    .total-item.danos .valor { color: #FF9800; }
+    .total-item.mantenimientos .valor { color: #9C27B0; }
+    .total-item .label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+    }
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-top: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    th, td { 
+      border: 1px solid #ddd; 
+      padding: 12px; 
+      text-align: left; 
+    }
+    th { 
+      background: #4CAF50; 
+      color: white;
+      font-weight: bold;
+    }
+    tr:nth-child(even) { 
+      background: #f9f9f9; 
+    }
+    tr:hover {
+      background: #e8f5e9;
+    }
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      border-top: 1px solid #ddd;
+      padding-top: 20px;
+    }
   </style>
 </head>
 <body>
-  <h1>📊 Informe de Estadísticas de Herramientas</h1>
-  <p class="fecha">Fecha de generación: ${fecha}</p>
+  <div class="header">
+    <h1>📊 Informe de Estadísticas de Herramientas</h1>
+    <p class="fecha">Fecha de generación: ${fecha}</p>
+  </div>
   
   <div class="totales">
-    <div><strong>Total Herramientas:</strong> ${estadisticasCompletas.length}</div>
-    <div><strong>Total Préstamos:</strong> ${prestamosData.length}</div>
-    <div><strong>Total Daños:</strong> ${estadisticasCompletas.reduce((s, i) => s + (i.totalDanos || 0), 0)}</div>
-    <div><strong>Total Mantenimientos:</strong> ${estadisticasCompletas.reduce((s, i) => s + (i.totalMantenimientos || 0), 0)}</div>
+    <div class="total-item herramientas">
+      <div class="valor">${estadisticasCompletas.length}</div>
+      <div class="label">Total Herramientas</div>
+    </div>
+    <div class="total-item prestamos">
+      <div class="valor">${totalPrestamos}</div>
+      <div class="label">Total Préstamos</div>
+    </div>
+    <div class="total-item danos">
+      <div class="valor">${totalDanos}</div>
+      <div class="label">Total Daños</div>
+    </div>
+    <div class="total-item mantenimientos">
+      <div class="valor">${totalMantenimientos}</div>
+      <div class="label">Total Mantenimientos</div>
+    </div>
   </div>
   
   <table>
@@ -478,14 +790,13 @@
 `;
 
       estadisticasCompletas.forEach(stat => {
-        const prestamos = prestamosData.filter(p => p.herramienta?.idHerramienta === stat.idHerramienta).length;
         html += `
       <tr>
         <td>${stat.idHerramienta}</td>
-        <td>${stat.nombreHerramienta}</td>
-        <td>${prestamos}</td>
-        <td>${stat.totalDanos || 0}</td>
-        <td>${stat.totalMantenimientos || 0}</td>
+        <td><strong>${stat.nombreHerramienta}</strong></td>
+        <td style="text-align: center;">${stat.totalPrestamos || 0}</td>
+        <td style="text-align: center;">${stat.totalDanos || 0}</td>
+        <td style="text-align: center;">${stat.totalMantenimientos || 0}</td>
       </tr>
 `;
       });
@@ -494,14 +805,38 @@
     </tbody>
   </table>
   
-  <button class="btn-print" onclick="window.print()" style="margin-top: 20px; padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">🖨️ Imprimir</button>
+  <div class="footer">
+    <p>FarmStock - Sistema de Gestión de Herramientas | Generado automáticamente el ${fecha}</p>
+  </div>
 </body>
 </html>
 `;
 
-      const ventana = window.open('', '_blank');
-      ventana.document.write(html);
-      ventana.document.close();
+      // Usar Electron para generar PDF
+      if (typeof window.pdf !== 'undefined') {
+        window.pdf.generar(html, fecha);
+        
+        // Mostrar confirmación cuando se guarde
+        window.pdf.onGenerado((rutaArchivo) => {
+          if (rutaArchivo) {
+            alert(`✅ PDF generado exitosamente en:\n${rutaArchivo}`);
+          } else {
+            alert('❌ Operación cancelada');
+          }
+        });
+      } else {
+        // Fallback: abrir en ventana nueva para imprimir
+        console.warn('API de PDF no disponible, usando método alternativo');
+        const ventana = window.open('', '_blank');
+        ventana.document.write(html);
+        ventana.document.close();
+        
+        ventana.onload = function() {
+          setTimeout(() => {
+            ventana.print();
+          }, 250);
+        };
+      }
     }
 
     // ===== BÚSQUEDA =====
@@ -536,7 +871,6 @@
     window.addEventListener('load', async function() {
       console.log('🚀 Iniciando módulo de estadísticas...');
       await cargarEstadisticas();
-      await cargarPrestamos();
     });
   </script>
 </body>

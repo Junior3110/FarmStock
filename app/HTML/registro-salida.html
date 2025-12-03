@@ -106,6 +106,8 @@
           <li><a href="Notificaciones.html">Notificaciones</a></li>
           <li><a href="estats.html">Estadísticas</a></li>
           <li><a href="registro-aprendices.html">Aprendices</a></li>
+          <li><a href="equipos-computos.html">Equipos de Cómputo</a></li>
+          <li><a href="equipos-movimientos.html">Movimientos Equipos</a></li>
         </ul>
       </div>
 
@@ -191,13 +193,14 @@
             <label for="reg_numdoc">Número documento aprendiz</label>
             <input id="reg_numdoc" type="text" placeholder="Número de documento" />
           </div>
+        </div>
 
-          <div style="flex:1; min-width:160px;">
-            <label>Acción</label>
-            <div style="display:flex; gap:8px;">
-              <button id="btnScan" class="btn-small btn-green" type="button">Scanear</button>
-              <span id="scanStatus" class="status">Listo</span>
-            </div>
+        <div style="margin-top:12px;">
+          <label for="reg_codigo">Código de herramienta</label>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input id="reg_codigo" type="text" placeholder="Escanea o escribe el código..." style="flex:1;" />
+            <button id="btnScan" class="btn-small btn-green" type="button">📷 Scanear</button>
+            <span id="scanStatus" class="status">Esperando código...</span>
           </div>
         </div>
 
@@ -209,7 +212,7 @@
         <input id="scanner_input" type="text" style="position:absolute; left:-10000px; top:auto; width:1px; height:1px; opacity:0;" aria-hidden="true" />
 
         <div style="margin-top:16px; display:flex; justify-content:flex-end; gap:8px;">
-          <button id="btnRegistrarSalidaModal" class="btn-small btn-green">Confirmar (manual)</button>
+          <button id="btnRegistrarSalidaModal" class="btn-small btn-green">✅ Confirmar salida</button>
         </div>
 
         <div id="scanPreview" style="margin-top:12px; font-weight:700; color:var(--muted)"></div>
@@ -221,23 +224,23 @@
   <div id="modal-entrada" class="modal-backdrop" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalEntradaTitle">
       <div style="display:flex; align-items:center; justify-content:space-between;">
-        <h3 id="modalEntradaTitle">Registrar entrada - Escanea herramienta</h3>
+        <h3 id="modalEntradaTitle">Registrar entrada - Devolución de herramienta</h3>
         <button id="closeEntrada" class="btn-small btn-outline">Cerrar</button>
       </div>
 
       <div style="margin-top:12px;">
-        <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
-          <div style="flex:1; min-width:160px;">
-            <label>Acción</label>
-            <button id="btnScanEntrada" class="btn-small btn-green" style="width:100%">Escanear código</button>
-          </div>
-          <div style="flex:1;">
-            <span id="scanStatusEntrada" class="status">Listo</span>
-          </div>
+        <div>
+          <label for="entrada_codigo">Código de herramienta</label>
+          <input id="entrada_codigo" type="text" placeholder="Escanea o escribe el código..." style="width:100%; padding:9px 10px; border-radius:10px; border:1px solid var(--card-border); background: color-mix(in srgb,var(--surface) 96%, transparent 4%); color:var(--text);" />
+          <small style="color:var(--muted); font-size:12px; margin-top:6px; display:block;">Ingresa el código único de la herramienta a devolver</small>
         </div>
 
         <!-- hidden scanner input for entrada -->
         <input id="scanner_input_entrada" type="text" style="position:absolute; left:-10000px; top:auto; width:1px; height:1px; opacity:0;" aria-hidden="true" />
+
+        <div style="margin-top:16px; display:flex; justify-content:flex-end; gap:8px;">
+          <button id="btnRegistrarEntrada" class="btn-small btn-green">✅ Registrar entrada</button>
+        </div>
 
         <div id="scanPreviewEntrada" style="margin-top:12px; font-weight:700; color:var(--muted)"></div>
       </div>
@@ -261,6 +264,7 @@
       const modal = document.getElementById('modal-registrar');
       const closeRegistrar = document.getElementById('closeRegistrar');
       const scannerInput = document.getElementById('scanner_input');
+      const regCodigo = document.getElementById('reg_codigo');
       const btnScan = document.getElementById('btnScan');
       const scanStatus = document.getElementById('scanStatus');
       const scanPreview = document.getElementById('scanPreview');
@@ -447,6 +451,7 @@
         modal.setAttribute('aria-hidden','true');
         stopWaitingScan();
         regNumdoc.value = '';
+        regCodigo.value = '';
         regTipo.value = 'CC';
         scanPreview.textContent = '';
       }
@@ -471,19 +476,18 @@
           scanPreview.innerHTML = `<span style="color:var(--muted)">Aprendiz no encontrado en registros locales (número ${escapeHtml(doc)})</span>`;
         }
       });
-
       // SCAN logic: keyboard-emulating QR readers -> we focus hidden input and wait for "Enter"
       let waitingScan = false;
       function startWaitingScan() {
         waitingScan = true;
-        scanStatus.textContent = 'Esperando escaneo...';
+        scanStatus.textContent = '🔄 Esperando escaneo...';
         scanStatus.style.color = '#ffd54f';
         scannerInput.value = '';
         scannerInput.focus();
       }
       function stopWaitingScan() {
         waitingScan = false;
-        scanStatus.textContent = 'Listo';
+        scanStatus.textContent = 'Esperando código...';
         scanStatus.style.color = '';
         scannerInput.blur();
         scannerInput.value = '';
@@ -493,13 +497,17 @@
         startWaitingScan();
       });
 
+      // Actualizar estado cuando el usuario escribe manualmente
       // Handle incoming scanner input (many QR readers send the code then an Enter)
       scannerInput.addEventListener('keydown', function (ev) {
         if (!waitingScan) return;
         if (ev.key === 'Enter') {
           ev.preventDefault();
           const scanned = scannerInput.value.trim();
-          if (scanned) handleScannedCode(scanned);
+          if (scanned) {
+            regCodigo.value = scanned; // Llenar el campo visible
+            handleScannedCode(scanned);
+          }
         }
       });
 
@@ -511,7 +519,10 @@
         // if includes newline or long enough, attempt to process
         if (v.includes('\n') || v.includes('\r') || v.length > 20) {
           const cleaned = v.replace(/[\r\n]+/g,'').trim();
-          if (cleaned) handleScannedCode(cleaned);
+          if (cleaned) {
+            regCodigo.value = cleaned; // Llenar el campo visible
+            handleScannedCode(cleaned);
+          }
         }
       });
 
@@ -615,6 +626,23 @@
           
           prestamoExitoso = false;
           
+          // Verificar si es un error de herramienta ya prestada
+          const errorMsg = error.message || '';
+          if (errorMsg.includes('ya tiene un préstamo activo') || 
+              errorMsg.includes('no está disponible') ||
+              errorMsg.includes('Prestamo') ||
+              errorMsg.includes('prestamo activo')) {
+            alert('⚠️ HERRAMIENTA NO DISPONIBLE\n\n' +
+                  'La herramienta con código ' + code + ' ya tiene un préstamo activo.\n\n' +
+                  'Detalles del error:\n' + errorMsg + '\n\n' +
+                  'Acciones sugeridas:\n' +
+                  '• Verifica el código ingresado\n' +
+                  '• Registra primero la devolución de esta herramienta\n' +
+                  '• Consulta el historial de préstamos activos');
+            closeModal();
+            return; // No continuar con el proceso
+          }
+          
           // Intentar buscar en localStorage como fallback
           const tools = loadLS(LS_TOOLS);
           let foundTool = tools.find(t => String(t.idHerramienta) === String(code));
@@ -682,14 +710,20 @@
       // Also allow manual confirmation without scanning (useful for testing)
       btnConfirmManual.addEventListener('click', async function () {
         const cc = regNumdoc.value.trim();
+        const codigo = regCodigo.value.trim();
         const tipo = regTipo.value;
-        if (!cc) { alert('Introduce número de documento del aprendiz.'); return; }
-        const apr = lookupAprendizByDoc(cc);
-        const ficha = apr ? (apr.numero_ficha || '') : '';
-        // Let user type tool id in a prompt (manual)
-        const toolId = prompt('Introduce ID de herramienta o código leído (manual) para registrar salida:');
-        if (!toolId) return;
-        await handleScannedCode(toolId.trim());
+        
+        if (!cc) { 
+          alert('❌ Introduce número de documento del aprendiz.'); 
+          return; 
+        }
+        
+        if (!codigo) {
+          alert('❌ Introduce el código de la herramienta (escaneado o manual).');
+          return;
+        }
+        
+        await handleScannedCode(codigo);
       });
 
       // Export CSV for historial
@@ -708,20 +742,25 @@
       // ============ LÓGICA MODAL DE ENTRADA (DEVOLUCIÓN) ============
       const modalEntrada = document.getElementById('modal-entrada');
       const closeEntrada = document.getElementById('closeEntrada');
+      const entradaCodigo = document.getElementById('entrada_codigo');
       const scannerInputEntrada = document.getElementById('scanner_input_entrada');
-      const btnScanEntrada = document.getElementById('btnScanEntrada');
-      const scanStatusEntrada = document.getElementById('scanStatusEntrada');
+      const btnRegistrarEntrada = document.getElementById('btnRegistrarEntrada');
       const scanPreviewEntrada = document.getElementById('scanPreviewEntrada');
 
-      let codigoParaDevolver = null;
       let waitingScanEntrada = false;
 
       // Abrir modal de entrada
-      function openModalEntrada(codigo) {
-        codigoParaDevolver = codigo;
+      function openModalEntrada(codigo = '') {
         modalEntrada.classList.add('open');
         modalEntrada.setAttribute('aria-hidden', 'false');
-        scanPreviewEntrada.textContent = `Preparando para registrar devolución del código: ${codigo}`;
+        if (codigo) {
+          entradaCodigo.value = codigo;
+          scanPreviewEntrada.textContent = `Código cargado: ${codigo}`;
+        } else {
+          entradaCodigo.value = '';
+          scanPreviewEntrada.textContent = '';
+        }
+        entradaCodigo.focus();
       }
 
       // Cerrar modal de entrada
@@ -729,7 +768,7 @@
         modalEntrada.classList.remove('open');
         modalEntrada.setAttribute('aria-hidden', 'true');
         stopWaitingScanEntrada();
-        codigoParaDevolver = null;
+        entradaCodigo.value = '';
         scanPreviewEntrada.textContent = '';
       }
 
@@ -738,55 +777,68 @@
         if (ev.target === modalEntrada) closeModalEntrada();
       });
 
-      // Escanear código para entrada
+      // Escanear código para entrada (mantener funcionalidad de escáner oculto)
       function startWaitingScanEntrada() {
         waitingScanEntrada = true;
-        scanStatusEntrada.textContent = 'Esperando escaneo...';
-        scanStatusEntrada.style.color = '#ffd54f';
         scannerInputEntrada.value = '';
         scannerInputEntrada.focus();
         console.log('🎯 Escáner de entrada activado. Esperando código QR...');
-        console.log('🎯 Código esperado:', codigoParaDevolver);
       }
 
       function stopWaitingScanEntrada() {
         waitingScanEntrada = false;
-        scanStatusEntrada.textContent = 'Listo';
-        scanStatusEntrada.style.color = '';
         scannerInputEntrada.blur();
         scannerInputEntrada.value = '';
         console.log('🛑 Escáner de entrada desactivado');
       }
 
-      btnScanEntrada.addEventListener('click', function() {
-        console.log('🖱️ Botón "Escanear código" clickeado');
-        startWaitingScanEntrada();
-      });
-
-      // Manejar escaneo de entrada
+      // Manejar escaneo de entrada (escáner oculto para pistolas USB)
       scannerInputEntrada.addEventListener('keydown', function(ev) {
-        console.log('🔑 Tecla presionada en entrada:', ev.key, 'Valor actual:', scannerInputEntrada.value);
-        if (!waitingScanEntrada) {
-          console.warn('⚠️ No estamos esperando escaneo (waitingScanEntrada=false)');
-          return;
-        }
+        if (!waitingScanEntrada) return;
         if (ev.key === 'Enter') {
           ev.preventDefault();
           const scanned = scannerInputEntrada.value.trim();
           console.log('✅ Enter detectado. Código escaneado:', scanned);
-          if (scanned) handleScannedEntrada(scanned);
+          if (scanned) {
+            entradaCodigo.value = scanned; // Llenar el campo visible
+            scanPreviewEntrada.textContent = `Código escaneado: ${scanned}`;
+          }
         }
       });
 
       scannerInputEntrada.addEventListener('input', function() {
         const v = scannerInputEntrada.value;
-        console.log('📝 Input cambió en entrada. Valor:', v, 'Longitud:', v.length);
         if (!waitingScanEntrada) return;
         if (v.includes('\n') || v.includes('\r') || v.length > 20) {
           const cleaned = v.replace(/[\r\n]+/g, '').trim();
           console.log('✅ Código detectado por longitud/newline:', cleaned);
-          if (cleaned) handleScannedEntrada(cleaned);
+          if (cleaned) {
+            entradaCodigo.value = cleaned; // Llenar el campo visible
+            scanPreviewEntrada.textContent = `Código escaneado: ${cleaned}`;
+          }
         }
+      });
+
+      // Actualizar preview cuando el usuario escribe manualmente
+      entradaCodigo.addEventListener('input', function() {
+        const codigo = entradaCodigo.value.trim();
+        if (codigo) {
+          scanPreviewEntrada.textContent = `Código: ${codigo}`;
+        } else {
+          scanPreviewEntrada.textContent = '';
+        }
+      });
+
+      // Registrar entrada al hacer clic en el botón
+      btnRegistrarEntrada.addEventListener('click', async function() {
+        const codigo = entradaCodigo.value.trim();
+        
+        if (!codigo) {
+          alert('❌ Por favor, ingresa o escanea el código de la herramienta.');
+          return;
+        }
+        
+        await handleScannedEntrada(codigo);
       });
 
       // Procesar código escaneado para entrada
@@ -795,29 +847,17 @@
         
         // Normalizar código: limpiar espacios y normalizar formato
         const codigoLimpio = code.trim().replace(/\s+/g, '');
-        const codigoNormalizado = codigoLimpio.replace(/\//g, '-');
+        const codigoNormalizado = codigoLimpio.replace(/\//g, '-');s
         
-        scanPreviewEntrada.textContent = 'Código leído: ' + codigoLimpio;
+        scanPreviewEntrada.textContent = 'Procesando código: ' + codigoLimpio;
         
-        console.log('🔍 Código escaneado:', codigoLimpio);
+        console.log('🔍 Código a devolver:', codigoLimpio);
         console.log('🔍 Código normalizado:', codigoNormalizado);
-        console.log('🔍 Código esperado:', codigoParaDevolver);
-        
-        // Comparar ambos códigos normalizados
-        const codigoEsperadoNormalizado = codigoParaDevolver ? codigoParaDevolver.replace(/\//g, '-') : '';
-        
-        if (codigoNormalizado !== codigoEsperadoNormalizado) {
-          const confirmar = confirm(
-            '⚠️ ADVERTENCIA: El código escaneado no coincide exactamente\n\n' +
-            'Código escaneado: ' + codigoLimpio + '\n' +
-            'Código esperado: ' + codigoParaDevolver + '\n\n' +
-            '¿Deseas intentar registrar la devolución de todas formas?'
-          );
-          if (!confirmar) return;
-        }
 
         try {
           // Llamar al endpoint de devolución con el código normalizado
+          console.log('📤 Enviando devolución para código:', codigoNormalizado);
+          
           const response = await fetch(`http://localhost:8080/prestamos/devolver/codigo/${encodeURIComponent(codigoNormalizado)}`, {
             method: 'PUT',
             headers: {
@@ -827,6 +867,8 @@
 
           if (response.ok) {
             const prestamoActualizado = await response.json();
+            console.log('✅ Devolución exitosa:', prestamoActualizado);
+            
             alert('✅ ¡DEVOLUCIÓN REGISTRADA EXITOSAMENTE!\n\n' +
                   'Herramienta: ' + (prestamoActualizado.herramienta?.nombre || 'N/A') + '\n' +
                   'Código: ' + codigoNormalizado + '\n' +
@@ -837,15 +879,16 @@
             renderHist(); // Recargar tabla
           } else {
             const error = await response.text();
+            console.error('❌ Error del servidor:', error);
             throw new Error(error || 'Error al registrar devolución');
           }
         } catch (error) {
-          console.error('Error al registrar entrada:', error);
+          console.error('❌ Error al registrar entrada:', error);
           alert('❌ ERROR AL REGISTRAR DEVOLUCIÓN\n\n' + error.message + '\n\n' +
                 'Verifica:\n' +
                 '• Backend corriendo en localhost:8080\n' +
                 '• El préstamo existe y está activo\n' +
-                '• El código es correcto');
+                '• El código es correcto: ' + codigoNormalizado);
         }
       }
 

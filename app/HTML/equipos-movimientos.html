@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FarmStock - Movimientos de Equipos</title>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const saved = localStorage.getItem('fs_dark_mode');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const shouldBeDark = saved === null ? prefersDark : saved === 'true';
+      if (shouldBeDark) {
+        document.documentElement.classList.add('dark-mode');
+        document.body.classList.add('dark-mode');
+      }
+      var nightModeBtn = document.querySelector('.night-mode');
+      if (nightModeBtn) {
+        nightModeBtn.onclick = function() {
+          const isDark = document.documentElement.classList.toggle('dark-mode');
+          document.body.classList.toggle('dark-mode', isDark);
+          localStorage.setItem('fs_dark_mode', isDark);
+        };
+      }
+    });
+  </script>
+
+  <link rel="stylesheet" href="../CSS/index.css" />
+  <script src="../render-window.js"></script>
+  <style>
+    .content-box.registro { padding: 18px; border-radius: 14px; }
+    .registro-header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
+    .registro-header h2 { margin:0; font-weight:900; color:var(--text); }
+    .grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px; }
+    .grid label { font-weight:700; font-size:13px; color:var(--muted); margin-bottom:6px; display:block; }
+    .grid input, .grid textarea { padding:9px 10px; border-radius:10px; border:1px solid var(--card-border); background: color-mix(in srgb,var(--surface) 96%, transparent 4%); color:var(--text); }
+    .controls { display:flex; gap:8px; margin-top:12px; }
+    .btn { padding:10px 12px; border-radius:10px; border:none; cursor:pointer; font-weight:800; }
+    .btn-green { background: linear-gradient(180deg,#7bd07a,#3fa34a); color:#fff; }
+    .btn-outline { background: color-mix(in srgb,var(--surface) 96%, transparent 4%); border:1px solid var(--card-border); color:var(--text); }
+    .tabla { width:100%; border-collapse:collapse; margin-top:14px; }
+    .tabla thead th { text-align:left; padding:10px; color:var(--muted); font-weight:800; }
+    .tabla tbody td { padding:10px; border-top:1px solid rgba(255,255,255,0.06); color:var(--text); }
+    .status { margin-left:8px; font-weight:700; color:var(--muted); font-size:13px; }
+    @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+
+<body>
+  <div class="window-controls">
+    <button id="minimize" title="Minimizar" type="button">─</button>
+    <button id="maximize" title="Maximizar" type="button">▢</button>
+    <button id="close" title="Cerrar" type="button">✕</button>
+  </div>
+
+  <div class="container">
+    <aside class="sidebar">
+      <div class="top-section">
+        <div class="logo"><img src="../imagenes/Logo.png" alt="Logo del sitio" /></div>
+        <ul class="menu-modulos">
+          <li><a href="index.html">Registro Herramientas</a></li>
+          <li><a href="registro-salida.html">Salida Herramientas</a></li>
+          <li><a href="indexInventario.html">Inventario</a></li>
+          <li><a href="Notificaciones.html">Notificaciones</a></li>
+          <li><a href="estats.html">Estadísticas</a></li>
+          <li><a href="registro-aprendices.html">Aprendices</a></li>
+          <li><a href="equipos-computos.html">Equipos de Cómputo</a></li>
+          <li><a href="equipos-movimientos.html" class="active">Movimientos Equipos</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-bottom">
+        <a href="quienes-somos.html" class="somos">👥 Quiénes Somos</a>
+        <div class="night-mode"><span>🌙 Modo noche</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="bienvenida">
+        <a href="perfil.html" class="profile">Mi perfil</a>
+        <h1>Movimientos de Equipos</h1>
+        <p class="sub">Registrar salidas y entradas, ver historial</p>
+      </div>
+
+      <section class="content-box registro">
+        <div class="registro-header">
+          <h2>Registrar movimiento</h2>
+          <div class="status" id="statusMsg"></div>
+        </div>
+        <form id="frmMovimiento">
+          <div class="grid">
+            <div>
+              <label>Código Equipo</label>
+              <input type="text" id="codigo_equipo" required />
+            </div>
+            <div>
+              <label>Cédula</label>
+              <input type="text" id="cedula_usuario" required />
+            </div>
+            <div style="grid-column: 1 / -1;">
+              <label>Observación (opcional)</label>
+              <textarea id="observacion" rows="2"></textarea>
+            </div>
+          </div>
+          <div class="controls">
+            <button type="button" class="btn btn-green" id="btnSalida">Registrar SALIDA</button>
+            <button type="button" class="btn btn-outline" id="btnEntrada">Registrar ENTRADA</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="content-box registro" style="margin-top:32px; width:100%; max-width:var(--max-width-main); margin-left:auto; margin-right:auto; border-radius:14px; box-shadow:0 6px 18px rgba(16,34,31,0.06); border:1px solid var(--card-border); background:var(--surface);">   
+          
+        <div class="registro-header">
+          <h2>Historial de movimientos</h2>
+          <div class="filtros">
+            <input id="fCodigo" placeholder="Código del equipo" />
+            <button class="btn btn-outline" id="btnVerHistorial">Ver historial</button>
+            <button class="btn btn-outline" id="btnVerTodos">Todos los movimientos</button>
+            <button class="btn btn-outline" id="btnVerSalidas">Solo salidas</button>
+            <button class="btn btn-outline" id="btnVerEntradas">Solo entradas</button>
+          </div>
+        </div>
+        <div class="table-responsive" style="border-radius:10px;margin-top:14px;width:100%;overflow-x:auto;background:transparent;">
+          <table class="reg-table sticky-header-table">
+            <thead>
+              <tr>
+                <th>ID</th><th>Código</th><th>Tipo</th><th>Fecha</th><th>Registrado por</th><th>Observación</th>
+              </tr>
+            </thead>
+            <tbody id="tblMovs"></tbody>
+          </table>
+        </div>
+        <div id="no-movs-msg" style="display:none;text-align:center;color:var(--muted);padding:24px 0;font-size:1.1em;"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Configuración de API
+    const API_BASE = 'http://localhost:8080';
+    const EQUIPOS_URL = API_BASE + '/equipos-computos';
+
+    // Helper para formatear fechas de forma consistente
+    function pad(n) { return n.toString().padStart(2, '0'); }
+    function formatDate(fecha) {
+      if (!fecha) return '';
+      // Intentamos parsear como fecha ISO
+      const d = new Date(fecha);
+      if (!isNaN(d.getTime())) {
+        return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+      }
+      // fallback: remplazar 'T' por espacio y truncar
+      if (typeof fecha === 'string') return fecha.replace('T', ' ').substring(0, 19);
+      return String(fecha);
+    }
+
+    // Renderiza movimientos dentro del TBODY y muestra mensaje cuando no hay datos
+    function renderMovs(movs) {
+      const tbody = document.getElementById('tblMovs');
+      const msgDiv = document.getElementById('no-movs-msg');
+      if (!Array.isArray(movs) || movs.length === 0) {
+        tbody.style.display = 'none';
+        msgDiv.textContent = 'No hay movimientos registrados.';
+        msgDiv.style.display = 'block';
+        return;
+      }
+      msgDiv.style.display = 'none';
+      tbody.style.display = '';
+      tbody.innerHTML = '';
+      movs.forEach(mov => {
+        // Usar solo los nombres exactos del DTO
+        const id = mov.idMovimiento || '';
+        const codigo = mov.codigoEquipo || '';
+        const tipo = mov.tipoMovimiento || '';
+        const fecha = mov.fechaMovimiento || '';
+        const fechaStr = typeof fecha === 'string' ? fecha.replace('T', ' ').substring(0, 19) : fecha;
+        const cedula = mov.cedulaUsuario || '';
+        const nombre = mov.nombreUsuario || '';
+        const registradoPor = cedula ? `${cedula}${nombre ? ' - ' + nombre : ''}` : '';
+        const observacion = mov.observacion || '';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${id}</td>
+          <td>${codigo}</td>
+          <td>${tipo}</td>
+          <td>${fechaStr || ''}</td>
+          <td>${registradoPor}</td>
+          <td>${observacion}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+      
+    // Funciones para consultar el backend
+    async function cargarHistorial(codigoEquipo) {
+      if (!codigoEquipo) {
+        // Si no hay código, mostramos mensaje vacío (como segunda imagen)
+        renderMovs([]);
+        return;
+      }
+      try {
+        const res = await fetch(`${EQUIPOS_URL}/historial/${encodeURIComponent(codigoEquipo)}`);
+        const movs = await res.json().catch(() => []);
+        renderMovs(movs);
+      } catch (err) {
+        console.error('Error al cargar historial:', err);
+        renderMovs([]);
+      }
+    }
+
+    async function cargarTodos() {
+      try {
+        const res = await fetch(`${EQUIPOS_URL}/movimientos`);
+        const movs = await res.json().catch(() => []);
+        renderMovs(movs);
+      } catch (err) {
+        console.error('Error al cargar todos:', err);
+        renderMovs([]);
+      }
+    }
+
+    async function cargarSalidas() {
+      try {
+        const res = await fetch(`${EQUIPOS_URL}/movimientos/salidas`);
+        const movs = await res.json().catch(() => []);
+        renderMovs(movs);
+      } catch (err) {
+        console.error('Error al cargar salidas:', err);
+        renderMovs([]);
+      }
+    }
+
+    async function cargarEntradas() {
+      try {
+        const res = await fetch(`${EQUIPOS_URL}/movimientos/entradas`);
+        const movs = await res.json().catch(() => []);
+        renderMovs(movs);
+      } catch (err) {
+        console.error('Error al cargar entradas:', err);
+        renderMovs([]);
+      }
+    }
+
+    // POST para registrar movimientos (salida/entrada)
+    async function postMovimiento(tipo) {
+      const codigoEquipo = document.getElementById('codigo_equipo').value.trim();
+      const cedulaUsuario = document.getElementById('cedula_usuario').value.trim();
+      const observacion = document.getElementById('observacion').value.trim();
+      if (!codigoEquipo) return alert('❌ Código requerido');
+      if (!cedulaUsuario) return alert('❌ Cédula requerida');
+      try {
+        const res = await fetch(`${EQUIPOS_URL}/${tipo}?codigoEquipo=${encodeURIComponent(codigoEquipo)}&idUsuario=${encodeURIComponent(cedulaUsuario)}&observacion=${encodeURIComponent(observacion)}`, {
+          method: 'POST'
+        });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(typeof body === 'string' ? body : 'Error en movimiento');
+        document.getElementById('statusMsg').textContent = `✅ ${tipo.toUpperCase()} registrada`;
+        // Limpiar campos del formulario
+        document.getElementById('codigo_equipo').value = '';
+        document.getElementById('cedula_usuario').value = '';
+        document.getElementById('observacion').value = '';
+        // recargamos historial para mostrar el cambio inmediato
+        cargarHistorial(codigoEquipo);
+      } catch (err) {
+        console.error(err);
+        alert('Error al registrar movimiento. Revisa la consola.');
+      }
+    }
+
+    // Asignar eventos a botones
+    document.addEventListener('DOMContentLoaded', function() {
+      const btnVerHistorial = document.getElementById('btnVerHistorial');
+      const btnVerTodos = document.getElementById('btnVerTodos');
+      const btnVerSalidas = document.getElementById('btnVerSalidas');
+      const btnVerEntradas = document.getElementById('btnVerEntradas');
+      const btnSalida = document.getElementById('btnSalida');
+      const btnEntrada = document.getElementById('btnEntrada');
+
+      if (btnVerHistorial) {
+        btnVerHistorial.onclick = function() {
+          const codigo = document.getElementById('fCodigo').value.trim();
+          cargarHistorial(codigo);
+        };
+      }
+      if (btnVerTodos) btnVerTodos.onclick = cargarTodos;
+      if (btnVerSalidas) btnVerSalidas.onclick = cargarSalidas;
+      if (btnVerEntradas) btnVerEntradas.onclick = cargarEntradas;
+      if (btnSalida) btnSalida.onclick = function() { postMovimiento('salida'); };
+      if (btnEntrada) btnEntrada.onclick = function() { postMovimiento('entrada'); };
+
+      // Cargar todos al inicio
+      cargarTodos();
+    });
+  </script>
+</body>
+</html>

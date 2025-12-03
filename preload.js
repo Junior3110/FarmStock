@@ -14,3 +14,9 @@ contextBridge.exposeInMainWorld("navegacion", {
     irAInventario: () => ipcRenderer.send("ir-a-inventario"),
     irAEstadisticas: () => ipcRenderer.send("ir-a-estats"),
 });
+
+// 🔹 Generación de PDF
+contextBridge.exposeInMainWorld("pdf", {
+    generar: (html, fecha) => ipcRenderer.send("generar-pdf", { html, fecha }),
+    onGenerado: (callback) => ipcRenderer.once("pdf-generado", (event, rutaArchivo) => callback(rutaArchivo))
+});
