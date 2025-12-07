@@ -104,14 +104,14 @@
       <div class="top-section">
         <div class="logo"><img src="../imagenes/Logo.png" alt="Logo del sitio" /></div>
         <ul class="menu-modulos">
-          <li><a href="index.html" class="active">Registro Herramientas</a></li>
-          <li><a href="registro-salida.html">Salida Herramientas</a></li>
-          <li><a href="indexInventario.html">Inventario</a></li>
-          <li><a href="Notificaciones.html">Notificaciones</a></li>
-          <li><a href="estats.html">Estadísticas</a></li>
-          <li><a href="registro-aprendices.html">Aprendices</a></li>
-                    <li><a href="equipos-computos.html">Equipos de Cómputo</a></li>
-                    <li><a href="equipos-movimientos.html">Movimientos Equipos</a></li>
+            <li><a href="index.html" class="active">Registro Herramientas</a></li>
+            <li><a href="registro-salida.html">Salida Herramientas</a></li>
+            <li><a href="indexInventario.html">Inventario</a></li>
+            <li><a href="Notificaciones.html">Notificaciones</a></li>
+            <li><a href="estats.html">Estadísticas</a></li>
+            <li><a href="registro-aprendices.html">Aprendices</a></li>
+            <li><a href="equipos-computos.html">Equipos de Cómputo</a></li>
+            <li><a href="equipos-movimientos.html">Movimientos Equipos</a></li>
         </ul>
       </div>
       <div class="sidebar-bottom">
@@ -176,17 +176,19 @@
             </div>
 
             <div class="columna descripcion">
+              <label for="codigoInforme">Código informe</label>
+              <input type="text" id="codigoInforme" name="codigoInforme" placeholder="Ejemplo: INF-2025-001" required>
               <label for="descripcion">Descripción de herramienta</label>
               <textarea id="descripcion" name="descripcion" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
-              <div class="boton-registrar">
-                <button type="submit" id="btnRegistrar" class="btn btn-success">Registrar</button>
+              <div class="boton-registrar" style="display:flex;justify-content:flex-end;align-items:flex-end;margin-top:24px;">
+                  <button type="submit" id="btnRegistrar" class="btn btn-success">Registrar</button>
               </div>
             </div>
           </form>
         </div>
       </div>
 
-      <!-- Herramientas registradas -->
+      <!-- Herramientas registradas y buscador por código informe -->
       <div class="area-inferior">
         <div class="herramientas-hoy">
           <h3>Herramientas registradas hoy</h3>
@@ -195,7 +197,7 @@
         </div>
       </div>
     </main>
-  </div>
+  </div>    
 
   <!-- Modal backdrop -->
   <div id="modalBackdrop" class="modal-backdrop" aria-hidden="true">
@@ -233,707 +235,457 @@
     document.getElementById('close').addEventListener('click', () => sendWindowIPC('window-close'));
   </script>
 
-  <!-- Principal: usa la versión consolidada (offline + backend) -->
+  <!-- Lógica PRINCIPAL SOLO ONLINE -->
   <script>
-    (function() {
-      var API_BASE = 'http://localhost:8080';
-      var HERR_URL = API_BASE + '/herramienta';
-      var DETALLE_URL_BASE = API_BASE + '/api/herramienta-detalle';
+(function() {
+  var API_BASE = 'http://localhost:8080';
+  var HERR_URL = API_BASE + '/herramienta';
+  var DETALLE_URL_BASE = API_BASE + '/api/herramienta-detalle';
 
-      console.log('🔧 API configurada:', {
-        base: API_BASE,
-        herramientas: HERR_URL,
-        detalles: DETALLE_URL_BASE
+  var form = document.getElementById('formHerramienta');
+  var listaHoy = document.getElementById('listaHoy');
+  var modalBackdrop = document.getElementById('modalBackdrop');
+  var modalContent = document.getElementById('modalContent');
+  var modalTitle = document.getElementById('modalTitle');
+  var closeModalBtn = document.getElementById('closeModal');
+  var fechaInput = document.getElementById('fecha_registro');
+  var errorMsg = document.getElementById('errorMsg');
+
+  function showError(msg) {
+      if (errorMsg) {
+          errorMsg.textContent = msg;
+          errorMsg.style.display = 'block';
+      }
+  }
+  function hideError() {
+      if (errorMsg) {
+          errorMsg.textContent = '';
+          errorMsg.style.display = 'none';
+      }
+  }
+  function escapeHtml(str) {
+      return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function nowIsoDate() {
+      return new Date().toISOString().split('T')[0];
+  }
+  function readErrorMessage(res) {
+      return res.text().then(function(text) {
+          try {
+              var json = JSON.parse(text);
+              if (json && json.message) return json.message;
+              if (json && json.error) return (json.error + (json.message ? ': ' + json.message : ''));
+          } catch (e) {}
+          return text || ('Error ' + res.status);
       });
+  }
 
-      // Elementos UI
-      var form = document.getElementById('formHerramienta');
-      var listaHoy = document.getElementById('listaHoy');
-      var modalBackdrop = document.getElementById('modalBackdrop');
-      var modalContent = document.getElementById('modalContent');
-      var modalTitle = document.getElementById('modalTitle');
-      var closeModalBtn = document.getElementById('closeModal');
-      var fechaInput = document.getElementById('fecha_registro');
-      var errorMsg = document.getElementById('errorMsg');
-
-      // Helpers ---------------------------------------------------------
-      function showError(msg) {
-          if (errorMsg) {
-              errorMsg.textContent = msg;
-              errorMsg.style.display = 'block';
-          }
+  function renderToolsListFromArray(herramientas) {
+      listaHoy.innerHTML = '';
+      if (!Array.isArray(herramientas) || herramientas.length === 0) {
+          listaHoy.innerHTML = '<p>No hay registros para hoy.</p>';
+          return;
       }
+      herramientas.forEach(function(h) {
+          var id = h.idHerramienta || h.id || h.id_herramienta || '';
+          var nombre = h.nombre || 'Sin nombre';
+          var estado = h.estado || '—';
+          var tipo = h.tipo || '—';
+          var ubicacion = h.ubicacion || '—';
+          var fecha = h.fechaRegistro || h.fecha_registro || h.fecha || '—';
+          var lote = h.numeroLote || h.numero_lote || h.lote || '—';
+          var cantidad = (h.cantidad != null) ? h.cantidad : 0;
+          var descripcion = h.descripcion || 'Sin descripción';
+          var codigoInforme = h.codigoInforme || h.codigo_informe || '';
 
-      function hideError() {
-          if (errorMsg) {
-              errorMsg.textContent = '';
-              errorMsg.style.display = 'none';
-          }
-      }
+          var card = document.createElement('div');
+          card.className = 'tarjeta';
+          var inner = '<h4>🛠 ' + escapeHtml(nombre) + '</h4>' +
+              '<p><strong>Estado:</strong> ' + escapeHtml(estado) + '</p>' +
+              '<p><strong>Tipo:</strong> ' + escapeHtml(tipo) + '</p>' +
+              '<p><strong>Ubicación:</strong> ' + escapeHtml(ubicacion) + '</p>' +
+              '<p><strong>Fecha registro:</strong> ' + escapeHtml(String(fecha)) + '</p>' +
+              '<p><strong>Lote:</strong> ' + escapeHtml(lote) + '</p>' +
+              '<p><strong>Cantidad:</strong> ' + escapeHtml(String(cantidad)) + '</p>' +
+              '<p><strong>Descripción:</strong> ' + escapeHtml(descripcion) + '</p>' +
+              '<p><strong>Código informe:</strong> ' + escapeHtml(codigoInforme) + '</p>';
 
-      function escapeHtml(str) {
-          return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-      }
+          card.innerHTML = inner;
 
-      function nowIsoDate() {
-          return new Date().toISOString().split('T')[0];
-      }
+          var acciones = document.createElement('div');
+          acciones.className = 'acciones';
+          var btnEdit = document.createElement('button');
+          btnEdit.type = 'button';
+          btnEdit.className = 'btn-small';
+          btnEdit.textContent = 'Editar';
+          btnEdit.addEventListener('click', function() { openEditLoteModal(id); });
 
-      function readErrorMessage(res) {
-          return res.text().then(function(text) {
-              try {
-                  var json = JSON.parse(text);
-                  if (json && json.message) return json.message;
-                  if (json && json.error) return (json.error + (json.message ? ': ' + json.message : ''));
-              } catch (e) {}
-              return text || ('Error ' + res.status);
+          var btnDelete = document.createElement('button');
+          btnDelete.type = 'button';
+          btnDelete.className = 'btn-small delete';
+          btnDelete.textContent = 'Eliminar';
+          btnDelete.addEventListener('click', function() { eliminarLote(id); });
+
+          var btnDetails = document.createElement('button');
+          btnDetails.type = 'button';
+          btnDetails.className = 'btn-small';
+          btnDetails.textContent = 'Detalles';
+          btnDetails.addEventListener('click', function() {
+              openDetallesModal(id, nombre);
           });
-      }
 
-      // UI rendering ---------------------------------------------------
-      function renderToolsListFromArray(herramientas) {
-          listaHoy.innerHTML = '';
-          if (!Array.isArray(herramientas) || herramientas.length === 0) {
-              listaHoy.innerHTML = '<p>No hay registros para hoy.</p>';
-              return;
+          acciones.appendChild(btnEdit);
+          acciones.appendChild(btnDetails);
+          acciones.appendChild(btnDelete);
+
+          card.appendChild(acciones);
+
+          listaHoy.appendChild(card);
+      });
+  }
+
+  function obtenerHerramientasHoy() {
+      hideError();
+      listaHoy.innerHTML = '<p>⏳ Cargando...</p>';
+      fetch(HERR_URL + '/hoy', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+      })
+      .then(function(res) {
+          if (!res.ok) {
+              return readErrorMessage(res).then(function(msg) {
+                  throw new Error(msg);
+              });
           }
-
-          herramientas.forEach(function(h) {
-              var id = h.idHerramienta || h.id || h.id_herramienta || '';
-              var nombre = h.nombre || 'Sin nombre';
-              var estado = h.estado || '—';
-              var tipo = h.tipo || '—';
-              var ubicacion = h.ubicacion || '—';
-              var fecha = h.fechaRegistro || h.fecha_registro || h.fecha || '—';
-              var lote = h.numeroLote || h.numero_lote || h.lote || '—';
-              var cantidad = (h.cantidad != null) ? h.cantidad : 0;
-              var descripcion = h.descripcion || 'Sin descripción';
-
-              var card = document.createElement('div');
-              card.className = 'tarjeta';
-
-              var inner = '<h4>🛠 ' + escapeHtml(nombre) + '</h4>' +
-                  '<p><strong>Estado:</strong> ' + escapeHtml(estado) + '</p>' +
-                  '<p><strong>Tipo:</strong> ' + escapeHtml(tipo) + '</p>' +
-                  '<p><strong>Ubicación:</strong> ' + escapeHtml(ubicacion) + '</p>' +
-                  '<p><strong>Fecha registro:</strong> ' + escapeHtml(String(fecha)) + '</p>' +
-                  '<p><strong>Lote:</strong> ' + escapeHtml(lote) + '</p>' +
-                  '<p><strong>Cantidad:</strong> ' + escapeHtml(String(cantidad)) + '</p>' +
-                  '<p><strong>Descripción:</strong> ' + escapeHtml(descripcion) + '</p>';
-
-              card.innerHTML = inner;
-
-              var acciones = document.createElement('div');
-              acciones.className = 'acciones';
-
-              var btnEdit = document.createElement('button');
-              btnEdit.type = 'button';
-              btnEdit.className = 'btn-small';
-              btnEdit.textContent = 'Editar';
-              btnEdit.addEventListener('click', function() {
-                  openEditLoteModal(id);
-              });
-
-              var btnDetails = document.createElement('button');
-              btnDetails.type = 'button';
-              btnDetails.className = 'btn-small';
-              btnDetails.style.background = '#1976d2';
-              btnDetails.textContent = 'Ver detalles';
-              btnDetails.addEventListener('click', function() {
-                  openDetallesModal(id, nombre);
-              });
-
-              var btnDelete = document.createElement('button');
-              btnDelete.type = 'button';
-              btnDelete.className = 'btn-small delete';
-              btnDelete.textContent = 'Eliminar';
-              btnDelete.addEventListener('click', function() {
-                  eliminarLote(id);
-              });
-
-              acciones.appendChild(btnEdit);
-              acciones.appendChild(btnDetails);
-              acciones.appendChild(btnDelete);
-
-              card.appendChild(acciones);
-              // Mark local items visually
-              if (h._local) {
-                  var badge = document.createElement('div');
-                  badge.style.fontSize = '12px';
-                  badge.style.color = '#555';
-                  badge.style.marginTop = '6px';
-                  badge.textContent = 'Guardado localmente (offline)';
-                  card.appendChild(badge);
-              }
-
-              listaHoy.appendChild(card);
-          });
-      }
-
-      // Obtener herramientas de hoy desde el backend
-      function obtenerHerramientasHoy() {
+          return res.json();
+      })
+      .then(function(herramientas) {
+          renderToolsListFromArray(herramientas || []);
           hideError();
-          listaHoy.innerHTML = '<p>⏳ Cargando...</p>';
+      })
+      .catch(function(err) {
+          listaHoy.innerHTML = '<p style="color: var(--danger);">⚠️ Error al conectar con el servidor</p>';
+          showError('No se pudo conectar con el servidor. Verifica que el backend esté corriendo.');
+      });
+  }
 
-          console.log('🔄 Conectando a:', HERR_URL + '/hoy');
+  form.addEventListener('submit', function(ev) {
+      ev.preventDefault();
+      hideError();
+      var fd = new FormData(form);
+      var data = {};
+      fd.forEach(function(v, k) { data[k] = v; });
 
-          fetch(HERR_URL + '/hoy', {
-              method: 'GET',
-              headers: {
-                  'Content-Type': 'application/json'
-              }
+      if (!data.fecha_registro) data.fecha_registro = nowIsoDate();
+      data.cantidad = parseInt(data.cantidad, 10) || 0;
+      function getTodayISO() {
+          var d = new Date();
+          return d.toISOString().slice(0, 10);
+      }
+      var payload = {
+          nombre: data.nombre,
+          descripcion: data.descripcion,
+          estado: data.estado,
+          tipo: data.tipo,
+          ubicacion: data.ubicacion,
+          numeroLote: data.numero_lote,
+          cantidad: parseInt(data.cantidad, 10) || 0,
+          fechaRegistro: getTodayISO(),
+          codigoInforme: data.codigoInforme
+      };
+      if (!payload.nombre || payload.nombre.trim() === '') { alert('❌ El nombre es obligatorio'); return; }
+      if (!payload.estado || payload.estado === '') { alert('❌ El estado es obligatorio'); return; }
+      if (!payload.tipo || payload.tipo === '') { alert('❌ El tipo es obligatorio'); return; }
+      if (!payload.ubicacion || payload.ubicacion === '') { alert('❌ La ubicación es obligatoria'); return; }
+      if (!payload.numeroLote || payload.numeroLote === '') { alert('❌ El número de lote es obligatorio'); return; }
+      if (!payload.cantidad || payload.cantidad <= 0) { alert('❌ La cantidad debe ser mayor a 0'); return; }
+      if (!payload.fechaRegistro) { alert('❌ La fecha de registro es obligatoria'); return; }
+      if (!payload.codigoInforme || payload.codigoInforme.trim() === '') { alert('❌ El código de informe es obligatorio'); return; }
+
+      fetch(HERR_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
           })
-              .then(function(res) {
-                  console.log('✅ Respuesta:', res.status, res.statusText);
-                  if (!res.ok) {
-                      return readErrorMessage(res).then(function(msg) {
-                          throw new Error(msg);
-                      });
-                  }
-                  return res.json();
-              })
-              .then(function(herramientas) {
-                  console.log('📦 Herramientas recibidas:', herramientas ? herramientas.length : 0);
-                  renderToolsListFromArray(herramientas || []);
-                  hideError();
-              })
-              .catch(function(err) {
-                  console.error('❌ Error:', err.message || err);
-                  listaHoy.innerHTML = '<p style="color: var(--danger);">⚠️ Error al conectar con el servidor</p>';
-                  showError('No se pudo conectar con el servidor. Verifica que el backend esté corriendo.');
-              });
-      }
-
-      // Crear herramienta
-      form.addEventListener('submit', function(ev) {
-          ev.preventDefault();
-          hideError();
-
-          var fd = new FormData(form);
-          var data = {};
-          fd.forEach(function(v, k) {
-              data[k] = v;
+          .then(function(res) {
+              if (res.status === 201 || res.ok) {
+                  return res.json().catch(function() { return null; });
+              }
+              return readErrorMessage(res).then(function(msg) { throw new Error(msg); });
+          })
+          .then(function(created) {
+              obtenerHerramientasHoy();
+              alert('✅ Herramienta registrada exitosamente');
+              form.reset();
+              if (fechaInput) fechaInput.value = nowIsoDate();
+          })
+          .catch(function(err) {
+              alert('❌ Error al registrar herramienta: ' + err.message);
           });
+  });
 
-          if (!data.fecha_registro) data.fecha_registro = nowIsoDate();
-          data.cantidad = parseInt(data.cantidad, 10) || 0;
+  function eliminarLote(id) {
+      if (!id) { alert('❌ ID inválido'); return; }
+      if (!confirm('¿Estás seguro de eliminar la herramienta ' + id + '?')) return;
+      fetch(HERR_URL + '/' + encodeURIComponent(id), {
+              method: 'DELETE'
+          })
+          .then(function(res) {
+              if (!res.ok) {
+                  return readErrorMessage(res).then(function(msg) { throw new Error(msg); });
+              }
+              obtenerHerramientasHoy();
+              alert('✅ Herramienta eliminada');
+          })
+          .catch(function(err) {
+              alert('❌ Error al eliminar: ' + err.message);
+          });
+  }
 
-          // Validar campos obligatorios
-          if (!data.nombre || data.nombre.trim() === '') {
-              alert('❌ El nombre es obligatorio');
-              return;
-          }
-          if (!data.estado || data.estado === '') {
-              alert('❌ El estado es obligatorio');
-              return;
-          }
-          if (!data.tipo || data.tipo === '') {
-              alert('❌ El tipo es obligatorio');
-              return;
-          }
-          if (!data.ubicacion || data.ubicacion === '') {
-              alert('❌ La ubicación es obligatoria');
-              return;
-          }
-          if (!data.numero_lote || data.numero_lote === '') {
-              alert('❌ El número de lote es obligatorio');
-              return;
-          }
-          if (!data.cantidad || data.cantidad <= 0) {
-              alert('❌ La cantidad debe ser mayor a 0');
-              return;
-          }
-          if (!data.fecha_registro) {
-              alert('❌ La fecha de registro es obligatoria');
-              return;
-          }
+  function openEditLoteModal(id) {
+      if (!id) return;
+      hideError();
+      modalTitle.textContent = 'Editar registro';
+      modalContent.innerHTML = '<p>⏳ Cargando...</p>';
+      modalBackdrop.style.display = 'flex';
+      modalBackdrop.setAttribute('aria-hidden', 'false');
 
-          console.log('📤 Enviando herramienta:', JSON.stringify(data, null, 2));
-
-          fetch(HERR_URL, {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify(data)
-              })
-              .then(function(res) {
-                  console.log('✅ Respuesta POST:', res.status);
-                  if (res.status === 201 || res.ok) {
-                      return res.json().catch(function() {
-                          return null;
-                      });
-                  }
-                  return readErrorMessage(res).then(function(msg) {
-                      throw new Error(msg);
-                  });
-              })
-              .then(function(created) {
-                  console.log('✅ Herramienta creada:', created);
-                  obtenerHerramientasHoy();
-                  alert('✅ Herramienta registrada exitosamente');
-                  form.reset();
-                  if (fechaInput) fechaInput.value = nowIsoDate();
-              })
-              .catch(function(err) {
-                  console.error('❌ Error al crear:', err);
-                  alert('❌ Error al registrar herramienta: ' + err.message);
-              });
-      });
-
-      // Eliminar herramienta
-      function eliminarLote(id) {
-          if (!id) {
-              alert('❌ ID inválido');
-              return;
-          }
-          if (!confirm('¿Estás seguro de eliminar la herramienta ' + id + '?')) return;
-
-          console.log('🗑️ Eliminando herramienta:', id);
-
-          fetch(HERR_URL + '/' + encodeURIComponent(id), {
-                  method: 'DELETE'
-              })
-              .then(function(res) {
-                  if (!res.ok) {
-                      return readErrorMessage(res).then(function(msg) {
-                          throw new Error(msg);
-                      });
-                  }
-                  console.log('✅ Herramienta eliminada');
-                  obtenerHerramientasHoy();
-                  alert('✅ Herramienta eliminada');
-              })
-              .catch(function(err) {
-                  console.error('❌ Error al eliminar:', err);
-                  alert('❌ Error al eliminar: ' + err.message);
-              });
-      }
-
-      // Abrir modal para editar
-      function openEditLoteModal(id) {
-          if (!id) return;
-          hideError();
-          modalTitle.textContent = 'Editar registro';
-          modalContent.innerHTML = '<p>⏳ Cargando...</p>';
-          modalBackdrop.style.display = 'flex';
-          modalBackdrop.setAttribute('aria-hidden', 'false');
-
-          console.log('📝 Cargando herramienta para editar:', id);
-
-          fetch(HERR_URL + '/' + encodeURIComponent(id))
-              .then(function(res) {
-                  if (!res.ok) {
-                      return readErrorMessage(res).then(function(msg) {
-                          throw new Error(msg);
-                      });
-                  }
-                  return res.json();
-              })
-              .then(function(found) {
-                  if (!found) {
-                      closeModal();
-                      alert('❌ No se encontró el registro');
-                      return;
-                  }
-                  buildEditModalFromFound(found);
-              })
-              .catch(function(err) {
-                  console.error('❌ Error al cargar:', err);
+      fetch(HERR_URL + '/' + encodeURIComponent(id))
+          .then(function(res) {
+              if (!res.ok) {
+                  return readErrorMessage(res).then(function(msg) { throw new Error(msg); });
+              }
+              return res.json();
+          })
+          .then(function(found) {
+              if (!found) {
                   closeModal();
-                  showError('No se pudo cargar el registro: ' + (err && err.message ? err.message : 'error'));
-              });
-
-          function buildEditModalFromFound(found) {
-              modalContent.innerHTML = '';
-              var container = document.createElement('div');
-
-              var html = '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
-                  '<div style="flex:1;min-width:240px;"><label>Nombre</label><input id="edit_nombre" type="text" value="' + escapeHtml(found.nombre || '') + '" /></div>' +
-                  '<div style="flex:1;min-width:180px;"><label>Estado</label><select id="edit_estado"><option value="">Seleccionar</option><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option><option value="No_disponible">No disponible</option></select></div>' +
-                  '<div style="flex:1;min-width:180px;"><label>Tipo</label><select id="edit_tipo"><option value="">Seleccionar</option><option value="Manual">Manual</option><option value="Electrica">Eléctrica</option></select></div>' +
-                  '</div>' +
-                  '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">' +
-                  '<div style="flex:1;min-width:180px;"><label>Ubicación</label><select id="edit_ubicacion"><option value="">Seleccionar</option><option value="Bodega">Bodega</option><option value="Taller">Taller</option></select></div>' +
-                  '<div style="flex:1;min-width:180px;"><label>Fecha registro</label><input id="edit_fecha" type="date" value="' + escapeHtml(String(found.fechaRegistro || found.fecha_registro || found.fecha_registro || '')) + '" /></div>' +
-                  '<div style="flex:1;min-width:180px;"><label>Número lote</label><select id="edit_lote"><option value="">Seleccionar</option><option value="Lote 1">Lote 1</option><option value="Lote 2">Lote 2</option></select></div>' +
-                  '</div>' +
-                  '<div style="margin-top:10px;"><label>Cantidad</label><input id="edit_cantidad" type="number" min="0" value="' + escapeHtml(String(found.cantidad || 0)) + '" /></div>' +
-                  '<div style="margin-top:10px;"><label>Descripción</label><textarea id="edit_descripcion" style="width:100%;">' + escapeHtml(found.descripcion || '') + '</textarea></div>' +
-                  '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;"><button id="saveEdit" class="btn-small" type="button">Guardar</button><button id="cancelEdit" class="btn-small delete" type="button">Cancelar</button></div>';
-
-              container.innerHTML = html;
-              modalContent.appendChild(container);
-
-              try {
-                  document.getElementById('edit_estado').value = found.estado || '';
-              } catch (e) {}
-              try {
-                  document.getElementById('edit_tipo').value = found.tipo || '';
-              } catch (e) {}
-              try {
-                  document.getElementById('edit_ubicacion').value = found.ubicacion || '';
-              } catch (e) {}
-              try {
-                  document.getElementById('edit_lote').value = found.numeroLote || found.numero_lote || '';
-              } catch (e) {}
-
-              document.getElementById('cancelEdit').addEventListener('click', function() {
-                  closeModal();
-              });
-
-              document.getElementById('saveEdit').addEventListener('click', function() {
-                  var payload = {
-                      nombre: (document.getElementById('edit_nombre').value || '').trim(),
-                      estado: (document.getElementById('edit_estado').value || '').trim(),
-                      tipo: (document.getElementById('edit_tipo').value || '').trim(),
-                      ubicacion: (document.getElementById('edit_ubicacion').value || '').trim(),
-                      fecha_registro: (document.getElementById('edit_fecha').value || ''),
-                      numero_lote: (document.getElementById('edit_lote').value || ''),
-                      cantidad: parseInt(document.getElementById('edit_cantidad').value || '0', 10) || 0,
-                      descripcion: (document.getElementById('edit_descripcion').value || '').trim()
-                  };
-
-                  if (!payload.nombre || !payload.estado) {
-                      alert('❌ Completa al menos nombre y estado.');
-                      return;
-                  }
-
-                  console.log('📤 Actualizando herramienta:', payload);
-
-                  // Actualizar en el backend
-                  fetch(HERR_URL + '/' + encodeURIComponent(found.idHerramienta), {
-                          method: 'PUT',
-                          headers: {
-                              'Content-Type': 'application/json'
-                          },
-                          body: JSON.stringify(payload)
-                      })
-                      .then(function(res) {
-                          if (!res.ok) {
-                              return readErrorMessage(res).then(function(msg) {
-                                  throw new Error(msg);
-                              });
-                          }
-                          return res.json().catch(function() {
-                              return null;
-                          });
-                      })
-                      .then(function() {
-                          console.log('✅ Herramienta actualizada');
-                          alert('✅ Registro actualizado exitosamente');
-                          closeModal();
-                          obtenerHerramientasHoy();
-                      })
-                      .catch(function(err) {
-                          console.error('❌ Error al actualizar:', err);
-                          alert('❌ Error al actualizar: ' + err.message);
-                      });
-              });
-          }
-      }
-
-      // Modal de detalles
-      function openDetallesModal(herramientaId, nombreLote) {
-          if (!herramientaId) return;
-          hideError();
-          modalTitle.textContent = 'Detalles: ' + (nombreLote || '');
-          modalContent.innerHTML = '<p>⏳ Cargando detalles...</p>';
-          modalBackdrop.style.display = 'flex';
-          modalBackdrop.setAttribute('aria-hidden', 'false');
-
-          console.log('📋 Cargando detalles de herramienta:', herramientaId);
-
-          fetch(DETALLE_URL_BASE + '/herramienta/' + encodeURIComponent(herramientaId))
-              .then(function(res) {
-                  if (!res.ok) {
-                      return readErrorMessage(res).then(function(msg) {
-                          throw new Error(msg);
-                      });
-                  }
-                  return res.json();
-              })
-              .then(function(detalles) {
-                  modalContent.innerHTML = '';
-                  renderDetallesList(detalles || []);
-              })
-              .catch(function(err) {
-                  console.error('❌ Error al cargar detalles:', err);
-                  alert('❌ Error al cargar detalles: ' + err.message);
-                  modalBackdrop.style.display = 'none';
-              });
-      }
-
-          function renderDetallesList(detalles) {
-              modalContent.innerHTML = '';
-              if (!Array.isArray(detalles) || detalles.length === 0) {
-                  modalContent.innerHTML = '<p>No hay detalles.</p>';
+                  alert('❌ No se encontró el registro');
                   return;
               }
-              var listDiv = document.createElement('div');
-              listDiv.className = 'modal-list';
-              detalles.forEach(function(d, idx) {
-                  var cont = document.createElement('div');
-                  cont.className = 'tarjeta';
-                  var left = document.createElement('div');
-                  left.style.flex = '1';
-                  var nombreUnit = (d.herramienta && d.herramienta.nombre) ? d.herramienta.nombre : ('Unidad ' + (idx + 1));
-                  var h4 = document.createElement('h4');
-                  h4.textContent = nombreUnit + ' — ' + (d.codigoUnico || '');
-                  var p1 = document.createElement('p');
-                  p1.innerHTML = '<strong>Estado:</strong> ' + escapeHtml(d.estado || '-');
-                  var p2 = document.createElement('p');
-                  p2.innerHTML = '<strong>Disponible:</strong> ' + (d.disponible ? 'Sí' : 'No') + ' • <strong>Fecha ingreso:</strong> ' + (d.fechaIngreso || '-');
-                  left.appendChild(h4);
-                  left.appendChild(p1);
-                  left.appendChild(p2);
-
-                  var right = document.createElement('div');
-                  right.className = 'actions';
-                  var btnEdit = document.createElement('button');
-                  btnEdit.type = 'button';
-                  btnEdit.className = 'btn-small';
-                  btnEdit.textContent = 'Editar unidad';
-                  btnEdit.addEventListener('click', function() {
-                      var panel = cont.querySelector('.edit-panel');
-                      if (!panel) {
-                          panel = buildDetalleEditPanel(d);
-                          cont.appendChild(panel);
-                          panel.style.display = 'block';
-                      } else panel.style.display = (panel.style.display === 'none' ? 'block' : 'none');
-                  });
-
-                  right.appendChild(btnEdit);
-                  cont.appendChild(left);
-                  cont.appendChild(right);
-                  listDiv.appendChild(cont);
-              });
-              modalContent.appendChild(listDiv);
-          }
-
-      // Edit panel builder for detalle (uses DETALLE_URL_BASE PUT or local edit)
-      function buildDetalleEditPanel(detalle) {
-          var panel = document.createElement('div');
-          panel.className = 'edit-panel';
-          var html = '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
-              '<div style="min-width:160px;"><label>Estado</label><select id="up_estado"><option value="">Seleccionar</option><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option><option value="No_disponible">No disponible</option></select></div>' +
-              '<div style="min-width:160px;"><label>Disponible</label><select id="up_disponible"><option value="true">Sí</option><option value="false">No</option></select></div>' +
-              '<div style="min-width:160px;"><label>Fecha ingreso</label><input id="up_fecha" type="date" /></div>' +
-              '</div><div style="margin-top:8px;"><label>Descripción (opcional)</label><textarea id="up_descripcion" style="width:100%;"></textarea></div>' +
-              '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;"><button id="up_save" class="btn-small" type="button">Guardar</button><button id="up_cancel" class="btn-small delete" type="button">Cancelar</button></div>';
-          panel.innerHTML = html;
-
-          try {
-              panel.querySelector('#up_estado').value = detalle.estado || '';
-          } catch (e) {}
-          try {
-              panel.querySelector('#up_disponible').value = (detalle.disponible ? 'true' : 'false');
-          } catch (e) {}
-          try {
-              panel.querySelector('#up_fecha').value = detalle.fechaIngreso || '';
-          } catch (e) {}
-          try {
-              panel.querySelector('#up_descripcion').value = detalle.descripcion || '';
-          } catch (e) {}
-
-          panel.querySelector('#up_cancel').addEventListener('click', function() {
-              panel.style.display = 'none';
+              buildEditModalFromFound(found);
+          })
+          .catch(function(err) {
+              closeModal();
+              showError('No se pudo cargar el registro: ' + (err && err.message ? err.message : 'error'));
           });
 
-          panel.querySelector('#up_save').addEventListener('click', function() {
+      function buildEditModalFromFound(found) {
+          modalContent.innerHTML = '';
+          var container = document.createElement('div');
+          var html = '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
+              '<div style="flex:1;min-width:240px;"><label>Nombre</label><input id="edit_nombre" type="text" value="' + escapeHtml(found.nombre || '') + '" /></div>' +
+              '<div style="flex:1;min-width:180px;"><label>Estado</label><select id="edit_estado"><option value="">Seleccionar</option><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option><option value="No_disponible">No disponible</option></select></div>' +
+              '<div style="flex:1;min-width:180px;"><label>Tipo</label><select id="edit_tipo"><option value="">Seleccionar</option><option value="Manual">Manual</option><option value="Electrica">Eléctrica</option></select></div>' +
+              '</div>' +
+              '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">' +
+              '<div style="flex:1;min-width:180px;"><label>Ubicación</label><select id="edit_ubicacion"><option value="">Seleccionar</option><option value="Bodega">Bodega</option><option value="Taller">Taller</option></select></div>' +
+              '<div style="flex:1;min-width:180px;"><label>Fecha registro</label><input id="edit_fecha" type="date" value="' + escapeHtml(String(found.fechaRegistro || found.fecha_registro || found.fecha_registro || '')) + '" /></div>' +
+              '<div style="flex:1;min-width:180px;"><label>Número lote</label><select id="edit_lote"><option value="">Seleccionar</option><option value="Lote 1">Lote 1</option><option value="Lote 2">Lote 2</option></select></div>' +
+              '</div>' +
+              '<div style="margin-top:10px;"><label>Código informe</label><input id="edit_codigoInforme" type="text" value="' + escapeHtml(found.codigoInforme || found.codigo_informe || '') + '" readonly style="background:#222;color:#fff;" /></div>' +
+              '<div style="margin-top:10px;"><label>Cantidad</label><input id="edit_cantidad" type="number" min="0" value="' + escapeHtml(String(found.cantidad || 0)) + '" /></div>' +
+              '<div style="margin-top:10px;"><label>Descripción</label><textarea id="edit_descripcion" style="width:100%;">' + escapeHtml(found.descripcion || '') + '</textarea></div>' +
+              '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;"><button id="saveEdit" class="btn-small" type="button">Guardar</button><button id="cancelEdit" class="btn-small delete" type="button">Cancelar</button></div>';
+          container.innerHTML = html;
+          modalContent.appendChild(container);
+
+          try { document.getElementById('edit_estado').value = found.estado || ''; } catch(e){}
+          try { document.getElementById('edit_tipo').value = found.tipo || ''; } catch(e){}
+          try { document.getElementById('edit_ubicacion').value = found.ubicacion || ''; } catch(e){}
+          try { document.getElementById('edit_lote').value = found.numeroLote || found.numero_lote || ''; } catch(e){}
+
+          document.getElementById('cancelEdit').addEventListener('click', function() { closeModal(); });
+
+          document.getElementById('saveEdit').addEventListener('click', function() {
               var payload = {
-                  estado: panel.querySelector('#up_estado').value || detalle.estado,
-                  disponible: (panel.querySelector('#up_disponible').value === 'true'),
-                  fechaIngreso: panel.querySelector('#up_fecha').value || detalle.fechaIngreso,
-                  descripcion: panel.querySelector('#up_descripcion').value || detalle.descripcion
+                  nombre: (document.getElementById('edit_nombre').value || '').trim(),
+                  estado: (document.getElementById('edit_estado').value || '').trim(),
+                  tipo: (document.getElementById('edit_tipo').value || '').trim(),
+                  ubicacion: (document.getElementById('edit_ubicacion').value || '').trim(),
+                  fecha_registro: (document.getElementById('edit_fecha').value || ''),
+                  numero_lote: (document.getElementById('edit_lote').value || ''),
+                  cantidad: parseInt(document.getElementById('edit_cantidad').value || '0', 10) || 0,
+                  descripcion: (document.getElementById('edit_descripcion').value || '').trim()
               };
-
-              // If detalle.idDetalle looks local (ld- or startsWith 'ld-' or includes 'ld-'), treat as local
-              var idD = detalle.idDetalle || detalle.id_detalle || detalle.id;
-              var isLocalDetalle = String(idD).startsWith('ld-') || String(idD).startsWith('local-') || String(idD).indexOf('ld-') >= 0;
-
-              if (isLocalDetalle) {
-                  // find local tool and update its detalle
-                  var tool = findLocalToolById(detalle.herramienta && (detalle.herramienta.idHerramienta || detalle.herramienta.id));
-                  if (tool) {
-                      tool.detalles = (tool.detalles || []).map(function(dt) {
-                          if (String(dt.idDetalle) === String(idD)) {
-                              return Object.assign({}, dt, payload);
-                          }
-                          return dt;
-                      });
-                      // update local store
-                      updateLocalToolById(tool.idHerramienta, function() {
-                          return tool;
-                      });
-                      alert('Unidad actualizada (local)');
-                      // refresh modal details
-                      var hId = tool.idHerramienta;
-                      openDetallesModal(hId, tool.nombre);
-                      return;
-                  }
+              if (!payload.nombre || !payload.estado) {
+                  alert('❌ Completa al menos nombre y estado.');
+                  return;
               }
-
-              // Remote update
-              fetch(DETALLE_URL_BASE + '/' + encodeURIComponent(idD), {
+              fetch(HERR_URL + '/' + encodeURIComponent(found.idHerramienta), {
                       method: 'PUT',
-                      headers: {
-                          'Content-Type': 'application/json'
-                      },
+                      headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify(payload)
                   })
                   .then(function(res) {
-                      if (!res.ok) return readErrorMessage(res).then(function(msg) {
-                          throw new Error(msg);
-                      });
-                      return res.json().catch(function() {
-                          return null;
-                      });
+                      if (!res.ok) return readErrorMessage(res).then(function(msg) { throw new Error(msg); });
+                      return res.json().catch(function() { return null; });
                   })
                   .then(function() {
-                      alert('✅ Unidad actualizada');
-                      // If we have herramienta id, refresh details
-                      var herramientaId = detalle.herramienta && (detalle.herramienta.idHerramienta || detalle.herramienta.id);
-                      if (herramientaId) openDetallesModal(herramientaId, detalle.herramienta && detalle.herramienta.nombre);
-                      else {
-                          closeModal();
-                          obtenerHerramientasHoy();
-                      }
+                      alert('✅ Registro actualizado exitosamente');
+                      closeModal();
+                      obtenerHerramientasHoy();
                   })
                   .catch(function(err) {
-                      console.warn('PUT detalle failed, saving locally fallback', err);
-                      // fallback: save detalle locally under its tool (create local tool if needed)
-                      var toolId = detalle.herramienta && (detalle.herramienta.idHerramienta || detalle.herramienta.id) || localIdCounter();
-                      var tool = findLocalToolById(toolId);
-                      if (!tool) {
-                          // create minimal local tool container
-                          tool = {
-                              idHerramienta: toolId,
-                              nombre: detalle.herramienta && detalle.herramienta.nombre || 'LocalTool',
-                              fecha_registro: nowIsoDate(),
-                              cantidad: 1,
-                              detalles: []
-                          };
-                          pushLocalTool(tool);
-                      }
-                      // replace or push detalle
-                      var idLocalDetalle = idD || ('ld-' + Date.now() + '-' + Math.floor(Math.random() * 1000));
-                      var newDetalle = Object.assign({}, {
-                          idDetalle: idLocalDetalle
-                      }, payload, {
-                          codigoUnico: detalle.codigoUnico || idLocalDetalle,
-                          herramienta: {
-                              idHerramienta: tool.idHerramienta,
-                              nombre: tool.nombre
-                          }
-                      });
-                      // upsert
-                      tool.detalles = (tool.detalles || []).filter(function(dt) {
-                          return String(dt.idDetalle) !== String(idLocalDetalle);
-                      });
-                      tool.detalles.push(newDetalle);
-                      updateLocalToolById(tool.idHerramienta, function() {
-                          return tool;
-                      });
-                      alert('Unidad guardada localmente (offline)');
-                      openDetallesModal(tool.idHerramienta, tool.nombre);
+                      alert('❌ Error al actualizar: ' + err.message);
                   });
           });
-
-          return panel;
       }
+  }
 
-      // Modal helpers
-      if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
-      modalBackdrop.addEventListener('click', function(ev) {
-          if (ev.target === modalBackdrop) closeModal();
-      });
-      document.addEventListener('keydown', function(ev) {
-          if (ev.key === 'Escape') closeModal();
-      });
-
-      function closeModal() {
-          if (modalBackdrop) modalBackdrop.style.display = 'none';
-          if (modalBackdrop) modalBackdrop.setAttribute('aria-hidden', 'true');
-          if (modalContent) modalContent.innerHTML = '';
-      }
-
-      // Optional: sync local -> backend. Call this when backend is available.
-      function syncLocalToBackend() {
-          var local = loadLocalTools();
-          if (!local || local.length === 0) {
-              alert('No hay registros locales para sincronizar');
-              return;
-          }
-
-          // Sequentially try to POST each local item
-          (function sendNext(i) {
-              if (i >= local.length) {
-                  alert('Sincronización finalizada.');
-                  obtenerHerramientasHoy();
-                  return;
+  function openDetallesModal(herramientaId, nombreLote) {
+      if (!herramientaId) return;
+      hideError();
+      modalTitle.textContent = 'Detalles: ' + (nombreLote || '');
+      modalContent.innerHTML = '<p>⏳ Cargando detalles...</p>';
+      modalBackdrop.style.display = 'flex';
+      modalBackdrop.setAttribute('aria-hidden', 'false');
+      fetch(DETALLE_URL_BASE + '/herramienta/' + encodeURIComponent(herramientaId))
+          .then(function(res) {
+              if (!res.ok) {
+                  return readErrorMessage(res).then(function(msg) { throw new Error(msg); });
               }
-              var item = local[i];
-              // If item already came from server (no local flag) skip
-              if (!item._local && !(String(item.idHerramienta).startsWith('local-'))) {
-                  sendNext(i + 1);
-                  return;
-              }
-              // build payload matching backend model
-              var payload = {
-                  nombre: item.nombre,
-                  descripcion: item.descripcion,
-                  estado: item.estado,
-                  tipo: item.tipo,
-                  ubicacion: item.ubicacion,
-                  numero_lote: item.numero_lote,
-                  cantidad: item.cantidad,
-                  fecha_registro: item.fecha_registro
-              };
-              fetch(HERR_URL, {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify(payload)
-                  })
-                  .then(function(res) {
-                      if (!res.ok) return readErrorMessage(res).then(function(msg) {
-                          throw new Error(msg);
-                      });
-                      return res.json();
-                  })
-                  .then(function(created) {
-                      // remove local item once created successfully
-                      removeLocalToolById(item.idHerramienta);
-                      // Optionally map server detalles or create detalles on server separately
-                      // Continue to next
-                      sendNext(i + 1);
-                  })
-                  .catch(function(err) {
-                      console.error('Error sincronizando item', item, err);
-                      // stop or continue? We'll continue to next but keep the item local
-                      sendNext(i + 1);
-                  });
-          })(0);
+              return res.json();
+          })
+          .then(function(detalles) {
+              modalContent.innerHTML = '';
+              renderDetallesList(detalles || []);
+          })
+          .catch(function(err) {
+              alert('❌ Error al cargar detalles: ' + err.message);
+              modalBackdrop.style.display = 'none';
+          });
+  }
+
+  function renderDetallesList(detalles) {
+      modalContent.innerHTML = '';
+      if (!Array.isArray(detalles) || detalles.length === 0) {
+          modalContent.innerHTML = '<p>No hay detalles.</p>';
+          return;
       }
+      var listDiv = document.createElement('div');
+      listDiv.className = 'modal-list';
+      detalles.forEach(function(d, idx) {
+          var cont = document.createElement('div');
+          cont.className = 'tarjeta';
+          var left = document.createElement('div');
+          left.style.flex = '1';
+          var nombreUnit = (d.herramienta && d.herramienta.nombre) ? d.herramienta.nombre : ('Unidad ' + (idx + 1));
+          var h4 = document.createElement('h4');
+          h4.textContent = nombreUnit + ' — ' + (d.codigoUnico || '');
+          var p1 = document.createElement('p');
+          p1.innerHTML = '<strong>Estado:</strong> ' + escapeHtml(d.estado || '-');
+          var p2 = document.createElement('p');
+          p2.innerHTML = '<strong>Disponible:</strong> ' + (d.disponible ? 'Sí' : 'No') + ' • <strong>Fecha ingreso:</strong> ' + (d.fechaIngreso || '-');
+          left.appendChild(h4);
+          left.appendChild(p1);
+          left.appendChild(p2);
 
-      // expose sync function for debug
-      window.FS = window.FS || {};
-      window.FS.obtenerHoy = obtenerHerramientasHoy;
-      window.FS.syncLocalToBackend = syncLocalToBackend;
+          var right = document.createElement('div');
+          right.className = 'actions';
+          var btnEdit = document.createElement('button');
+          btnEdit.type = 'button';
+          btnEdit.className = 'btn-small';
+          btnEdit.textContent = 'Editar unidad';
+          btnEdit.addEventListener('click', function() {
+              var panel = cont.querySelector('.edit-panel');
+              if (!panel) {
+                  panel = buildDetalleEditPanel(d);
+                  cont.appendChild(panel);
+                  panel.style.display = 'block';
+              } else {
+                  panel.style.display = (panel.style.display === 'none' ? 'block' : 'none');
+              }
+          });
 
-      // Initialize date input and list
-      try {
-          if (fechaInput && !fechaInput.value) fechaInput.value = nowIsoDate();
-      } catch (e) {}
-      obtenerHerramientasHoy();
-    })();
+          right.appendChild(btnEdit);
+          cont.appendChild(left);
+          cont.appendChild(right);
+          listDiv.appendChild(cont);
+      });
+      modalContent.appendChild(listDiv);
+  }
+
+  function buildDetalleEditPanel(detalle) {
+      var panel = document.createElement('div');
+      panel.className = 'edit-panel';
+      var html = '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+          '<div style="min-width:160px;"><label>Estado</label><select id="up_estado"><option value="">Seleccionar</option><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option><option value="No_disponible">No disponible</option></select></div>' +
+          '<div style="min-width:160px;"><label>Disponible</label><select id="up_disponible"><option value="true">Sí</option><option value="false">No</option></select></div>' +
+          '<div style="min-width:160px;"><label>Fecha ingreso</label><input id="up_fecha" type="date" /></div>' +
+          '</div><div style="margin-top:8px;"><label>Descripción (opcional)</label><textarea id="up_descripcion" style="width:100%;"></textarea></div>' +
+          '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;"><button id="up_save" class="btn-small" type="button">Guardar</button><button id="up_cancel" class="btn-small delete" type="button">Cancelar</button></div>';
+      panel.innerHTML = html;
+
+      try { panel.querySelector('#up_estado').value = detalle.estado || ''; } catch(e){}
+      try { panel.querySelector('#up_disponible').value = (detalle.disponible ? 'true' : 'false'); } catch(e){}
+      try { panel.querySelector('#up_fecha').value = detalle.fechaIngreso || ''; } catch(e){}
+      try { panel.querySelector('#up_descripcion').value = detalle.descripcion || ''; } catch(e){}
+
+      panel.querySelector('#up_cancel').addEventListener('click', function() {
+          panel.style.display = 'none';
+      });
+
+      panel.querySelector('#up_save').addEventListener('click', function() {
+          var payload = {
+              estado: panel.querySelector('#up_estado').value || detalle.estado,
+              disponible: (panel.querySelector('#up_disponible').value === 'true'),
+              fechaIngreso: panel.querySelector('#up_fecha').value || detalle.fechaIngreso,
+              descripcion: panel.querySelector('#up_descripcion').value || detalle.descripcion
+          };
+          var idD = detalle.idDetalle || detalle.id_detalle || detalle.id;
+          fetch(DETALLE_URL_BASE + '/' + encodeURIComponent(idD), {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(payload)
+              })
+              .then(function(res) {
+                  if (!res.ok) return readErrorMessage(res).then(function(msg) {throw new Error(msg);});
+                  return res.json().catch(function(){return null;});
+              })
+              .then(function() {
+                  alert('✅ Unidad actualizada');
+                  var herramientaId = detalle.herramienta && (detalle.herramienta.idHerramienta || detalle.herramienta.id);
+                  if (herramientaId) openDetallesModal(herramientaId, detalle.herramienta && detalle.herramienta.nombre);
+                  else {
+                      closeModal();
+                      obtenerHerramientasHoy();
+                  }
+              })
+              .catch(function(err) {
+                  alert('❌ Error al actualizar unidad: ' + err.message);
+              });
+      });
+      return panel;
+  }
+
+  if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+  modalBackdrop.addEventListener('click', function(ev) {
+      if (ev.target === modalBackdrop) closeModal();
+  });
+  document.addEventListener('keydown', function(ev) {
+      if (ev.key === 'Escape') closeModal();
+  });
+  function closeModal() {
+      if (modalBackdrop) modalBackdrop.style.display = 'none';
+      if (modalBackdrop) modalBackdrop.setAttribute('aria-hidden', 'true');
+      if (modalContent) modalContent.innerHTML = '';
+  }
+  try {
+      if (fechaInput && !fechaInput.value) fechaInput.value = nowIsoDate();
+  } catch (e) {}
+  window.addEventListener('pageshow', function(ev) {
+      if (typeof obtenerHerramientasHoy === 'function') {
+         obtenerHerramientasHoy();
+      }
+  });
+  window.FS = window.FS || {};
+  window.FS.obtenerHoy = obtenerHerramientasHoy;
+})();
   </script>
 
   <script src="../user-session.js"></script>
   <script src="../modo-oscuro.js"></script>
   <script src="../render-window.js"></script>
-  <script src="../FSApiClient.js"></script>
 </body>
 </html>

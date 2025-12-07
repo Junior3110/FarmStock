@@ -62,7 +62,8 @@
       ubicacion: h.ubicacion || '',
       numero_lote: h.numero_lote || h.numeroLote || h.lote || '',
       cantidad: (h.cantidad != null) ? h.cantidad : 0,
-      fecha_registro: h.fecha_registro || h.fechaRegistro || h.fecha || ''
+      fecha_registro: h.fecha_registro || h.fechaRegistro || h.fecha || '',
+      codigoInforme: h.codigoInforme || h.codigo_informe || ''
     };
   }
 

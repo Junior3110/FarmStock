@@ -254,13 +254,24 @@
       <div class="content-box cuadro-visual">
         <div class="encabezado-panel">
           <h1>Inventario</h1>
-          <div class="search-box">
+          <div class="search-box" style="display:flex;gap:16px;align-items:center;flex-direction:row;">
+            <select id="tipoFiltro" style="padding:8px 12px;border-radius:8px;border:1px solid var(--card-border);background:var(--surface);color:var(--text);font-size:13px;">
+              <option value="codigo">Filtrar por código único</option>
+              <option value="informe">Filtrar por código informe</option>
+            </select>
             <input 
               type="text" 
               id="buscarCodigo" 
-              placeholder="🔍 Buscar por código único..." 
-              style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--surface); color: var(--text); min-width: 240px; font-size: 13px;"
+              placeholder="🔍 Escribe el código único..." 
+              style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--surface); color: var(--text); width: 240px; font-size: 13px;"
             />
+            <input 
+              type="text" 
+              id="buscarCodigoInforme" 
+              placeholder="🔍 Escribe el código informe..." 
+              style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--surface); color: var(--text); width: 240px; font-size: 13px; display:none;"
+            />
+            <!-- Botón eliminado para búsqueda automática por código informe -->
           </div>
         </div>
 
@@ -297,9 +308,79 @@
     </div>
   </div>
 
-  <script src="../FSApiClient.js"></script>
+      <script src="../FSApiClient.js"></script>
+      <script>
+      (function() {
+        var BACKEND = 'http://127.0.0.1:8080';
+        var HERR_URL = BACKEND + '/herramienta';
+        var contenedor = document.getElementById('inventarioLista');
+        var tipoFiltro = document.getElementById('tipoFiltro');
+        var buscarCodigoInput = document.getElementById('buscarCodigo');
+        var buscarCodigoInformeInput = document.getElementById('buscarCodigoInforme');
+        // var btnBuscarInforme = document.getElementById('btnBuscarInforme');
 
-  <script>
+        // Mostrar/ocultar inputs según filtro seleccionado
+        // Mostrar/ocultar inputs según filtro seleccionado
+tipoFiltro.addEventListener('change', function() {
+  if (this.value === 'codigo') {
+    buscarCodigoInput.style.display = '';
+    buscarCodigoInformeInput.style.display = 'none';
+    buscarCodigoInput.focus();
+  } else {
+    buscarCodigoInput.style.display = 'none';
+    buscarCodigoInformeInput.style.display = '';
+    buscarCodigoInformeInput.focus();
+  }
+});
+
+// Búsqueda automática por código informe
+let timeoutBusquedaInforme = null;
+buscarCodigoInformeInput.addEventListener('input', function() {
+  clearTimeout(timeoutBusquedaInforme);
+
+  const codigo = this.value.trim();
+
+  timeoutBusquedaInforme = setTimeout(function() {
+    // Sólo ejecutar si el filtro está en "informe"
+    if (tipoFiltro.value !== 'informe') return;
+
+    if (!codigo) {
+      contenedor.innerHTML = '<p style="color:#b00020;">Debes ingresar un código de informe.</p>';
+      return;
+    }
+
+    fetch(HERR_URL + '/codigo-informe/' + encodeURIComponent(codigo), {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    .then(function(res) {
+      if (!res.ok) return res.text().then(function(msg) { throw new Error(msg); });
+      return res.json();
+    })
+    .then(function(herramientas) {
+      if (!herramientas || herramientas.length === 0) {
+        contenedor.innerHTML = '<p>No se encontraron herramientas para ese código de informe.</p>';
+        return;
+      }
+      contenedor.innerHTML = '';
+      var grid = document.createElement('div');
+      grid.className = 'tarjetas-container';
+      herramientas.forEach(function(h) {
+        grid.appendChild(renderCard(h));
+      });
+      contenedor.appendChild(grid);
+    })
+    .catch(function(err) {
+      contenedor.innerHTML = '<p style="color:#b00020;">Error: ' + (err.message || err) + '</p>';
+    });
+
+  }, 300); // debounce
+});
+
+      })();
+    </script>
+
+    <script>
     (function () {
       const API = window.FSApiClient;
       const contenedor = document.getElementById('inventarioLista');
@@ -331,7 +412,8 @@
           lote: h.numero_lote || h.numeroLote || h.lote || '',
           cantidad: (h.cantidad != null) ? h.cantidad : (h.cantidad || 0),
           descripcion: h.descripcion || h.desc || '',
-          detalles: h.detalles || []
+          detalles: h.detalles || [],
+          codigoInforme: h.codigoInforme || h.codigo_informe || ''
         };
       }
 
@@ -650,11 +732,11 @@
           modalContent.innerHTML = '';
           const container = document.createElement('div');
 
-          const qrImgUrl = qrUrlForToolName(found.nombre);
-          const qrElement = createQrElement(qrImgUrl, found.nombre || '', (found.idHerramienta || found.id));
-
+          const nombre = escapeHtml(found.nombre || '');
+          const codigoInforme = escapeHtml(found.codigoInforme || '');
+          // Solo usar found.codigoInforme, sin encabezado extra
           const html = '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
-            '<div style="flex:1;min-width:240px;"><label>Nombre</label><input id="edit_nombre" type="text" value="' + escapeHtml(found.nombre || '') + '" /></div>' +
+            '<div style="flex:1;min-width:240px;"><label>Nombre</label><input id="edit_nombre" type="text" value="' + nombre + '" /></div>' +
             '<div style="flex:1;min-width:180px;"><label>Estado</label><select id="edit_estado"><option value="">Seleccionar</option><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option><option value="No_disponible">No disponible</option></select></div>' +
             '<div style="flex:1;min-width:180px;"><label>Tipo</label><select id="edit_tipo"><option value="">Seleccionar</option><option value="Manual">Manual</option><option value="Electrica">Eléctrica</option></select></div>' +
             '</div>' +
@@ -663,12 +745,11 @@
             '<div style="flex:1;min-width:180px;"><label>Fecha registro</label><input id="edit_fecha" type="date" value="' + escapeHtml(String(found.fecha || '')) + '" /></div>' +
             '<div style="flex:1;min-width:180px;"><label>Número lote</label><select id="edit_lote"><option value="">Seleccionar</option><option value="Lote 1">Lote 1</option><option value="Lote 2">Lote 2</option></select></div>' +
             '</div>' +
+            '<div style="flex:1;min-width:180px;margin-top:10px;"><label>Código informe</label><input id="edit_codigoInforme" type="text" value="' + codigoInforme + '" readonly /></div>' +
             '<div style="margin-top:10px;"><label>Cantidad</label><input id="edit_cantidad" type="number" min="0" value="' + escapeHtml(String(found.cantidad || 0)) + '" /></div>' +
             '<div style="margin-top:10px;"><label>Descripción</label><textarea id="edit_descripcion" style="width:100%;">' + escapeHtml(found.descripcion || '') + '</textarea></div>' +
             '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;"><button id="saveEditInv" class="btn-small" type="button">Guardar</button><button id="cancelEditInv" class="btn-small delete" type="button">Cancelar</button></div>';
           container.innerHTML = html;
-
-          container.insertBefore(qrElement, container.firstChild);
           modalContent.appendChild(container);
 
           try { document.getElementById('edit_estado').value = found.estado || ''; } catch(e){}
@@ -681,13 +762,14 @@
           document.getElementById('saveEditInv').addEventListener('click', async function(){
             const payload = {
               nombre: (document.getElementById('edit_nombre').value || '').trim(),
+              descripcion: (document.getElementById('edit_descripcion').value || '').trim(),
               estado: (document.getElementById('edit_estado').value || '').trim(),
               tipo: (document.getElementById('edit_tipo').value || '').trim(),
               ubicacion: (document.getElementById('edit_ubicacion').value || '').trim(),
-              fecha_registro: (document.getElementById('edit_fecha').value || ''),
-              numero_lote: (document.getElementById('edit_lote').value || ''),
               cantidad: parseInt(document.getElementById('edit_cantidad').value || '0',10) || 0,
-              descripcion: (document.getElementById('edit_descripcion').value || '').trim()
+              fechaRegistro: (document.getElementById('edit_fecha').value || ''),
+              numeroLote: (document.getElementById('edit_lote').value || ''),
+              codigoInforme: (document.getElementById('edit_codigoInforme').value || '').trim()
             };
             if (!payload.nombre || !payload.estado) {
               alert('Completa al menos nombre y estado.');
@@ -1112,81 +1194,58 @@
 
       let eliminandoEnProceso = false;
 
-      contenedor.addEventListener('click', function(ev){
-        const btn = ev.target.closest('button');
-        if (!btn) return;
-        
-        const id = btn.dataset.id;
-        const nombre = btn.dataset.nombre;
-        
-        console.log('🖱️ Click en botón:', btn.className, 'ID:', id);
-        
-        if (btn.classList.contains('detalles')) {
-          openDetallesModal(id, nombre);
-        } else if (btn.classList.contains('editar')) {
-          openEditLoteModal(id, nombre);
-        } else if (btn.classList.contains('eliminar')) {
-          if (eliminandoEnProceso) {
-            console.warn('⏳ Ya hay una eliminación en proceso');
-            return;
-          }
-          eliminarHerramienta(id, nombre);
-        }
-      });
+contenedor.addEventListener('click', function(ev){
+  const btn = ev.target.closest('button');
+  if (!btn) return;
+  const id = btn.dataset.id;
+  const nombre = btn.dataset.nombre;
 
-      async function eliminarHerramienta(id, nombre) {
-        if (!id) {
-          console.error('❌ No hay ID para eliminar');
-          return;
-        }
-        
-        if (eliminandoEnProceso) {
-          console.warn('⏳ Eliminación ya en proceso');
-          return;
-        }
-        
-        console.log('🗑️ Iniciando eliminación de:', id, nombre);
-        
-        const confirmed = await showConfirmModal(
-          '¿Está seguro de que desea eliminar esta herramienta completa?',
-          `${nombre} (ID: ${id})\n\nEsto eliminará la herramienta y todas sus unidades.`
-        );
-        
-        if (!confirmed) {
-          console.log('❌ Usuario canceló la eliminación');
-          return;
-        }
-        
-        eliminandoEnProceso = true;
-        console.log('🔒 Bloqueando botones...');
-        
-        try {
-          console.log('📤 Enviando DELETE a:', BACKEND + '/herramienta/' + id);
-          const response = await fetch(BACKEND + '/herramienta/' + encodeURIComponent(id), { 
-            method: 'DELETE' 
-          });
-          
-          if (!response.ok && response.status !== 204) {
-            const errorData = await response.text();
-            throw new Error(errorData || 'Error al eliminar');
-          }
-          
-          console.log('✅ Herramienta eliminada del backend');
-          alert('✅ Herramienta eliminada exitosamente');
-          
-          // Forzar recarga completa del inventario
-          console.log('🔄 Recargando inventario...');
-          await mostrarInventario(buscarCodigoInput.value);
-          console.log('✅ Inventario recargado');
-          
-        } catch (e) {
-          console.error('❌ Error al eliminar:', e);
-          alert('❌ Error al eliminar la herramienta:\n\n' + (e.message || e));
-        } finally {
-          eliminandoEnProceso = false;
-          console.log('🔓 Botones desbloqueados');
-        }
+  if (btn.classList.contains('detalles')) {
+    openDetallesModal(id, nombre);
+  } else if (btn.classList.contains('editar')) {
+    openEditLoteModal(id, nombre);
+  } else if (btn.classList.contains('eliminar')) {
+    eliminarHerramienta(id, nombre);
+  }
+});
+
+async function eliminarHerramienta(id, nombre) {
+  const thisBtn = document.querySelector(`button.eliminar[data-id="${id}"]`);
+  if (!id) return;
+  if (thisBtn) thisBtn.disabled = true;
+
+  try {
+    const confirmed = await showConfirmModal(
+      '¿Está seguro de que desea eliminar esta herramienta completa?',
+      `${nombre} (ID: ${id})\n\nEsto eliminará la herramienta y todas sus unidades.`
+    );
+
+    if (!confirmed) return;
+
+    const response = await fetch(BACKEND + '/herramienta/' + encodeURIComponent(id), {
+      method: 'DELETE'
+    });
+
+    if (!response.ok && response.status !== 204) {
+      const errorData = await response.text();
+      // OPCIONAL: Personalizar mensaje por Foreign Key
+      if (errorData.includes('foreign key constraint')) {
+        alert('❌ No puedes eliminar esta herramienta porque tiene préstamos asociados. Devuelve o elimina los préstamos primero.');
+      } else {
+        alert('❌ Error al eliminar la herramienta:\n\n' + (errorData || 'Error desconocido'));
       }
+      return;
+    }
+
+    alert('✅ Herramienta eliminada exitosamente');
+    await mostrarInventario(buscarCodigoInput.value);
+
+  } catch (e) {
+    alert('❌ Error inesperado:\n\n' + (e.message || e));
+  } finally {
+    if (thisBtn) thisBtn.disabled = false;
+  }
+}
 
       // Búsqueda con debounce para mejor rendimiento
       let timeoutBusqueda = null;

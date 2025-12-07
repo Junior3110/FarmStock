@@ -308,6 +308,9 @@
     </div>
   </div>
 
+  <!-- Contenedor para mensajes de error -->
+  <div id="error-msg" style="display:none;margin:18px auto 0 auto;max-width:600px;padding:12px 18px;background:#ffeaea;color:#a94442;border-radius:10px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;"></div>
+
   <script>
 // URL del backend Spring Boot (ajusta si llamas desde puerto diferente)
 const API_BASE = 'http://localhost:8080/aprendices';
@@ -492,7 +495,7 @@ formNuevo.addEventListener('submit', async function (ev) {
     renderTable();
     alert('Aprendiz guardado.');
   } catch (e) {
-    alert('Error: ' + e.message);
+    mostrarError('No se pudo guardar el aprendiz: ' + (e.message || 'Verifica los datos.'));
   }
 });
 
@@ -508,7 +511,7 @@ tablaBody.addEventListener('click', async function (ev) {
       renderTable();
       alert('El aprendiz ha sido eliminado.');
     } catch (e) {
-      alert('Error: ' + e.message);
+      mostrarError('No se pudo eliminar el aprendiz: ' + (e.message || 'Intenta de nuevo.'));
     }
     return;
   }
@@ -606,6 +609,17 @@ if (modalForm) {
 
 // -------- Inicialización
 renderTable();
+
+function mostrarError(msg) {
+  const errorDiv = document.getElementById('error-msg');
+  if (errorDiv) {
+    errorDiv.textContent = msg;
+    errorDiv.style.display = 'block';
+    setTimeout(() => { errorDiv.style.display = 'none'; }, 6000);
+  } else {
+    alert(msg);
+  }
+}
   </script>
 <script src="../FSApiClient.js"></script>
 <script src="../FSApiClient.aprendices.js"></script> 

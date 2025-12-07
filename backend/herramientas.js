@@ -1,11 +1,12 @@
 class Herramienta {
-    constructor(id, nombre, descripcion, cantidad, estado, codigoQR) {
+    constructor(id, nombre, descripcion, cantidad, estado, codigoQR, codigoInforme) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.cantidad = cantidad;
         this.estado = estado; // "Disponible", "Prestada", "En mantenimiento"
         this.codigoQR = codigoQR; // valor del QR (puede ser ID o serial)
+        this.codigoInforme = codigoInforme; // Nuevo campo para el código de informe
     }
 
     actualizarEstado(nuevoEstado) {

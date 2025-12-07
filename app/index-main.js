@@ -119,12 +119,21 @@
     try {
       const herramientas = await API.obtenerHerramientasHoy();
       // Merge with local ones (so offline entries show)
+      // Mejorar filtro para aceptar distintos formatos de fecha y asegurar que se muestren los registros de hoy
+      // Mostrar primero los registros del backend (herramientas de hoy) y luego los locales que no estén en el backend
+      const hoy = nowIsoDate();
       const local = API.loadLocalTools().filter(t => {
-        try { return (t.fecha_registro === nowIsoDate()); } catch (e) { return false; }
+        try {
+          if (!t.fecha_registro) return false;
+          const fecha = String(t.fecha_registro).split('T')[0];
+          return fecha === hoy;
+        } catch (e) { return false; }
       }).map(t => { t._local = true; return t; });
 
-      const ids = new Set(local.map(x => String(x.idHerramienta)));
-      const merged = local.concat((herramientas || []).filter(h => !ids.has(String(h.idHerramienta))));
+      // Si el backend responde, mostrar sus registros y agregar los locales que no estén en la BD
+      const idsBackend = new Set((herramientas || []).map(x => String(x.idHerramienta)));
+      const soloLocales = local.filter(l => !idsBackend.has(String(l.idHerramienta)));
+      const merged = (herramientas || []).concat(soloLocales);
       renderToolsListFromArray(merged);
     } catch (err) {
       console.warn('Error obteniendo hoy (fallback):', err);
@@ -153,9 +162,14 @@
 
       try {
         const created = await API.crearHerramienta(data);
-        // If local created, it's returned with _local flag
-        obtenerHerramientasHoy();
-        alert(created._local ? 'Guardado localmente. Backend no disponible.' : '✅ Herramienta registrada en servidor');
+        setTimeout(() => {
+          obtenerHerramientasHoy();
+        }, 500);
+        if (created && created.idHerramienta) {
+          alert('Herramienta registrada exitosamente');
+        } else {
+          alert('Error al guardar');
+        }
         form.reset();
         if (fechaInput) fechaInput.value = nowIsoDate();
       } catch (err) {

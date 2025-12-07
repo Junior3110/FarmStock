@@ -1,3 +1,8 @@
+/* Quitar subrayado en los enlaces de la columna Código */
+.lnkCodigo {
+    text-decoration: none !important;
+    color: inherit;
+}
 /* Encabezado sticky para tablas con scroll vertical */
 .sticky-header-table thead th {
     position: sticky;
