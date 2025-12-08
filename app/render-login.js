@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (values.tipoDocumento && ['CC','TI','PPT'].indexOf(values.tipoDocumento) === -1) {
       errors.tipoDocumento = 'Tipo de documento inválido.';
     }
-    if (values.cargo && ['instructor','aprendiz','administrador'].indexOf(values.cargo) === -1) {
+    if (values.cargo && ['instructor','celador','administrador'].indexOf(values.cargo) === -1) {
       errors.cargo = 'Cargo inválido.';
     }
     return errors;
@@ -263,7 +263,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
       
-      window.location.replace('index.html');
+      // Redirigir según rol
+      const usuario = JSON.parse(localStorage.getItem('fs_usuario_actual'));
+      if (usuario && usuario.cargo === 'celador') {
+        window.location.replace('equipos-computos.html');
+      } else {
+        window.location.replace('index.html');
+      }
     } catch (err) {
       console.error('Login error:', err);
       if (err && err.fieldErrors) {

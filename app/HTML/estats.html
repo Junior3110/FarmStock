@@ -37,7 +37,7 @@
           <li><a href="index.html">Registro Herramientas</a></li>
           <li><a href="registro-salida.html">Salida Herramientas</a></li>
           <li><a href="indexInventario.html">Inventario</a></li>
-          <li><a href="Notificaciones.html">Notificaciones</a></li>
+          <!-- <li><a href="Notificaciones.html">Notificaciones</a></li> -->
           <li><a href="estats.html" class="active">Estadísticas</a></li>
           <li><a href="registro-aprendices.html">Aprendices</a></li>
           <li><a href="equipos-computos.html">Equipos de Cómputo</a></li>
@@ -127,7 +127,7 @@
   <!-- Modal para agregar mantenimiento -->
   <div id="modalMantenimiento" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999;">
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-color, #1a1a1a); padding: 30px; border-radius: 12px; max-width: 500px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
-      <h2 style="margin-top: 0; color: var(--text-color, #fff);">🔧 Agregar Mantenimiento/Daño</h2>
+      <h2 style="margin-top: 0; color: var(--text-color, #fff);">Agregar Mantenimiento/Daño</h2>
       
       <div style="margin-bottom: 15px;">
         <label style="display: block; margin-bottom: 5px; color: var(--text-color, #fff);">Código Único de Herramienta:</label>
@@ -174,7 +174,8 @@
   <div id="modalVerMantenimientos" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999;">
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-color, #1a1a1a); padding: 30px; border-radius: 12px; max-width: 900px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="margin: 0; color: var(--text-color, #fff);">📋 Mantenimientos Activos</h2>
+        <h2 style="margin: 0; color: var(--text-color, #fff);">Mantenimientos Activos</h2>
+        <button id="generar-pdf-mantenimientos" class="green" style="margin-right: 10px; padding: 8px 16px; border-radius: 6px; font-weight: bold; float: left;">📄 Generar PDF</button>
         <button onclick="cerrarModalVerMantenimientos()" type="button" style="padding: 8px 16px; border: none; border-radius: 6px; background: #555; color: #fff; cursor: pointer; font-weight: bold;">✕ Cerrar</button>
       </div>
       
@@ -208,6 +209,124 @@
   <script src="../user-session.js"></script>
   <script src="../modo-oscuro.js"></script>
   <script src="../render-window.js"></script>
+      <!-- jsPDF CDN -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+      <script>
+      document.getElementById('generar-pdf-mantenimientos').addEventListener('click', function() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  // Encabezado con fondo centrado y expandido
+  const boxWidth = 230;
+  const boxX = (pageWidth - boxWidth) / 2;
+  doc.setFillColor(44, 62, 80);
+  doc.rect(boxX, 12, boxWidth, 18, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(18);
+  doc.text('FarmStock - Informe de Mantenimientos', pageWidth / 2, 25, { align: 'center' });
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(12);
+
+  // Fecha alineada con margen, línea divisoria
+  doc.text('Fecha de generación: ' + new Date().toLocaleDateString(), boxX + 5, 36);
+  doc.setLineWidth(0.7);
+  doc.line(boxX + 5, 39, boxX + boxWidth - 5, 39);
+
+  // Resumen profesional y centrado
+  let y = 45;
+  doc.setFont(undefined, 'bold');
+  doc.setFontSize(13);
+  doc.text('Resumen por herramienta:', boxX + 8, y);
+  doc.setFont(undefined, 'normal');
+  y += 8;
+  const table = document.querySelector('#modalVerMantenimientos table');
+  const rows = Array.from(table.querySelectorAll('tbody tr'));
+  const resumen = {};
+  rows.forEach(tr => {
+    const tds = tr.querySelectorAll('td');
+    if (tds.length >= 6) {
+      const codigo = String(tds[1].textContent).trim();
+      const tipo = String(tds[2].textContent).trim();
+      if (!resumen[codigo]) resumen[codigo] = { mantenimientos: 0, danos: 0 };
+      if (tipo === 'MANTENIMIENTO') resumen[codigo].mantenimientos++;
+      if (tipo === 'DAÑO') resumen[codigo].danos++;
+    }
+  });
+  Object.entries(resumen).forEach(([codigo, datos]) => {
+    doc.text(`Código: ${codigo}`, boxX + 18, y);
+    doc.text(`Mantenimientos: ${datos.mantenimientos}`, boxX + 70, y);
+    doc.text(`Daños: ${datos.danos}`, boxX + 120, y);
+    y += 8;
+  });
+
+  // Tabla: fondo gris claro, ancho expandido, centrada
+  y += 10;
+  doc.setFontSize(12);
+  doc.setFont(undefined, 'bold');
+  doc.setFillColor(230, 230, 230);
+  doc.rect(boxX + 3, y-7, boxWidth-6, 11, "F");
+
+  // Columnas: distribuidas en todo el ancho
+  // X:    ID    Código   Tipo    Descripción   Estado   Fecha
+  // Ajuste de columnas para mejor visibilidad
+  const colX = [
+    boxX + 20,      // Código
+    boxX + 60,      // Tipo
+    boxX + 100,     // Descripción
+    boxX + 170,     // Estado
+    boxX + 200      // Fecha
+  ];
+
+  doc.text("Código", colX[0], y);
+  doc.text("Tipo", colX[1], y);
+  doc.text("Descripción", colX[2] + 40, y, { align: 'center', maxWidth: 80 });
+  doc.text("Estado", colX[3] + 15, y, { align: 'center' });
+  doc.text("Fecha", colX[4] + 10, y, { align: 'center' });
+
+  doc.setFont(undefined, "normal");
+  y += 12;
+
+  rows.forEach((tr, idx) => {
+    const tds = tr.querySelectorAll("td");
+    if (tds.length >= 6) {
+      // Alternar fondo fila
+      if (idx % 2 === 0) {
+        doc.setFillColor(247, 247, 247);
+        doc.rect(boxX + 3, y-6, boxWidth-6, 11, "F");
+      }
+      let descripcion = String(tds[3].textContent).trim();
+      let descripcionLines = doc.splitTextToSize(descripcion, 80);
+      let rowHeight = 7 + (descripcionLines.length - 1) * 6;
+
+      doc.setFontSize(10); // Reducir tamaño de letra para filas
+      doc.text(String(tds[1].textContent).trim(), colX[0], y); // Código
+      doc.text(String(tds[2].textContent).trim(), colX[1], y); // Tipo
+      doc.text(descripcionLines, colX[2] + 40, y, { align: 'center', maxWidth: 80 }); // Descripción
+      doc.text(String(tds[4].textContent).trim(), colX[3] + 15, y, { align: 'center' }); // Estado
+      doc.text(String(tds[5].textContent).trim(), colX[4] + 10, y, { align: 'center' }); // Fecha
+
+      y += Math.max(rowHeight, 11);
+
+      if (y > 195) { // corte en horizontal
+        doc.addPage();
+        y = 20;
+      }
+      doc.setFontSize(12); // Restaurar tamaño para cabeceras y otros textos
+    }
+  });
+
+  // Pie de página elegante
+  doc.setFontSize(10);
+  doc.setTextColor(120, 120, 120);
+  doc.text('Generado por FarmStock | https://tuempresa.com', pageWidth - 10, 205, { align: 'right' });
+
+  // Guardar archivo
+  doc.save('mantenimientos_lote.pdf');
+});
+      </script>
+    <!-- jsPDF CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   
   <script>
     // ===== VERIFICAR API DE PDF =====
@@ -230,93 +349,81 @@
       
       // Cargar usuario actual
       try {
-        const userData = localStorage.getItem('fs_usuario_actual');
-        if (userData) {
-          const user = JSON.parse(userData);
-          document.getElementById('inputNumeroDocumento').value = user.numeroDocumento || '';
+            const userData = localStorage.getItem('fs_usuario_actual');
+            if (userData) {
+              const user = JSON.parse(userData);
+              document.getElementById('inputNumeroDocumento').value = user.numeroDocumento || '';
+            }
+          } catch (error) {
+            console.error('❌ Error al cargar usuario:', error);
+          }
         }
-      } catch (e) {
-        console.warn('No se pudo obtener usuario logueado');
-      }
-      
-      document.getElementById('inputCodigoUnico').focus();
-    }
-
-    function cerrarModalMantenimiento() {
-      document.getElementById('modalMantenimiento').style.display = 'none';
-      // Limpiar campos
-      document.getElementById('inputCodigoUnico').value = '';
-      document.getElementById('inputNumeroDocumento').value = '';
-      document.getElementById('inputTipo').value = 'MANTENIMIENTO';
-      document.getElementById('inputDescripcion').value = '';
-      document.getElementById('inputEstado').value = 'PENDIENTE';
-    }
-
-    async function guardarMantenimiento() {
-      const codigoUnico = document.getElementById('inputCodigoUnico').value.trim();
-      const numeroDocumento = document.getElementById('inputNumeroDocumento').value.trim();
-      const tipo = document.getElementById('inputTipo').value;
-      const descripcion = document.getElementById('inputDescripcion').value.trim();
-      const estado = document.getElementById('inputEstado').value;
-      
-      if (!codigoUnico) {
-        alert('❌ Debe ingresar el código único de la herramienta');
-        return;
-      }
-      if (!numeroDocumento) {
-        alert('❌ Debe ingresar el número de documento del usuario');
-        return;
-      }
-      if (!descripcion) {
-        alert('❌ Debe ingresar una descripción');
-        return;
-      }
-      
-      try {
-        const body = { tipo, descripcion, estado };
-        
-        console.log('📤 Enviando:', { codigoUnico, numeroDocumento, body });
-        
-        const response = await fetch(`http://localhost:8080/mantenimientos?codigoUnico=${encodeURIComponent(codigoUnico)}&numeroDocumento=${encodeURIComponent(numeroDocumento)}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || 'Error del servidor');
+    
+        function cerrarModalMantenimiento() {
+          document.getElementById('modalMantenimiento').style.display = 'none';
+          // Limpiar campos
+          document.getElementById('inputCodigoUnico').value = '';
+          document.getElementById('inputNumeroDocumento').value = '';
+          document.getElementById('inputTipo').value = 'MANTENIMIENTO';
+          document.getElementById('inputDescripcion').value = '';
+          document.getElementById('inputEstado').value = 'PENDIENTE';
         }
-        
-        const resultado = await response.json();
-        console.log('✅ Guardado:', resultado);
-        
-        alert(`✅ ¡${tipo} registrado exitosamente!\n\nCódigo: ${codigoUnico}\nEstado: ${estado}\n\nLa herramienta ha sido marcada como "En Mantenimiento"`);
-        
-        cerrarModalMantenimiento();
-        await cargarEstadisticas();
-      } catch (error) {
-        console.error('❌ Error:', error);
-        alert('❌ Error al agregar mantenimiento:\n\n' + error.message + 
-              '\n\nVerifica:\n• El código único existe\n• El número de documento es válido\n• El backend está corriendo');
-      }
-    }
+    
+        async function guardarMantenimiento() {
+          const codigoUnico = document.getElementById('inputCodigoUnico').value.trim();
+          const numeroDocumento = document.getElementById('inputNumeroDocumento').value.trim();
+          const tipo = document.getElementById('inputTipo').value;
+          const descripcion = document.getElementById('inputDescripcion').value.trim();
+          const estado = document.getElementById('inputEstado').value;
 
-    async function abrirModalVerMantenimientos() {
-      console.log('🔍 Abriendo modal Ver Mantenimientos...');
-      const modalVer = document.getElementById('modalVerMantenimientos');
-      modalVer.style.display = 'block';
-      
-      document.getElementById('loadingMantenimientos').style.display = 'block';
-      document.getElementById('contenidoMantenimientos').style.display = 'none';
-      
-      try {
-        const response = await fetch('http://localhost:8080/mantenimientos/activos');
-        if (!response.ok) throw new Error('Error al cargar mantenimientos');
-        
-        const mantenimientos = await response.json();
-        console.log('📋 Mantenimientos cargados:', mantenimientos);
-        
+          if (!codigoUnico || !numeroDocumento || !descripcion) {
+            alert('⚠️ Por favor complete todos los campos requeridos');
+            return;
+          }
+
+          try {
+            const url = `http://localhost:8080/mantenimientos?codigoUnico=${encodeURIComponent(codigoUnico)}&numeroDocumento=${encodeURIComponent(numeroDocumento)}`;
+            const response = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                tipo,
+                descripcion,
+                estado
+              })
+            });
+
+            if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(errorText || 'Error al guardar');
+            }
+
+            const resultado = await response.json();
+            console.log('✅ Mantenimiento guardado:', resultado);
+
+            alert('✅ Mantenimiento registrado correctamente');
+            cerrarModalMantenimiento();
+            await cargarEstadisticas();
+          } catch (error) {
+            console.error('❌ Error:', error);
+            alert('❌ Error al guardar mantenimiento:\n\n' + error.message);
+          }
+        }
+    
+        async function abrirModalVerMantenimientos() {
+          console.log('📋 Abriendo modal Ver Mantenimientos...');
+          const modal = document.getElementById('modalVerMantenimientos');
+          modal.style.display = 'block';
+          
+          document.getElementById('loadingMantenimientos').style.display = 'block';
+          document.getElementById('contenidoMantenimientos').style.display = 'none';
+          
+          try {
+            const response = await fetch('http://localhost:8080/mantenimientos');
+            if (!response.ok) throw new Error('Error al cargar mantenimientos');
+            
+            const mantenimientos = await response.json();
+            console.log('📋 Todos los mantenimientos:', mantenimientos);
         document.getElementById('loadingMantenimientos').style.display = 'none';
         document.getElementById('contenidoMantenimientos').style.display = 'block';
         
@@ -352,10 +459,10 @@
           noMantenimientos.style.display = 'block';
         }
       } catch (error) {
-        console.error('❌ Error:', error);
+        console.error(' Error:', error);
         document.getElementById('loadingMantenimientos').style.display = 'none';
         document.getElementById('contenidoMantenimientos').style.display = 'block';
-        alert('❌ Error al cargar mantenimientos: ' + error.message);
+        alert('Error al cargar mantenimientos: ' + error.message);
       }
     }
 
@@ -378,7 +485,7 @@
         renderizarTabla(estadisticasCompletas);
         actualizarResumen(estadisticasCompletas);
       } catch (error) {
-        console.error('❌ Error:', error);
+        console.error('Error:', error);
         document.getElementById('tablaEstadisticas').innerHTML = 
           '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #f44336;">❌ Error al cargar estadísticas</td></tr>';
       }
@@ -531,7 +638,7 @@
       
       // Actualizar título
       const titulo = modalVer.querySelector('h2');
-      titulo.textContent = `🔧 Mantenimientos de ${nombreHerramienta}`;
+      titulo.textContent = `Mantenimientos de ${nombreHerramienta}`;
       
       document.getElementById('loadingMantenimientos').style.display = 'block';
       document.getElementById('contenidoMantenimientos').style.display = 'none';
@@ -541,7 +648,7 @@
         if (!response.ok) throw new Error('Error al cargar mantenimientos');
         
         const mantenimientos = await response.json();
-        console.log('📋 Mantenimientos de la herramienta:', mantenimientos);
+        console.log('Mantenimientos de la herramienta:', mantenimientos);
         
         document.getElementById('loadingMantenimientos').style.display = 'none';
         document.getElementById('contenidoMantenimientos').style.display = 'block';
@@ -589,10 +696,10 @@
           noMantenimientos.querySelector('p').textContent = `No hay mantenimientos registrados para ${nombreHerramienta}`;
         }
       } catch (error) {
-        console.error('❌ Error:', error);
+        console.error('Error:', error);
         document.getElementById('loadingMantenimientos').style.display = 'none';
         document.getElementById('contenidoMantenimientos').style.display = 'block';
-        alert('❌ Error al cargar mantenimientos: ' + error.message);
+        alert('Error al cargar mantenimientos: ' + error.message);
       }
     }
 
@@ -642,15 +749,15 @@
         await cargarEstadisticas();
         await cargarPrestamos();
       } catch (error) {
-        console.error('❌ Error:', error);
-        alert('❌ Error al cambiar estado:\n\n' + error.message);
+        console.error(' Error:', error);
+        alert(' Error al cambiar estado:\n\n' + error.message);
         event.target.value = ''; // Resetear el select en caso de error
       }
     }
 
     async function generarInforme() {
       if (!estadisticasCompletas || estadisticasCompletas.length === 0) {
-        alert('❌ No hay datos para generar el informe');
+        alert(' No hay datos para generar el informe');
         return;
       }
 
@@ -821,7 +928,7 @@
           if (rutaArchivo) {
             alert(`✅ PDF generado exitosamente en:\n${rutaArchivo}`);
           } else {
-            alert('❌ Operación cancelada');
+            alert(' Operación cancelada');
           }
         });
       } else {
@@ -869,7 +976,7 @@
 
     // ===== CARGAR AL INICIAR =====
     window.addEventListener('load', async function() {
-      console.log('🚀 Iniciando módulo de estadísticas...');
+      console.log(' Iniciando módulo de estadísticas...');
       await cargarEstadisticas();
     });
   </script>

@@ -5,15 +5,29 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "dist": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "FarmStock Team",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^37.2.1"
+    "electron": "^37.2.1",
+    "electron-builder": "^24.6.0"
   },
   "dependencies": {
     "prompt-sync": "^4.2.0"
+  },
+  "build": {
+    "files": [
+      "main.js",
+      "preload.js",
+      "app/**/*",
+      "backend/**/*"
+    ],
+    "extraResources": [
+      "backend/sql/",
+      "backend/mysql-installer-community-8.0.44.0.msi"
+    ]
   }
 }

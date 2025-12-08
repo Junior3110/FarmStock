@@ -112,6 +112,7 @@
                             <tr><td><input type="checkbox" /></td><td>1003</td><td>⛏️ Picos</td><td>24</td><td>4</td><td>22</td></tr>
                         </tbody>
                     </table>
+                    <button id="generar-pdf-lote" class="green" style="margin-top: 16px;">Generar PDF del lote</button>
                 </div>
             </section>
         </main>
@@ -141,5 +142,45 @@
     <script src="../user-session.js"></script>
     <script src="../modo-oscuro.js"></script>
     <script src="../render-window.js"></script>
+    <!-- jsPDF CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+    document.getElementById('generar-pdf-lote').addEventListener('click', function() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text('Resumen de Mantenimientos por Lote', 10, 15);
+        const table = document.querySelector('.content-box.tabla table');
+        if (!table) {
+            alert('No se encontró la tabla de herramientas.');
+            return;
+        }
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+        let y = 30;
+        doc.setFontSize(12);
+        doc.text('ID', 10, y);
+        doc.text('Herramienta', 35, y);
+        doc.text('Préstamos', 90, y);
+        doc.text('Daños', 120, y);
+        doc.text('Mantenimientos', 150, y);
+        y += 8;
+        rows.forEach(tr => {
+            const tds = tr.querySelectorAll('td');
+            if (tds.length >= 6) {
+                doc.text(String(tds[1].textContent).trim(), 10, y);
+                doc.text(String(tds[2].textContent).trim(), 35, y);
+                doc.text(String(tds[3].textContent).trim(), 90, y);
+                doc.text(String(tds[4].textContent).trim(), 120, y);
+                doc.text(String(tds[5].textContent).trim(), 150, y);
+                y += 8;
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+            }
+        });
+        doc.save('informe_lote.pdf');
+    });
+    </script>
 </body>
 </html>

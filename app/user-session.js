@@ -22,7 +22,6 @@
   // Actualizar nombre del usuario en el header
   function updateUserName() {
     const user = getCurrentUser();
-    
     // Buscar el elemento de bienvenida
     const bienvenidaElement = document.querySelector('.bienvenida p strong');
     if (bienvenidaElement && user && user.nombres) {
@@ -36,7 +35,14 @@
         // Mantener el nombre por defecto o mostrar documento
       }
     }
-    
+
+    // Mostrar foto de perfil en el avatar de bienvenida si existe
+    const avatarBienvenida = document.querySelector('.bienvenida img.foto-usuario');
+    const userPhoto = localStorage.getItem('fs_usuario_foto');
+    if (avatarBienvenida && userPhoto) {
+      avatarBienvenida.src = userPhoto;
+    }
+
     // Actualizar el nombre en el header superior si existe
     const headerName = document.querySelector('header .user-name');
     if (headerName && user && user.nombres) {

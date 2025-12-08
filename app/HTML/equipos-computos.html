@@ -44,12 +44,62 @@
       }
     });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var user = null;
+      try {
+        user = JSON.parse(localStorage.getItem('fs_usuario_actual'));
+      } catch(e) {}
+      if (user && user.cargo === 'celador') {
+        var menuItems = document.querySelectorAll('.menu-modulos li');
+        menuItems.forEach(function(item) {
+          var link = item.querySelector('a');
+          if (
+            !link.href.endsWith('equipos-computos.html') &&
+            !link.href.endsWith('equipos-movimientos.html')
+          ) {
+            item.style.display = 'none';
+          }
+        });
+      }
+    });
+  </script>
 
   <link rel="stylesheet" href="../CSS/index.css" />
   <script src="../render-window.js"></script>
   <script src="../user-session.js"></script>
   <style>
-    .content-box.registro { padding: 18px; border-radius: 14px; }
+        .content-box.registro.historial {
+          min-height: 320px;
+          max-height: 420px;
+          overflow-y: auto;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+        }
+    .content-box.registro {
+      padding: 18px;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 6px 18px rgba(16,34,31,0.06);
+      border: 1px solid var(--card-border);
+      background: var(--surface);
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .content-box.registro.equipos-lista {
+      min-height: 320px;
+      max-height: 420px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
     .registro-header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
     .registro-header h2 { margin:0; font-weight:900; color:var(--text); }
     .grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px; }
@@ -82,7 +132,7 @@
           <li><a href="index.html">Registro Herramientas</a></li>
           <li><a href="registro-salida.html">Salida Herramientas</a></li>
           <li><a href="indexInventario.html">Inventario</a></li>
-          <li><a href="Notificaciones.html">Notificaciones</a></li>
+          <!-- <li><a href="Notificaciones.html">Notificaciones</a></li> -->
           <li><a href="estats.html">Estadísticas</a></li>
           <li><a href="registro-aprendices.html">Aprendices</a></li>
           <li><a href="equipos-computos.html" class="active">Equipos de Cómputo</a></li>
@@ -103,7 +153,7 @@
         <span id="nombre-usuario" style="font-weight:700;color:var(--text);">¡Hola Usuario!</span>
       </div>
 
-      <section class="content-box registro" style="margin-top:32px;">
+      <section class="content-box registro historial" style="margin-top:32px;">
         <div class="registro-header">
           <h2>Registrar equipo</h2>
           <div class="status" id="statusMsg"></div>
@@ -138,7 +188,7 @@
         </form>
       </section>
 
-      <section class="content-box registro" style="margin-top:32px;">
+      <section class="content-box registro historial" style="margin-top:32px;">
         <div class="registro-header">
           <h2>Equipos registrados</h2>
           <div class="filtros" style="display:flex; align-items:center; gap:8px;">
@@ -152,15 +202,25 @@
             <button class="btn btn-outline" id="btnRefrescar">Refrescar</button>
           </div>
         </div>
-        <table class="tabla">
-          <thead>
-            <tr>
-              <th>ID</th><th>Persona</th><th>Cédula</th><th>Equipo</th><th>Código</th><th>Fecha</th>
-            </tr>
-          </thead>
-          <tbody id="tblEquipos"></tbody>
-        </table>
+        <div class="tabla-scroll" style="flex:1;overflow:auto;max-height:420px;">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>ID</th><th>Persona</th><th>Cédula</th><th>Equipo</th><th>Código</th><th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody id="tblEquipos"></tbody>
+          </table>
+        </div>
       </section>
+        .tabla-scroll {
+          width: 100%;
+          overflow-x: auto;
+          overflow-y: auto;
+          max-height: 200px;
+          border-radius: 10px;
+          background: transparent;
+        }
     </main>
   </div>
 

@@ -232,7 +232,7 @@
           <li><a href="index.html">Registro Herramientas</a></li>
           <li><a href="registro-salida.html">Salida Herramientas</a></li>
           <li><a href="indexInventario.html" class="active">Inventario</a></li>
-          <li><a href="Notificaciones.html">Notificaciones</a></li>
+          <!-- <li><a href="Notificaciones.html">Notificaciones</a></li> -->
           <li><a href="estats.html">Estadísticas</a></li>
           <li><a href="registro-aprendices.html">Aprendices</a></li>
           <li><a href="equipos-computos.html">Equipos de Cómputo</a></li>
@@ -309,76 +309,151 @@
   </div>
 
       <script src="../FSApiClient.js"></script>
-      <script>
-      (function() {
-        var BACKEND = 'http://127.0.0.1:8080';
-        var HERR_URL = BACKEND + '/herramienta';
-        var contenedor = document.getElementById('inventarioLista');
-        var tipoFiltro = document.getElementById('tipoFiltro');
-        var buscarCodigoInput = document.getElementById('buscarCodigo');
-        var buscarCodigoInformeInput = document.getElementById('buscarCodigoInforme');
-        // var btnBuscarInforme = document.getElementById('btnBuscarInforme');
-
-        // Mostrar/ocultar inputs según filtro seleccionado
-        // Mostrar/ocultar inputs según filtro seleccionado
-tipoFiltro.addEventListener('change', function() {
-  if (this.value === 'codigo') {
-    buscarCodigoInput.style.display = '';
-    buscarCodigoInformeInput.style.display = 'none';
-    buscarCodigoInput.focus();
-  } else {
-    buscarCodigoInput.style.display = 'none';
-    buscarCodigoInformeInput.style.display = '';
-    buscarCodigoInformeInput.focus();
-  }
-});
-
-// Búsqueda automática por código informe
-let timeoutBusquedaInforme = null;
-buscarCodigoInformeInput.addEventListener('input', function() {
-  clearTimeout(timeoutBusquedaInforme);
-
-  const codigo = this.value.trim();
-
-  timeoutBusquedaInforme = setTimeout(function() {
-    // Sólo ejecutar si el filtro está en "informe"
-    if (tipoFiltro.value !== 'informe') return;
-
-    if (!codigo) {
-      contenedor.innerHTML = '<p style="color:#b00020;">Debes ingresar un código de informe.</p>';
-      return;
+<script>
+// Funciones utilitarias globales
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function parseIsoToDate(str) {
+  if (!str) return null;
+  const d = new Date(str);
+  if (isNaN(d)) return null;
+  return d;
+}
+function renderCard(h) {
+  const fechaDisplay = h.fecha ? (parseIsoToDate(h.fecha) ? parseIsoToDate(h.fecha).toLocaleDateString() : h.fecha) : '-';
+  const div = document.createElement('div');
+  div.className = 'tarjeta herramienta-card';
+  div.innerHTML = `
+    <h3>${escapeHtml(h.nombre)}</h3>
+    <p><strong>Estado:</strong> ${escapeHtml(h.estado)}</p>
+    <p><strong>Tipo:</strong> ${escapeHtml(h.tipo)}</p>
+    <p><strong>Ubicación:</strong> ${escapeHtml(h.ubicacion)}</p>
+    <p><strong>Fecha ingreso:</strong> ${escapeHtml(fechaDisplay)}</p>
+    <p><strong>Lote:</strong> ${escapeHtml(h.lote)}</p>
+    <p><strong>Cantidad:</strong> ${escapeHtml(String(h.cantidad))}</p>
+    <div class="acciones">
+      <button class="btn-small detalles" data-id="${escapeHtml(h.idHerramienta || h.id)}" data-nombre="${escapeHtml(h.nombre)}">Ver detalles</button>
+      <button class="btn-small editar" data-id="${escapeHtml(h.idHerramienta || h.id)}" data-nombre="${escapeHtml(h.nombre)}">Editar</button>
+      <button class="btn-small delete eliminar" data-id="${escapeHtml(h.idHerramienta || h.id)}">Eliminar</button>
+    </div>
+  `;
+  if (Array.isArray(h.detalles) && h.detalles.length > 0) {
+    const primerDetalle = h.detalles[0];
+    const codigo = primerDetalle.codigoUnico || primerDetalle.codigo || primerDetalle.idDetalle || null;
+    if (codigo) {
+      const qrContainer = document.createElement('div');
+      qrContainer.className = 'card-qr';
+      const smallImg = document.createElement('img');
+      smallImg.src = '';
+      smallImg.alt = 'QR';
+      const txt = document.createElement('div');
+      txt.innerHTML = '<small>' + escapeHtml(codigo) + '</small>';
+      qrContainer.appendChild(smallImg);
+      qrContainer.appendChild(txt);
+      div.insertBefore(qrContainer, div.firstChild);
     }
+  }
+  return div;
+}
 
-    fetch(HERR_URL + '/codigo-informe/' + encodeURIComponent(codigo), {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    })
-    .then(function(res) {
-      if (!res.ok) return res.text().then(function(msg) { throw new Error(msg); });
-      return res.json();
-    })
-    .then(function(herramientas) {
-      if (!herramientas || herramientas.length === 0) {
-        contenedor.innerHTML = '<p>No se encontraron herramientas para ese código de informe.</p>';
+(function() {
+  var BACKEND = 'http://127.0.0.1:8080';
+  var HERR_URL = BACKEND + '/herramienta';
+  var contenedor = document.getElementById('inventarioLista');
+  var tipoFiltro = document.getElementById('tipoFiltro');
+  var buscarCodigoInput = document.getElementById('buscarCodigo');
+  var buscarCodigoInformeInput = document.getElementById('buscarCodigoInforme');
+
+  tipoFiltro.addEventListener('change', function() {
+    if (this.value === 'codigo') {
+      buscarCodigoInput.style.display = '';
+      buscarCodigoInformeInput.style.display = 'none';
+      buscarCodigoInput.focus();
+    } else {
+      buscarCodigoInput.style.display = 'none';
+      buscarCodigoInformeInput.style.display = '';
+      buscarCodigoInformeInput.focus();
+    }
+  });
+
+  // Filtro por código informe
+  let timeoutBusquedaInforme = null;
+  buscarCodigoInformeInput.addEventListener('input', function() {
+    clearTimeout(timeoutBusquedaInforme);
+    const codigo = this.value.trim();
+    timeoutBusquedaInforme = setTimeout(function() {
+      if (tipoFiltro.value !== 'informe') return;
+      if (!codigo) {
+        contenedor.innerHTML = '<p style="color:#b00020;">Debes ingresar un código de informe.</p>';
         return;
       }
-      contenedor.innerHTML = '';
-      var grid = document.createElement('div');
-      grid.className = 'tarjetas-container';
-      herramientas.forEach(function(h) {
-        grid.appendChild(renderCard(h));
+      fetch(HERR_URL + '/codigo-informe/' + encodeURIComponent(codigo), {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(function(res) {
+        if (!res.ok) return res.text().then(function(msg) { throw new Error(msg); });
+        return res.json();
+      })
+      .then(function(herramientas) {
+        if (!herramientas || herramientas.length === 0) {
+          contenedor.innerHTML = '<p>No se encontraron herramientas para ese código de informe.</p>';
+          return;
+        }
+        contenedor.innerHTML = '';
+        var grid = document.createElement('div');
+        grid.className = 'tarjetas-container';
+        herramientas.forEach(function(h) {
+          grid.appendChild(renderCard(h));
+        });
+        contenedor.appendChild(grid);
+      })
+      .catch(function(err) {
+        contenedor.innerHTML = '<p style="color:#b00020;">Error: ' + (err.message || err) + '</p>';
       });
-      contenedor.appendChild(grid);
-    })
-    .catch(function(err) {
-      contenedor.innerHTML = '<p style="color:#b00020;">Error: ' + (err.message || err) + '</p>';
-    });
+    }, 300);
+  });
 
-  }, 300); // debounce
-});
+  // Filtro por código único
+  let timeoutBusqueda = null;
+  buscarCodigoInput.addEventListener('input', function() {
+    clearTimeout(timeoutBusqueda);
+    const codigo = this.value.trim();
+    timeoutBusqueda = setTimeout(() => {
+      if (!codigo) {
+        contenedor.innerHTML = '<p style="color:#b00020;">Debes ingresar un código único.</p>';
+        return;
+      }
+      fetch(HERR_URL + '/buscar?codigoUnico=' + encodeURIComponent(codigo), {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(function(res) {
+        if (!res.ok) return res.text().then(function(msg) { throw new Error(msg); });
+        return res.json();
+      })
+      .then(function(herramientas) {
+        if (!herramientas || herramientas.length === 0) {
+          contenedor.innerHTML = '<p>No se encontraron herramientas para ese código único.</p>';
+          return;
+        }
+        contenedor.innerHTML = '';
+        var grid = document.createElement('div');
+        grid.className = 'tarjetas-container';
+        herramientas.forEach(function(h) {
+          grid.appendChild(renderCard(h));
+        });
+        contenedor.appendChild(grid);
+      })
+      .catch(function(err) {
+        contenedor.innerHTML = '<p style="color:#b00020;">Error: ' + (err.message || err) + '</p>';
+      });
+    }, 300);
+  });
 
-      })();
-    </script>
+})();
+</script>
 
     <script>
     (function () {
@@ -933,19 +1008,14 @@ buscarCodigoInformeInput.addEventListener('input', function() {
                 alert('❌ No se encontró el código único');
                 return;
               }
-              
-              console.log('🖨️ Imprimiendo QR:', codigoPrint);
-              
               try {
                 const qrUrl = BACKEND + '/api/herramienta-detalle/qr/' + encodeURIComponent(codigoPrint);
                 const response = await fetch(qrUrl);
                 if (!response.ok) {
                   throw new Error('No se pudo obtener el código QR');
                 }
-                
                 const blob = await response.blob();
                 const imgUrl = URL.createObjectURL(blob);
-                
                 const printWindow = window.open('', '_blank');
                 printWindow.document.write(`
                   <!DOCTYPE html>
@@ -953,43 +1023,64 @@ buscarCodigoInformeInput.addEventListener('input', function() {
                   <head>
                     <title>Imprimir QR - ${codigoPrint}</title>
                     <style>
-                      @page { margin: 1cm; }
+                      @page { margin: 0.5cm; }
                       body {
                         margin: 0;
-                        padding: 20px;
+                        padding: 0;
                         display: flex;
-                        flex-direction: column;
                         align-items: center;
                         justify-content: center;
+                        height: 100vh;
+                        background: #fff;
                         font-family: Arial, sans-serif;
                       }
-                      .qr-container {
-                        text-align: center;
-                        page-break-after: avoid;
+                      .print-box {
+                        display: flex;
+                        align-items: center;
+                        border: 2px solid #222;
+                        border-radius: 8px;
+                        padding: 10px 18px;
+                        background: #fff;
+                        min-width: 220px;
+                        max-width: 320px;
                       }
-                      .qr-code {
-                        width: 300px;
-                        height: 300px;
-                        margin: 20px auto;
+                      .print-qr {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 80px;
+                        height: 80px;
+                        border: 2px solid #222;
+                        border-radius: 10px;
+                        margin-right: 18px;
+                        background: #fff;
+                      }
+                      .print-qr img {
+                        width: 60px;
+                        height: 60px;
+                        object-fit: contain;
                         display: block;
                       }
-                      .qr-info {
-                        margin-top: 15px;
+                      .print-info {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        gap: 4px;
                       }
-                      .qr-code-text {
-                        font-size: 18px;
-                        font-weight: bold;
-                        margin: 10px 0;
+                      .print-info .nombre {
+                        font-size: 13px;
+                        font-weight: 700;
+                        color: #222;
                       }
-                      .qr-herramienta {
-                        font-size: 16px;
+                      .print-info .codigo {
+                        font-size: 11px;
+                        color: #444;
+                        font-weight: 600;
+                      }
+                      .print-info .fecha {
+                        font-size: 10px;
                         color: #555;
-                        margin: 5px 0;
-                      }
-                      .qr-date {
-                        font-size: 12px;
-                        color: #888;
-                        margin-top: 10px;
                       }
                       @media print {
                         body { padding: 0; }
@@ -997,12 +1088,12 @@ buscarCodigoInformeInput.addEventListener('input', function() {
                     </style>
                   </head>
                   <body>
-                    <div class="qr-container">
-                      <img class="qr-code" src="${imgUrl}" alt="Código QR">
-                      <div class="qr-info">
-                        <div class="qr-code-text">${codigoPrint}</div>
-                        <div class="qr-herramienta">${nombreUnit}</div>
-                        <div class="qr-date">Impreso: ${new Date().toLocaleDateString('es-ES')} ${new Date().toLocaleTimeString('es-ES')}</div>
+                    <div class="print-box">
+                      <div class="print-qr"><img src="${imgUrl}" alt="QR"></div>
+                      <div class="print-info">
+                        <div class="nombre">${nombreUnit}</div>
+                        <div class="codigo">${codigoPrint}</div>
+                        <div class="fecha">${new Date().toLocaleDateString('es-ES')}</div>
                       </div>
                     </div>
                     <script>
@@ -1019,7 +1110,6 @@ buscarCodigoInformeInput.addEventListener('input', function() {
                   </html>
                 `);
                 printWindow.document.close();
-                
               } catch (error) {
                 console.error('❌ Error al imprimir:', error);
                 alert('❌ Error al imprimir el código QR. Verifica que el backend esté corriendo.');
@@ -1251,9 +1341,36 @@ async function eliminarHerramienta(id, nombre) {
       let timeoutBusqueda = null;
       buscarCodigoInput.addEventListener('input', function() {
         clearTimeout(timeoutBusqueda);
+        const codigo = this.value.trim();
         timeoutBusqueda = setTimeout(() => {
-          console.log('🔎 Input de búsqueda:', this.value);
-          mostrarInventario(this.value);
+          if (!codigo) {
+            contenedor.innerHTML = '<p style="color:#b00020;">Debes ingresar un código único.</p>';
+            return;
+          }
+          fetch(HERR_URL + '/buscar?codigoUnico=' + encodeURIComponent(codigo), {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+          })
+          .then(function(res) {
+            if (!res.ok) return res.text().then(function(msg) { throw new Error(msg); });
+            return res.json();
+          })
+          .then(function(herramientas) {
+            if (!herramientas || herramientas.length === 0) {
+              contenedor.innerHTML = '<p>No se encontraron herramientas para ese código único.</p>';
+              return;
+            }
+            contenedor.innerHTML = '';
+            var grid = document.createElement('div');
+            grid.className = 'tarjetas-container';
+            herramientas.forEach(function(h) {
+              grid.appendChild(renderCard(h));
+            });
+            contenedor.appendChild(grid);
+          })
+          .catch(function(err) {
+            contenedor.innerHTML = '<p style="color:#b00020;">Error: ' + (err.message || err) + '</p>';
+          });
         }, 300); // Esperar 300ms después de que el usuario deje de escribir
       });
 

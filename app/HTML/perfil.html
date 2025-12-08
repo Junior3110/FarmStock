@@ -16,6 +16,26 @@
       }
     })();
   </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var user = null;
+        try {
+          user = JSON.parse(localStorage.getItem('fs_usuario_actual'));
+        } catch(e) {}
+        if (user && user.cargo === 'celador') {
+          var menuItems = document.querySelectorAll('.menu-modulos li');
+          menuItems.forEach(function(item) {
+            var link = item.querySelector('a');
+            if (
+              !link.href.endsWith('equipos-computos.html') &&
+              !link.href.endsWith('equipos-movimientos.html')
+            ) {
+              item.style.display = 'none';
+            }
+          });
+        }
+      });
+    </script>
   <link rel="stylesheet" href="../CSS/index.css" />
   <link rel="stylesheet" href="../CSS/Notificaciones.css" />
 </head>
@@ -35,7 +55,7 @@
           <li><a href="index.html">Registro Herramientas</a></li>
           <li><a href="registro-salida.html">Salida Herramientas</a></li>
           <li><a href="indexInventario.html">Inventario</a></li>
-          <li><a href="Notificaciones.html">Notificaciones</a></li>
+          <!-- <li><a href="Notificaciones.html">Notificaciones</a></li> -->
           <li><a href="estats.html">Estadísticas</a></li>
           <li><a href="registro-aprendices.html">Aprendices</a></li>
           <li><a href="equipos-computos.html">Equipos de Cómputo</a></li>
@@ -63,7 +83,12 @@
             <!-- Columna izquierda: avatar + stats -->
             <div>
               <div class="card" style="padding:16px; display:flex; flex-direction:column; gap:12px; align-items:center; text-align:center; border-radius: 20px;">
-                <img src="../imagenes/usuario.png" alt="Avatar" style="width:96px; height:96px; border-radius:12px; object-fit:cover; box-shadow:var(--shadow-1);" />
+                <img id="avatarImg" src="../imagenes/usuario.png" alt="Avatar" style="width:96px; height:96px; border-radius:12px; object-fit:cover; box-shadow:var(--shadow-1);" />
+                <label for="avatarInput" class="custom-file-label" style="display:block;margin-top:10px;">
+                  <span style="display:inline-block;padding:10px 18px;background:linear-gradient(90deg,#3b82f6,#10b981);color:#fff;font-weight:700;border-radius:8px;cursor:pointer;box-shadow:0 2px 8px rgba(16,185,129,0.10);transition:background 0.2s;">Cambiar foto de perfil</span>
+                  <input type="file" id="avatarInput" accept="image/*" style="display:none;" />
+                </label>
+                <span id="avatarFileName" style="display:block;margin-top:6px;color:var(--muted);font-size:13px;"></span>
                 <div>
                   <h3 style="margin:6px 0 0 0;">María Pérez</h3>
                   <div class="small-muted">Administrador</div>
@@ -141,6 +166,63 @@
   <script src="../modo-oscuro.js"></script>
   <script src="../render-window.js"></script>
   <script src="../FSApiClient.js"></script>
+
+  <script>
+    // Foto de perfil solo frontend
+    document.addEventListener('DOMContentLoaded', function() {
+      var avatarImg = document.getElementById('avatarImg');
+      var avatarInput = document.getElementById('avatarInput');
+      var avatarFileName = document.getElementById('avatarFileName');
+      // Cargar imagen guardada en localStorage
+      var userPhoto = localStorage.getItem('fs_usuario_foto');
+      if (userPhoto) {
+        avatarImg.src = userPhoto;
+      }
+      // Mostrar nombre de archivo seleccionado
+      avatarInput.addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        avatarFileName.textContent = file.name;
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          avatarImg.src = ev.target.result;
+          localStorage.setItem('fs_usuario_foto', ev.target.result);
+        };
+        reader.readAsDataURL(file);
+      });
+      // Click en el label personalizado abre el input
+      var customLabel = document.querySelector('.custom-file-label span');
+      if (customLabel) {
+        customLabel.addEventListener('click', function() {
+          avatarInput.click();
+        });
+      }
+    });
+  </script>
+
+    <script>
+      // Foto de perfil solo frontend
+      document.addEventListener('DOMContentLoaded', function() {
+        var avatarImg = document.getElementById('avatarImg');
+        var avatarInput = document.getElementById('avatarInput');
+        // Cargar imagen guardada en localStorage
+        var userPhoto = localStorage.getItem('fs_usuario_foto');
+        if (userPhoto) {
+          avatarImg.src = userPhoto;
+        }
+        // Al seleccionar nueva imagen
+        avatarInput.addEventListener('change', function(e) {
+          var file = e.target.files[0];
+          if (!file) return;
+          var reader = new FileReader();
+          reader.onload = function(ev) {
+            avatarImg.src = ev.target.result;
+            localStorage.setItem('fs_usuario_foto', ev.target.result);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+    </script>
   
   <script>
     (function() {

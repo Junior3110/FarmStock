@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (payload.telefono && !/^[0-9]{7,15}$/.test(payload.telefono)) {
       errors.telefono = 'El teléfono debe contener entre 7 y 15 dígitos (solo números).';
     }
-    const cargoAllowed = ['instructor', 'aprendiz', 'administrador'];
+      const cargoAllowed = ['instructor', 'celador', 'administrador'];
     if (!payload.cargo || cargoAllowed.indexOf(payload.cargo) === -1) {
       errors.cargo = 'Cargo inválido. Opciones: instructor, aprendiz, administrador.';
     }

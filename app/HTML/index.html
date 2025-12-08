@@ -107,7 +107,7 @@
             <li><a href="index.html" class="active">Registro Herramientas</a></li>
             <li><a href="registro-salida.html">Salida Herramientas</a></li>
             <li><a href="indexInventario.html">Inventario</a></li>
-            <li><a href="Notificaciones.html">Notificaciones</a></li>
+            <!-- <li><a href="Notificaciones.html">Notificaciones</a></li> -->
             <li><a href="estats.html">Estadísticas</a></li>
             <li><a href="registro-aprendices.html">Aprendices</a></li>
             <li><a href="equipos-computos.html">Equipos de Cómputo</a></li>
@@ -687,5 +687,27 @@
   <script src="../user-session.js"></script>
   <script src="../modo-oscuro.js"></script>
   <script src="../render-window.js"></script>
+
+  <!-- Mostrar solo módulos permitidos para celador -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var user = null;
+      try {
+        user = JSON.parse(localStorage.getItem('fs_usuario_actual'));
+      } catch(e) {}
+      if (user && user.cargo === 'celador') {
+        var menuItems = document.querySelectorAll('.menu-modulos li');
+        menuItems.forEach(function(item) {
+          var link = item.querySelector('a');
+          if (
+            !link.href.endsWith('equipos-computos.html') &&
+            !link.href.endsWith('equipos-movimientos.html')
+          ) {
+            item.style.display = 'none';
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>

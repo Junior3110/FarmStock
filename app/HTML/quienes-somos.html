@@ -16,6 +16,26 @@
         }
       })();
     </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var user = null;
+                try {
+                    user = JSON.parse(localStorage.getItem('fs_usuario_actual'));
+                } catch(e) {}
+                if (user && user.cargo === 'celador') {
+                    var menuItems = document.querySelectorAll('.menu-modulos li');
+                    menuItems.forEach(function(item) {
+                        var link = item.querySelector('a');
+                        if (
+                            !link.href.endsWith('equipos-computos.html') &&
+                            !link.href.endsWith('equipos-movimientos.html')
+                        ) {
+                            item.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        </script>
     <link rel="stylesheet" href="../CSS/index.css">
     <!-- Reutilizamos index.css -->
     <link rel="stylesheet" href="../CSS/quienes-somos.css">
@@ -43,7 +63,7 @@
                     <li><a href="index.html">Registro Herramientas</a></li>
                     <li><a href="registro-salida.html">Salida Herramientas</a></li>
                     <li><a href="indexInventario.html">Inventario</a></li>
-                    <li><a href="notificaciones.html">Notificaciones</a></li>
+                    <!-- <li><a href="Notificaciones.html">Notificaciones</a></li> -->
                     <li><a href="estats.html">Estadísticas</a></li>
                     <li><a href="registro-aprendices.html">Aprendices</a></li>
                     <li><a href="equipos-computos.html">Equipos de Cómputo</a></li>

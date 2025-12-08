@@ -152,9 +152,25 @@ function createWindow() {
 
 app.whenReady().then(() => {
     console.log('🚀 Iniciando FarmStock...');
-    console.log('ℹ️  Backend debe estar corriendo externamente en localhost:8080');
-    
-    // Crear la ventana directamente
+    // Iniciar backend Spring Boot automáticamente
+    const { spawn } = require('child_process');
+    const jarPath = path.join(__dirname, 'backend', 'FarmStock-0.0.1-SNAPSHOT.jar');
+    console.log('Iniciando backend desde:', jarPath);
+    const backendProcess = spawn('java', ['-jar', jarPath], {
+        cwd: path.dirname(jarPath),
+        stdio: 'pipe',
+        shell: true
+    });
+    backendProcess.stdout.on('data', (data) => {
+        console.log(`Backend: ${data}`);
+    });
+    backendProcess.stderr.on('data', (data) => {
+        console.error(`Backend Error: ${data}`);
+    });
+    backendProcess.on('close', (code) => {
+        console.log(`Backend cerrado con código: ${code}`);
+    });
+    // Crear la ventana principal
     createWindow();
 });
 
