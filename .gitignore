@@ -1,3 +1,7 @@
 node_modules/
 dist/
 .env
+# Ignorar archivos grandes y binarios
+backend/*.msi
+backend/*.zip
+backend/sql/*.sql
