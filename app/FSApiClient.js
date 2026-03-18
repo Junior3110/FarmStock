@@ -1,10 +1,10 @@
 (function (global) {
   'use strict';
 
-  const API_BASE = 'http://localhost:8080';
+  const API_BASE = 'http://localhost:3000';
   const HERR_URL = API_BASE + '/herramienta';
   const DETALLE_URL_BASE = API_BASE + '/api/herramienta-detalle';
-  const PRESTAMOS_URL = API_BASE + '/prestamos';
+  const PRESTAMOS_URL = API_BASE + '/prestamo';
   const USUARIO_URL = API_BASE + '/usuario';
   const TIMEOUT_MS = 8000;
 
@@ -118,7 +118,7 @@
 
     obtenerHerramientasHoy: async function () {
       try {
-        const res = await safeFetch(HERR_URL + '/hoy', { method: 'GET' });
+        const res = await safeFetch(HERR_URL + { method: 'GET' });
         if (!res.ok) {
           const txt = await parseJSONSafe(res);
           throw new Error((txt && (txt.message || txt.error)) || ('HTTP ' + res.status));

@@ -71,8 +71,6 @@
   <style>
         .content-box.registro.historial {
           min-height: 320px;
-          max-height: 420px;
-          overflow-y: auto;
           display: flex;
           flex-direction: column;
           justify-content: flex-start;
@@ -94,8 +92,6 @@
     }
     .content-box.registro.equipos-lista {
       min-height: 320px;
-      max-height: 420px;
-      overflow-y: auto;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -107,7 +103,7 @@
     .grid input { padding:9px 10px; border-radius:10px; border:1px solid var(--card-border); background: color-mix(in srgb,var(--surface) 96%, transparent 4%); color:var(--text); }
     .controls { display:flex; gap:8px; margin-top:12px; }
     .btn { padding:10px 12px; border-radius:10px; border:none; cursor:pointer; font-weight:800; }
-    .btn-green { background: linear-gradient(180deg,#7bd07a,#3fa34a); color:#fff; }
+    .btn-green { background: linear-gradient(180deg, var(--accent-400), var(--accent-600)); color:#fff; }
     .btn-outline { background: color-mix(in srgb,var(--surface) 96%, transparent 4%); border:1px solid var(--card-border); color:var(--text); }
     .status { margin-left:8px; font-weight:700; color:var(--muted); font-size:13px; }
     .tabla { width:100%; border-collapse:collapse; margin-top:14px; }
@@ -202,7 +198,7 @@
             <button class="btn btn-outline" id="btnRefrescar">Refrescar</button>
           </div>
         </div>
-        <div class="tabla-scroll" style="flex:1;overflow:auto;max-height:420px;">
+        <div class="table-responsive">
           <table class="tabla">
             <thead>
               <tr>
@@ -213,19 +209,11 @@
           </table>
         </div>
       </section>
-        .tabla-scroll {
-          width: 100%;
-          overflow-x: auto;
-          overflow-y: auto;
-          max-height: 200px;
-          border-radius: 10px;
-          background: transparent;
-        }
     </main>
   </div>
 
   <script>
-    const API_BASE = 'http://localhost:8080';
+    const API_BASE = 'http://localhost:3000';
     const EQUIPOS_URL = API_BASE + '/equipos-computos';
 
     function fmtDateTimeLocal(dtStr) {

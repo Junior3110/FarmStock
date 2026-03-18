@@ -295,7 +295,7 @@
             throw new Error('No hay usuario logueado');
           }
           
-          const response = await fetch(`http://localhost:8080/usuario/${usuarioActual.idUsuario}`);
+          const response = await fetch(`http://localhost:3000/usuario/${usuarioActual.idUsuario}`);
           
           if (!response.ok) {
             throw new Error('Usuario no encontrado');
@@ -352,7 +352,7 @@
         }
         
         try {
-          const response = await fetch(`http://localhost:8080/usuario/${usuarioActual.idUsuario}`, {
+          const response = await fetch(`http://localhost:3000/usuario/${usuarioActual.idUsuario}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json'
@@ -445,7 +445,7 @@
                 contrasena: nueva
               };
               
-              const response = await fetch(`http://localhost:8080/usuario/${usuarioActual.idUsuario}`, {
+              const response = await fetch(`http://localhost:3000/usuario/${usuarioActual.idUsuario}`, {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json'

@@ -31,8 +31,7 @@
       padding: 12px;
       box-sizing: border-box;
       align-content: start;
-      max-height: calc(100vh - 240px);
-      overflow: auto;
+      align-content: start;
       border-radius: 10px;
       background: transparent;
     }
@@ -358,7 +357,7 @@ function renderCard(h) {
 }
 
 (function() {
-  var BACKEND = 'http://127.0.0.1:8080';
+  var BACKEND = 'http://localhost:3000';
   var HERR_URL = BACKEND + '/herramienta';
   var contenedor = document.getElementById('inventarioLista');
   var tipoFiltro = document.getElementById('tipoFiltro');
@@ -493,7 +492,7 @@ function renderCard(h) {
       }
 
       // ===== CONFIG: BACKEND en local =====
-      const BACKEND_BASE = 'http://127.0.0.1:8080'; // <-- backend local
+      const BACKEND_BASE = 'http://localhost:3000'; // <-- backend local
       function ensureNoSlash(u){ return u && u.endsWith('/') ? u.slice(0,-1) : u; }
       const BACKEND = ensureNoSlash(BACKEND_BASE);
 

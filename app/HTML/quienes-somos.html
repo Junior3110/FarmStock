@@ -6,50 +6,51 @@
     <title>Quiénes Somos - FarmStock</title>
     <!-- Prevenir flashazo del modo oscuro -->
     <script>
-      (function() {
-        const saved = localStorage.getItem('fs_dark_mode');
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const shouldBeDark = saved === null ? prefersDark : saved === 'true';
-        if (shouldBeDark) {
-          document.documentElement.classList.add('dark-mode');
-          document.body.classList.add('dark-mode');
-        }
-      })();
+        (function () {
+            const saved = localStorage.getItem('fs_dark_mode');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const shouldBeDark = saved === null ? prefersDark : saved === 'true';
+            if (shouldBeDark) {
+                document.documentElement.classList.add('dark-mode');
+                document.body.classList.add('dark-mode');
+            }
+        })();
     </script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var user = null;
-                try {
-                    user = JSON.parse(localStorage.getItem('fs_usuario_actual'));
-                } catch(e) {}
-                if (user && user.cargo === 'celador') {
-                    var menuItems = document.querySelectorAll('.menu-modulos li');
-                    menuItems.forEach(function(item) {
-                        var link = item.querySelector('a');
-                        if (
-                            !link.href.endsWith('equipos-computos.html') &&
-                            !link.href.endsWith('equipos-movimientos.html')
-                        ) {
-                            item.style.display = 'none';
-                        }
-                    });
-                }
-            });
-        </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var user = null;
+            try {
+                user = JSON.parse(localStorage.getItem('fs_usuario_actual'));
+            } catch (e) { }
+            if (user && user.cargo === 'celador') {
+                var menuItems = document.querySelectorAll('.menu-modulos li');
+                menuItems.forEach(function (item) {
+                    var link = item.querySelector('a');
+                    if (
+                        !link.href.endsWith('equipos-computos.html') &&
+                        !link.href.endsWith('equipos-movimientos.html')
+                    ) {
+                        item.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
     <link rel="stylesheet" href="../CSS/index.css">
     <!-- Reutilizamos index.css -->
     <link rel="stylesheet" href="../CSS/quienes-somos.css">
     <!-- CSS específico -->
-     <link rel="stylesheet" href="../CSS/global-fixes.css" />
-     <link rel="stylesheet" href="../CSS/index.css" /> <link rel="stylesheet" href="../CSS/modal-fixes.css" />
+    <link rel="stylesheet" href="../CSS/global-fixes.css" />
+    <link rel="stylesheet" href="../CSS/index.css" />
+    <link rel="stylesheet" href="../CSS/modal-fixes.css" />
 </head>
 
 <body>
-  <div class="window-controls">
-    <button id="minimize" title="Minimizar" type="button">─</button>
-    <button id="maximize" title="Maximizar" type="button">▢</button>
-    <button id="close" title="Cerrar" type="button">✕</button>
-  </div>
+    <div class="window-controls">
+        <button id="minimize" title="Minimizar" type="button">─</button>
+        <button id="maximize" title="Maximizar" type="button">▢</button>
+        <button id="close" title="Cerrar" type="button">✕</button>
+    </div>
 
     <div class="container">
         <!-- Sidebar -->
@@ -67,15 +68,14 @@
                     <li><a href="estats.html">Estadísticas</a></li>
                     <li><a href="registro-aprendices.html">Aprendices</a></li>
                     <li><a href="equipos-computos.html">Equipos de Cómputo</a></li>
-                    <li><a href="equipos-movimientos.html">Movimientos Equipos</
-                </ul>
+                    <li><a href="equipos-movimientos.html">Movimientos Equipos</ </ul>
             </div>
 
             <!-- Abajo: quienes somos + modo noche -->
             <div class="sidebar-bottom">
                 <a href="quienes-somos.html" class="somos active">
-      👥 Quiénes Somos
-    </a>
+                    👥 Quiénes Somos
+                </a>
                 <div class="night-mode">
                     <span>🌙 Modo noche</span>
                 </div>
@@ -100,39 +100,44 @@
             <!-- Contenido dinámico -->
             <section class="info" id="info-quienes">
                 <p>
-                    somos un equipo de aprendices del Servicio Nacional de Aprendizaje – SENA, en formación dentro del programa Análisis y Desarrollo de Software. Nuestro compromiso es aplicar los conocimientos adquiridos en el aula para el desarrollo de soluciones tecnológicas
-                    que respondan a necesidades reales del entorno productivo y formativo. El proyecto
-                    <Strong>FarmStock</Strong> nace como una iniciativa orientada a solucionar la problemática existente en la finca del SENA, sede Zulia (Norte de Santander), relacionada con la falta de control eficiente en el ingreso y egreso de herramientas agrícolas. Esta
-                    situación afecta tanto a instructores como a aprendices, dificultando la planeación de las actividades prácticas y el seguimiento del estado de las herramientas. Nuestra propuesta consiste en el diseño y desarrollo de un sistema de
-                    gestión de inventario que permita automatizar procesos, mejorar la organización y garantizar un control más confiable de las herramientas mediante el uso de tecnologías como Electron, JavaScript, HTML, CSS y MySQL. Con este proyecto
-                    productivo buscamos no solo aportar una solución funcional y práctica para el control de inventarios en la sede, sino también fortalecer nuestras competencias en desarrollo de software, trabajo en equipo y metodologías ágiles, preparándonos
-                    para enfrentar los retos del sector tecnológico.
-
+                    <Strong>SIM Energy</Strong> es una empresa líder en el desarrollo de soluciones integrales y
+                    servicios de infraestructura eléctrica, energética y tecnológica corporativa. Contamos con un equipo
+                    de profesionales multidisciplinarios de alto nivel, especializados en ingeniería y gestión de
+                    proyectos para los sectores más exigentes de la industria. Nos caracterizamos por transformar las
+                    necesidades energéticas en proyectos viables y altamente eficientes, asegurando siempre el uso
+                    responsable de los recursos. Nuestro control interno y rigurosa metodología nos permiten entregar
+                    resultados extraordinarios que marcan la diferencia en el mercado actual.
                 </p>
                 <div class="foto-seccion">
-                    <img src="../imagenes/quienes.jpeg" alt="Foto de usuario" class="foto-usuario" />
-                    <img src="../imagenes/mision1.png" alt="Foto de usuario" class="foto-usuario" />
+                    <img src="../imagenes/quienes.jpg" alt="Personal SIM Energy" class="foto-usuario"
+                        onerror="this.src='https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=400&h=300'" />
+                    <img src="../imagenes/mision1.webp" alt="Instalaciones SIM Energy" class="foto-usuario"
+                        onerror="this.src='https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&q=80&w=400&h=300'" />
                 </div>
             </section>
 
             <section class="info" id="info-mision" style="display:none;">
                 <p>
-                    Desarrollar un sistema de gestión de inventario eficiente y confiable que facilite el control del ingreso y salida de herramientas agrícolas en la finca del SENA sede Zulia. Nuestra misión es brindar a aprendices e instructores una herramienta tecnológica
-                    que optimice los procesos formativos, reduzca los errores en los registros, mejore la trazabilidad de los equipos y promueva la responsabilidad en el uso de los recursos. A través de la innovación y el aprendizaje colaborativo, buscamos
-                    contribuir al fortalecimiento de las competencias técnicas y tecnológicas en el área agrícola y de software.
+                    <strong>Misión:</strong> Brindar soluciones energéticas y de ingeniería eficientes a través de la
+                    implementación de tecnologías de vanguardia y prácticas sostenibles. En SIM Energy nos enfocamos en
+                    garantizar el cumplimiento técnico, impulsando el crecimiento de nuestros clientes industriales,
+                    aportando valor a sus infraestructuras bajo estrictos estándares de seguridad y calidad.
                 </p>
                 <div class="foto-seccion">
-                    <img src="../imagenes/mision.jpeg" alt="Foto de usuario" class="foto-usuario" />
-                    <img src="../imagenes/mision2.jpg" alt="Foto de usuario" class="foto-usuario" />
+                    <img src="../imagenes/mision.jpeg" alt="Proyecto Energía" class="foto-usuario"
+                        onerror="this.src='https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&q=80&w=400&h=300'" />
+                    <img src="../imagenes/mision2.jpg" alt="Equipos Eléctricos" class="foto-usuario"
+                        onerror="this.src='https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=400&h=300'" />
                 </div>
             </section>
 
             <section class="info" id="info-vision" style="display:none;">
                 <p>
-                    Para el año 2027, consolidar a
-                    <Strong>FarmStock</Strong> como una solución tecnológica de referencia dentro del SENA y extender su aplicación a otras sedes y contextos académicos y productivos. Nuestra visión es convertir el sistema en una plataforma escalable y adaptable, que integre tecnologías
-                    modernas como códigos QR, reportes automatizados y análisis estadísticos, contribuyendo a la transformación digital del sector educativo y agrícola. Aspiramos a que FarmStock sea un modelo de innovación creado por aprendices que inspire
-                    futuros proyectos de desarrollo tecnológico en la región.
+                    <strong>Visión:</strong> Ser la principal compañía de referencia a nivel nacional e internacional en
+                    servicios de infraestructura e ingeniería energética sustentable para el próximo ciclo industrial.
+                    Aspiramos a redefinir el futuro de la energía corporativa mediante la innovación tecnológica
+                    incesante, elevando nuestras operaciones al grado más alto de excelencia y compromiso
+                    medioambiental.
                 </p>
                 <div class="foto-seccion">
                     <img src="../imagenes/vision1.jpg_large" alt="Foto de usuario" class="foto-usuario" />

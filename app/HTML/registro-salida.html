@@ -46,7 +46,7 @@
     .tabla tbody td { padding:10px; border-top:1px solid rgba(255,255,255,0.02); color:var(--text); }
 
     .btn-small { padding:8px 10px; border-radius:8px; border:none; cursor:pointer; font-weight:700; }
-    .btn-green { background: linear-gradient(180deg,#7bd07a,#3fa34a); color:#fff; }
+    .btn-green { background: linear-gradient(180deg, var(--accent-400), var(--accent-600)); color:#fff; }
     .btn-outline { background: color-mix(in srgb,var(--surface) 96%, transparent 4%); border:1px solid var(--card-border); color:var(--text); }
     .btn-delete { background: linear-gradient(180deg, #f44336, #d32f2f); color:#fff; border:none; }
     #closeRegistrar{
@@ -147,7 +147,7 @@
           </div>
 
           <!-- Tabla historial -->
-          <div class="table-wrap" style="max-height: 480px; overflow-y: auto;">
+          <div class="table-responsive">
             <table class="tabla" id="tablaHistorial">
               <thead>
                 <tr>
@@ -304,11 +304,11 @@
         
         try {
           // Determinar qué endpoint usar según el filtro de estado
-          let endpoint = 'http://localhost:8080/prestamos/activos';
+          let endpoint = 'http://localhost:3000/prestamos/activos';
           if (estadoFiltro === 'todos') {
-            endpoint = 'http://localhost:8080/prestamos/todos';
+            endpoint = 'http://localhost:3000/prestamos/todos';
           } else if (estadoFiltro === 'finalizados') {
-            endpoint = 'http://localhost:8080/prestamos/devueltos';
+            endpoint = 'http://localhost:3000/prestamos/devueltos';
           }
           
           console.log('📡 Cargando préstamos desde:', endpoint);
@@ -414,7 +414,7 @@
         try {
           if (isNumericId) {
             // Es un ID del backend, usar API
-            const response = await fetch(`http://localhost:8080/prestamos/${id}`, {
+            const response = await fetch(`http://localhost:3000/prestamos/${id}`, {
               method: 'DELETE'
             });
             
@@ -436,7 +436,7 @@
           console.error('Error al eliminar préstamo:', error);
           alert('❌ ERROR AL ELIMINAR PRÉSTAMO\n\n' + error.message + '\n\n' +
                 'Verifica:\n' +
-                '• Backend corriendo en localhost:8080\n' +
+                '• Backend corriendo en localhost:3000\n' +
                 '• El préstamo existe en la base de datos');
         }
       });
@@ -589,7 +589,7 @@
           };
           
           console.log('  - Payload a enviar:', JSON.stringify(prestamoPayload, null, 2));
-          console.log('  - URL completa:', `http://localhost:8080/prestamos/crear?codigoUnico=${code}&idUsuario=${idUsuario}&numeroDocumento=${cc}`);
+          console.log('  - URL completa:', `http://localhost:3000/prestamos/crear?codigoUnico=${code}&idUsuario=${idUsuario}&numeroDocumento=${cc}`);
           
           // Llamar al backend
           console.log('  🔄 Enviando petición al backend...');
@@ -700,7 +700,7 @@
                 '❌ No se pudo conectar con el servidor\n' +
                 'El préstamo se guardó en el historial local.\n\n' +
                 'Verifica:\n' +
-                '• Backend corriendo en localhost:8080\n' +
+                '• Backend corriendo en localhost:3000\n' +
                 '• Herramienta existe en herramienta_detalle\n' +
                 '• Aprendiz registrado en la BD\n' +
                 '• Usuario ID=1 existe en la BD');
@@ -858,7 +858,7 @@
           // Llamar al endpoint de devolución con el código normalizado
           console.log('📤 Enviando devolución para código:', codigoNormalizado);
           
-          const response = await fetch(`http://localhost:8080/prestamos/devolver/codigo/${encodeURIComponent(codigoNormalizado)}`, {
+          const response = await fetch(`http://localhost:3000/prestamos/devolver/codigo/${encodeURIComponent(codigoNormalizado)}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json'
@@ -886,7 +886,7 @@
           console.error('❌ Error al registrar entrada:', error);
           alert('❌ ERROR AL REGISTRAR DEVOLUCIÓN\n\n' + error.message + '\n\n' +
                 'Verifica:\n' +
-                '• Backend corriendo en localhost:8080\n' +
+                '• Backend corriendo en localhost:3000\n' +
                 '• El préstamo existe y está activo\n' +
                 '• El código es correcto: ' + codigoNormalizado);
         }

@@ -65,11 +65,11 @@
     const documento = localStorage.getItem('documento');
     
     // Solo redirigir si definitivamente no hay sesión
-    if (!user && !documento) {
-      console.warn('No hay sesión activa, redirigiendo a login');
-      setTimeout(() => {
-        window.location.replace('login.html');
-      }, 100);
+    //if (!user && !documento) {
+      //console.warn('No hay sesión activa, redirigiendo a login');
+      //setTimeout(() => {
+//        window.location.replace('login.html');
+ //     }, 100);
     }
   }
   

@@ -181,7 +181,7 @@
               <label for="descripcion">Descripción de herramienta</label>
               <textarea id="descripcion" name="descripcion" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
               <div class="boton-registrar" style="display:flex;justify-content:flex-end;align-items:flex-end;margin-top:24px;">
-                  <button type="submit" id="btnRegistrar" class="btn btn-success">Registrar</button>
+                  <button type="submit" id="btnRegistrar" class="btn btn-warning">Registrar</button>
               </div>
             </div>
           </form>
@@ -238,7 +238,7 @@
   <!-- Lógica PRINCIPAL SOLO ONLINE -->
   <script>
 (function() {
-  var API_BASE = 'http://localhost:8080';
+  var API_BASE = 'http://localhost:3000';
   var HERR_URL = API_BASE + '/herramienta';
   var DETALLE_URL_BASE = API_BASE + '/api/herramienta-detalle';
 

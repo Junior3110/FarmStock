@@ -1,5 +1,5 @@
 // URL del backend Spring Boot (ajusta si llamas desde puerto diferente)
-const API_BASE = 'http://localhost:8080/aprendices';
+const API_BASE = 'http://localhost:3000/aprendices';
 
 // Helpers
 function escapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }

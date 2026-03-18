@@ -66,7 +66,7 @@
     }
     .filter-actions { display:flex; gap:8px; }
 
-    .table-responsive { overflow:auto; margin-top:12px; }
+    .table-responsive { margin-top:12px; }
     table.reg-table {
       width:100%;
       border-collapse: collapse;
@@ -313,7 +313,7 @@
 
   <script>
 // URL del backend Spring Boot (ajusta si llamas desde puerto diferente)
-const API_BASE = 'http://localhost:8080/aprendices';
+const API_BASE = 'http://localhost:3000/aprendices';
 
 // Helpers
 function escapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }

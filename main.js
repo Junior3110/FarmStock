@@ -3,6 +3,10 @@ const path = require("path");
 // const { spawn, exec } = require("child_process"); // ❌ Ya no se necesita
 
 let win;
+
+// Suprimir errores de caché de GPU en Windows (solo afectan permisos de disco, no la funcionalidad)
+app.commandLine.appendSwitch('disable-gpu-shader-disk-cache');
+app.commandLine.appendSwitch('disable-features', 'GPUShaderCache');
 // let backendProcess = null; // ❌ Deshabilitado: Backend se gestiona externamente
 
 // ❌ DESHABILITADO: Backend se gestiona externamente
@@ -138,8 +142,8 @@ function createWindow() {
   });
 
 
-    // 👇 Página inicial (puedes cambiarla si lo deseas)
-    win.loadFile(path.join(__dirname, "app/HTML/login.html"));
+    // 👇 Página inicial
+    win.loadFile(path.join(__dirname, "app/HTML/indexInventario.html"));
 
     win.once("ready-to-show", () => {
         win.show();
@@ -150,53 +154,93 @@ function createWindow() {
     // win.webContents.openDevTools(); // opcional
 }
 
-app.whenReady().then(() => {
+let backendProcess = null;
+
+function killPortAndStartBackend() {
+    return new Promise((resolve) => {
+        const { exec, spawn } = require('child_process');
+
+        // Matar cualquier proceso que ocupe el puerto 3000 antes de iniciar
+        exec('netstat -ano | findstr :3000', (error, stdout) => {
+            const pids = new Set();
+            if (stdout) {
+                stdout.split('\n').forEach(line => {
+                    const match = line.match(/LISTENING\s+(\d+)/);
+                    if (match) pids.add(match[1]);
+                });
+            }
+
+            const killPromises = [...pids].map(pid =>
+                new Promise(r => exec(`taskkill /F /PID ${pid}`, () => r()))
+            );
+
+            Promise.all(killPromises).then(() => {
+                if (pids.size > 0) console.log(`🧹 Proceso(s) en puerto 3000 terminados.`);
+
+                const serverPath = path.join(__dirname, 'backend', 'server.js');
+                console.log('Iniciando backend Node.js desde:', serverPath);
+
+                // detached: true permite que el proceso hijo sobreviva independientemente
+                backendProcess = spawn(process.execPath, [serverPath], {
+                    cwd: __dirname,
+                    detached: true,
+                    stdio: ['ignore', 'pipe', 'pipe'],
+                    windowsHide: true
+                });
+
+                backendProcess.stdout.on('data', (data) => {
+                    const message = data.toString().trim();
+                    console.log(`Backend: ${message}`);
+                    if (message.includes('Servidor corriendo')) resolve();
+                });
+
+                backendProcess.stderr.on('data', (data) => {
+                    console.error(`Backend Error: ${data.toString().trim()}`);
+                });
+
+                backendProcess.on('error', (err) => {
+                    console.error('❌ Error al iniciar el backend:', err);
+                    resolve();
+                });
+
+                backendProcess.on('close', (code) => {
+                    if (code !== null && code !== 0) {
+                        console.error(`⚠️ Backend cerrado con código: ${code}`);
+                    }
+                });
+
+                setTimeout(resolve, 5000);
+            });
+        });
+    });
+}
+
+app.whenReady().then(async () => {
     console.log('🚀 Iniciando FarmStock...');
-    // Iniciar backend Spring Boot automáticamente
-    const { spawn } = require('child_process');
-    const jarPath = path.join(__dirname, 'backend', 'FarmStock-0.0.1-SNAPSHOT.jar');
-    console.log('Iniciando backend desde:', jarPath);
-    const backendProcess = spawn('java', ['-jar', jarPath], {
-        cwd: path.dirname(jarPath),
-        stdio: 'pipe',
-        shell: true
-    });
-    backendProcess.stdout.on('data', (data) => {
-        console.log(`Backend: ${data}`);
-    });
-    backendProcess.stderr.on('data', (data) => {
-        console.error(`Backend Error: ${data}`);
-    });
-    backendProcess.on('close', (code) => {
-        console.log(`Backend cerrado con código: ${code}`);
-    });
-    // Crear la ventana principal
+    await killPortAndStartBackend();
     createWindow();
 });
 
-// ❌ DESHABILITADO: Backend se gestiona externamente
-// Cerrar el backend cuando se cierre la aplicación
-/*
-app.on('before-quit', async (event) => {
-    event.preventDefault();
-    await stopBackend();
-    app.exit(0);
+
+// Limpiar backend al cerrar la aplicación
+app.on('before-quit', () => {
+    if (backendProcess) {
+        try {
+            const { execSync } = require('child_process');
+            execSync(`taskkill /F /PID ${backendProcess.pid} /T`, { windowsHide: true });
+        } catch (e) {
+            // El proceso ya terminó
+        }
+        backendProcess = null;
+    }
 });
-*/
+
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
     }
 });
-
-// ❌ DESHABILITADO: Backend se gestiona externamente
-// Asegurar limpieza al salir
-/*
-app.on('will-quit', async () => {
-    await stopBackend();
-});
-*/
 
 // 🔹 Navegación
 ipcMain.on("ir-a-registro", () =>

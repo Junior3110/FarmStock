@@ -1,5 +1,5 @@
 // send-notificacion.js (mejorado: muestra body del servidor y logs)
-const API_BASE = 'http://localhost:8080'; // ajusta si tu backend está en otra URL/puerto
+const API_BASE = 'http://localhost:3000'; // ajusta si tu backend está en otra URL/puerto
 
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('formReporte');

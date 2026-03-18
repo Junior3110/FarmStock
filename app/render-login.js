@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return ok;
       }
       // fallback ping to /herramienta/hoy
-      const res = await fetch('http://localhost:8080/herramienta/hoy', { method: 'GET' });
+      const res = await fetch('http://localhost:3000/herramienta/hoy', { method: 'GET' });
       return res.ok;
     } catch (e) {
       console.debug('Login: backend ping failed', e);
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const docEl = document.getElementById('documento');
       if (docEl) {
         docEl.classList.add('input-error');
-        createFieldPopover(docEl, 'No se puede conectar con el servidor (backend apagado o CORS). Comprueba que el backend en http://localhost:8080 esté corriendo.');
+        createFieldPopover(docEl, 'No se puede conectar con el servidor (backend apagado o CORS). Comprueba que el backend en http://localhost:3000 esté corriendo.');
       } else {
         globalError.textContent = 'No se puede conectar con el servidor (backend apagado).';
       }
@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // Si el backend no devuelve el usuario, hacer una petición adicional
           console.warn('Login no devolvió datos del usuario, intentando buscar...');
           try {
-            const userRes = await fetch(`http://localhost:8080/usuario/documento/${vals.numeroDocumento}`);
+            const userRes = await fetch(`http://localhost:3000/usuario/documento/${vals.numeroDocumento}`);
             if (userRes.ok) {
               const user = await userRes.json();
               localStorage.setItem('fs_usuario_actual', JSON.stringify({

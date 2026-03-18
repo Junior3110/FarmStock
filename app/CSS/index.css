@@ -21,10 +21,11 @@
     --surface: #ffffff;
     --muted: #9aa3a2;
     --text: #10221f;
-    --accent: #4CAF50;
-    --accent-600: #3fa34a;
-    --accent-400: #7bd07a;
+    --accent: #004b87; /* SIM Primario */
+    --accent-600: #003366; /* Oscuro */
+    --accent-400: #005aa3; /* Focus interacciones */
     --danger: #e53935;
+    --warning: #fdc800; /* SIM Secundario Amarillo */
     --card-border: rgba(34, 50, 44, 0.06);
     --glass: rgba(255, 255, 255, 0.6);
     --shadow-1: 0 6px 18px rgba(16, 34, 31, 0.06);
@@ -43,10 +44,11 @@ body.dark-mode {
     --surface: #15181a;
     --muted: #9ea6a4;
     --text: #e6efea;
-    --accent: #60d26a;
-    --accent-600: #4cc35a;
-    --accent-400: #89e88e;
+    --accent: #2e8bdf; /* SIM Azul Claro */
+    --accent-600: #004b87; /* SIM Primario */
+    --accent-400: #5cadff; /* Hover Focus */
     --danger: #ff6b6b;
+    --warning: #fccc00; /* Amarillo destacante */
     --card-border: rgba(255, 255, 255, 0.04);
     --glass: rgba(255, 255, 255, 0.04);
     --shadow-1: 0 8px 24px rgba(0, 0, 0, 0.6);
@@ -66,7 +68,7 @@ body.dark-mode {
 
 html,
 body {
-    height: 100%;
+    min-height: 100vh;
     margin: 0;
     padding: 0;
 }
@@ -76,7 +78,7 @@ body {
 
 html,
 body {
-    overflow-x: hidden !important;
+    overflow-x: clip; /* clip en lugar de hidden para no romper el position: sticky del sidebar */
 }
 
 
@@ -100,13 +102,11 @@ body {
     display: grid;
     grid-template-columns: 250px 1fr;
     gap: 20px;
-    align-items: start;
+    align-items: stretch;
     min-height: 100vh;
-    height: 100vh;
     padding: 18px;
     max-width: calc(var(--max-width-main) + 40px);
     margin: 0 auto;
-    overflow: hidden;
 }
 
 
@@ -122,6 +122,9 @@ body {
         width: 100%;
         border-right: none;
         border-radius: var(--radius);
+        position: relative; /* Sobreescribe el fixed de desktop */
+        top: 0;
+        height: auto;
     }
     .window-controls {
         right: 10px;
@@ -144,6 +147,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: sticky;
+    top: 18px;
     height: calc(100vh - 36px);
     overflow-y: auto;
 }
@@ -455,8 +460,6 @@ button:focus {
 .herramientas-hoy {
     flex: 2;
     min-width: 280px;
-    max-height: 420px;
-    overflow: auto;
     padding: 18px;
     border-radius: 12px;
     background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--surface) 98%, transparent 2%));
@@ -1001,3 +1004,18 @@ body,
   animation: fs-spin .9s linear infinite;
 }
 @keyframes fs-spin { to { transform: rotate(360deg); } }
+
+/* =======================
+   UTILIDADES SCROLL (Ajustado para permitir que la página crezca)
+   ======================= */
+
+.scrollable-container {
+    overflow-x: auto;
+    border-radius: 10px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    border-radius: 10px;
+    background: transparent;
+}
