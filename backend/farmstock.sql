@@ -203,6 +203,22 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+--
+-- Table structure for table `equipo_computo`
+--
+
+DROP TABLE IF EXISTS `equipo_computo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `equipo_computo` (
+  `id_equipo` int NOT NULL AUTO_INCREMENT,
+  `nombre_persona` varchar(150) NOT NULL,
+  `cedula` varchar(50) NOT NULL,
+  `nombre_equipo` varchar(150) NOT NULL,
+  `codigo_equipo` varchar(100) NOT NULL,
+  `fecha_registro` datetime NOT NULL,
+  PRIMARY KEY (`id_equipo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 -- Dump completed on 2025-09-07 11:27:27

@@ -630,6 +630,34 @@
       await cargarEstadisticas();
     }
 
+    // Configurar actualización en tiempo real (cada 5 segundos)
+    document.addEventListener('DOMContentLoaded', () => {
+        cargarEstadisticas();
+        setInterval(() => {
+            // Solo recargar en segundo plano si ningún modal está abierto
+            const modal1 = document.getElementById('modalMantenimiento');
+            const modal2 = document.getElementById('modalVerMantenimientos');
+            if (modal1.style.display !== 'block' && modal2.style.display !== 'block') {
+                // Actualización silenciosa si es posible, sin limpiar la tabla a menos que queramos
+                cargarEstadisticasSilencioso();
+            }
+        }, 5000);
+    });
+
+    async function cargarEstadisticasSilencioso() {
+        try {
+            const response = await fetch('http://localhost:3000/mantenimientos/estadisticas');
+            if (response.ok) {
+                const newData = await response.json();
+                estadisticasCompletas = newData;
+                renderizarTabla(estadisticasCompletas);
+                actualizarResumen(estadisticasCompletas);
+            }
+        } catch (error) {
+            console.warn('Fallo silencioso actualizando estadísticas:', error);
+        }
+    }
+
     async function verMantenimientosHerramienta(idHerramienta, nombreHerramienta) {
       console.log(`🔍 Abriendo mantenimientos de: ${nombreHerramienta} (ID: ${idHerramienta})`);
       

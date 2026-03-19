@@ -3,7 +3,7 @@ const router = express.Router();
 const herramientasController = require('../controllers/herramientas.controller');
 
 router.get('/', herramientasController.getHerramientas);
-router.get('/hoy', herramientasController.getHerramientas); // Retorna todas por ahora
+router.get('/hoy', herramientasController.getHerramientasHoy); // Retorna las de hoy
 router.get('/:id', herramientasController.getHerramientaById);
 router.post('/', herramientasController.createHerramienta);
 router.put('/:id', herramientasController.updateHerramienta);

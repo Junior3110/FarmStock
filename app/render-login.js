@@ -216,6 +216,8 @@ document.addEventListener("DOMContentLoaded", () => {
           userData = result.usuario;
         } else if (result.data && result.data.usuario) {
           userData = result.data.usuario;
+        } else if (result.data && result.data.nombres) {
+          userData = result.data;
         } else if (result.nombres) {
           userData = result;
         }

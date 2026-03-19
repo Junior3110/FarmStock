@@ -176,8 +176,8 @@
             </div>
 
             <div class="columna descripcion">
-              <label for="codigoInforme">Código informe</label>
-              <input type="text" id="codigoInforme" name="codigoInforme" placeholder="Ejemplo: INF-2025-001" required>
+              <label for="codigoHerramienta">Código de Herramienta</label>
+              <input type="text" id="codigoHerramienta" name="codigoHerramienta" placeholder="Ejemplo: HER-2026-001" required>
               <label for="descripcion">Descripción de herramienta</label>
               <textarea id="descripcion" name="descripcion" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
               <div class="boton-registrar" style="display:flex;justify-content:flex-end;align-items:flex-end;margin-top:24px;">
@@ -269,6 +269,17 @@
   function nowIsoDate() {
       return new Date().toISOString().split('T')[0];
   }
+  function generateRandomCode() {
+      const year = new Date().getFullYear();
+      const random = Math.floor(1000 + Math.random() * 9000);
+      return 'HER-' + year + '-' + random;
+  }
+  function setRandomToolCode() {
+      const input = document.getElementById('codigoHerramienta');
+      if (input && !input.value) {
+          input.value = generateRandomCode();
+      }
+  }
   function readErrorMessage(res) {
       return res.text().then(function(text) {
           try {
@@ -308,7 +319,7 @@
               '<p><strong>Lote:</strong> ' + escapeHtml(lote) + '</p>' +
               '<p><strong>Cantidad:</strong> ' + escapeHtml(String(cantidad)) + '</p>' +
               '<p><strong>Descripción:</strong> ' + escapeHtml(descripcion) + '</p>' +
-              '<p><strong>Código informe:</strong> ' + escapeHtml(codigoInforme) + '</p>';
+              '<p><strong>Código de herramienta:</strong> ' + escapeHtml(h.codigoHerramienta || h.codigo_herramienta || '-') + '</p>';
 
           card.innerHTML = inner;
 
@@ -391,7 +402,7 @@
           numeroLote: data.numero_lote,
           cantidad: parseInt(data.cantidad, 10) || 0,
           fechaRegistro: getTodayISO(),
-          codigoInforme: data.codigoInforme
+          codigoHerramienta: data.codigoHerramienta
       };
       if (!payload.nombre || payload.nombre.trim() === '') { alert('❌ El nombre es obligatorio'); return; }
       if (!payload.estado || payload.estado === '') { alert('❌ El estado es obligatorio'); return; }
@@ -400,7 +411,7 @@
       if (!payload.numeroLote || payload.numeroLote === '') { alert('❌ El número de lote es obligatorio'); return; }
       if (!payload.cantidad || payload.cantidad <= 0) { alert('❌ La cantidad debe ser mayor a 0'); return; }
       if (!payload.fechaRegistro) { alert('❌ La fecha de registro es obligatoria'); return; }
-      if (!payload.codigoInforme || payload.codigoInforme.trim() === '') { alert('❌ El código de informe es obligatorio'); return; }
+      if (!payload.codigoHerramienta || payload.codigoHerramienta.trim() === '') { alert('❌ El código de herramienta es obligatorio'); return; }
 
       fetch(HERR_URL, {
               method: 'POST',
@@ -418,6 +429,7 @@
               alert('✅ Herramienta registrada exitosamente');
               form.reset();
               if (fechaInput) fechaInput.value = nowIsoDate();
+              setRandomToolCode();
           })
           .catch(function(err) {
               alert('❌ Error al registrar herramienta: ' + err.message);
@@ -483,7 +495,7 @@
               '<div style="flex:1;min-width:180px;"><label>Fecha registro</label><input id="edit_fecha" type="date" value="' + escapeHtml(String(found.fechaRegistro || found.fecha_registro || found.fecha_registro || '')) + '" /></div>' +
               '<div style="flex:1;min-width:180px;"><label>Número lote</label><select id="edit_lote"><option value="">Seleccionar</option><option value="Lote 1">Lote 1</option><option value="Lote 2">Lote 2</option></select></div>' +
               '</div>' +
-              '<div style="margin-top:10px;"><label>Código informe</label><input id="edit_codigoInforme" type="text" value="' + escapeHtml(found.codigoInforme || found.codigo_informe || '') + '" readonly style="background:#222;color:#fff;" /></div>' +
+              '<div style="margin-top:10px;"><label>Código de herramienta</label><input id="edit_codigoHerramienta" type="text" value="' + escapeHtml(found.codigoHerramienta || found.codigo_herramienta || '') + '" style="width:100%; border:1px solid #ccc; padding:8px; border-radius:4px;" /></div>' +
               '<div style="margin-top:10px;"><label>Cantidad</label><input id="edit_cantidad" type="number" min="0" value="' + escapeHtml(String(found.cantidad || 0)) + '" /></div>' +
               '<div style="margin-top:10px;"><label>Descripción</label><textarea id="edit_descripcion" style="width:100%;">' + escapeHtml(found.descripcion || '') + '</textarea></div>' +
               '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;"><button id="saveEdit" class="btn-small" type="button">Guardar</button><button id="cancelEdit" class="btn-small delete" type="button">Cancelar</button></div>';
@@ -504,10 +516,11 @@
                   tipo: (document.getElementById('edit_tipo').value || '').trim(),
                   ubicacion: (document.getElementById('edit_ubicacion').value || '').trim(),
                   fecha_registro: (document.getElementById('edit_fecha').value || ''),
-                  numero_lote: (document.getElementById('edit_lote').value || ''),
-                  cantidad: parseInt(document.getElementById('edit_cantidad').value || '0', 10) || 0,
-                  descripcion: (document.getElementById('edit_descripcion').value || '').trim()
-              };
+                   numero_lote: (document.getElementById('edit_lote').value || ''),
+                   cantidad: parseInt(document.getElementById('edit_cantidad').value || '0', 10) || 0,
+                   descripcion: (document.getElementById('edit_descripcion').value || '').trim(),
+                   codigoHerramienta: (document.getElementById('edit_codigoHerramienta').value || '').trim()
+               };
               if (!payload.nombre || !payload.estado) {
                   alert('❌ Completa al menos nombre y estado.');
                   return;
@@ -677,6 +690,7 @@
   window.addEventListener('pageshow', function(ev) {
       if (typeof obtenerHerramientasHoy === 'function') {
          obtenerHerramientasHoy();
+         setRandomToolCode();
       }
   });
   window.FS = window.FS || {};

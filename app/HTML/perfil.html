@@ -168,68 +168,14 @@
   <script src="../FSApiClient.js"></script>
 
   <script>
-    // Foto de perfil solo frontend
-    document.addEventListener('DOMContentLoaded', function() {
-      var avatarImg = document.getElementById('avatarImg');
-      var avatarInput = document.getElementById('avatarInput');
-      var avatarFileName = document.getElementById('avatarFileName');
-      // Cargar imagen guardada en localStorage
-      var userPhoto = localStorage.getItem('fs_usuario_foto');
-      if (userPhoto) {
-        avatarImg.src = userPhoto;
-      }
-      // Mostrar nombre de archivo seleccionado
-      avatarInput.addEventListener('change', function(e) {
-        var file = e.target.files[0];
-        if (!file) return;
-        avatarFileName.textContent = file.name;
-        var reader = new FileReader();
-        reader.onload = function(ev) {
-          avatarImg.src = ev.target.result;
-          localStorage.setItem('fs_usuario_foto', ev.target.result);
-        };
-        reader.readAsDataURL(file);
-      });
-      // Click en el label personalizado abre el input
-      var customLabel = document.querySelector('.custom-file-label span');
-      if (customLabel) {
-        customLabel.addEventListener('click', function() {
-          avatarInput.click();
-        });
-      }
-    });
-  </script>
-
-    <script>
-      // Foto de perfil solo frontend
-      document.addEventListener('DOMContentLoaded', function() {
-        var avatarImg = document.getElementById('avatarImg');
-        var avatarInput = document.getElementById('avatarInput');
-        // Cargar imagen guardada en localStorage
-        var userPhoto = localStorage.getItem('fs_usuario_foto');
-        if (userPhoto) {
-          avatarImg.src = userPhoto;
-        }
-        // Al seleccionar nueva imagen
-        avatarInput.addEventListener('change', function(e) {
-          var file = e.target.files[0];
-          if (!file) return;
-          var reader = new FileReader();
-          reader.onload = function(ev) {
-            avatarImg.src = ev.target.result;
-            localStorage.setItem('fs_usuario_foto', ev.target.result);
-          };
-          reader.readAsDataURL(file);
-        });
-      });
-    </script>
-  
-  <script>
     (function() {
       const API = window.FSApiClient;
       
-      // Elementos del DOM
+      // DOM Elements
       const form = document.getElementById('profile-form');
+      const avatarImg = document.getElementById('avatarImg');
+      const avatarInput = document.getElementById('avatarInput');
+      const avatarFileName = document.getElementById('avatarFileName');
       const btnEditarPerfil = document.getElementById('editarPerfil');
       const btnCerrarSesion = document.getElementById('cerrarSesion');
       const btnCambiarPassword = document.getElementById('cambiarPassword');
@@ -238,31 +184,32 @@
       const modalTitle = document.getElementById('modalTitle');
       const modalContent = document.getElementById('modalContent');
       
-      // Usuario actual - obtener del localStorage
       let usuarioActual = null;
       try {
         const userData = localStorage.getItem('fs_usuario_actual');
         if (userData) {
           usuarioActual = JSON.parse(userData);
-        } else {
-          // Fallback si no hay datos completos
-          usuarioActual = {
-            idUsuario: 48,
-            nombres: '',
-            apellidos: '',
-            correo: '',
-            telefono: '',
-            numeroDocumento: localStorage.getItem('documento') || '',
-            tipoDocumento: '',
-            cargo: localStorage.getItem('rol') || ''
-          };
         }
       } catch (e) {
-        console.error('Error al leer usuario:', e);
-        usuarioActual = { idUsuario: 48, nombres: '', apellidos: '', correo: '', telefono: '', numeroDocumento: '', tipoDocumento: '', cargo: '' };
+        console.error('Error reading user:', e);
       }
       
-      // Función para mostrar modal
+      if (!usuarioActual || (!usuarioActual.idUsuario && !usuarioActual.id)) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Sync avatar from photo_perfil or localStorage
+      function syncAvatar(fotoUrl) {
+        if (fotoUrl) {
+          avatarImg.src = fotoUrl;
+        } else {
+          const localPhoto = localStorage.getItem('fs_usuario_foto');
+          if (localPhoto) avatarImg.src = localPhoto;
+        }
+      }
+      
+      // Modal helper
       function mostrarModal(titulo, contenido) {
         modalTitle.textContent = titulo;
         modalContent.innerHTML = contenido;
@@ -276,38 +223,41 @@
       }
       
       closeModal.addEventListener('click', cerrarModalFunc);
-      modalBackdrop.addEventListener('click', function(e) {
+      modalBackdrop.addEventListener('click', (e) => {
         if (e.target === modalBackdrop) cerrarModalFunc();
       });
       
-      // Cargar datos del usuario desde el backend
+      // Handle Avatar Upload
+      avatarInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        avatarFileName.textContent = file.name;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          const base64 = ev.target.result;
+          avatarImg.src = base64;
+          // Store locally for now, will be sent on Save
+          usuarioActual.fotoPerfil = base64;
+          localStorage.setItem('fs_usuario_foto', base64);
+        };
+        reader.readAsDataURL(file);
+      });
+
+      const customLabel = document.querySelector('.custom-file-label span');
+      if (customLabel) {
+        customLabel.addEventListener('click', () => avatarInput.click());
+      }
+      
+      // Data loading
       async function cargarDatosUsuario() {
         try {
-          // Si no tenemos idUsuario, intentar obtener del localStorage completo
-          if (!usuarioActual || !usuarioActual.idUsuario) {
-            const storedUser = localStorage.getItem('fs_usuario_actual');
-            if (storedUser) {
-              usuarioActual = JSON.parse(storedUser);
-            }
-          }
-          
-          if (!usuarioActual || !usuarioActual.idUsuario) {
-            throw new Error('No hay usuario logueado');
-          }
-          
-          const response = await fetch(`http://localhost:3000/usuario/${usuarioActual.idUsuario}`);
-          
-          if (!response.ok) {
-            throw new Error('Usuario no encontrado');
-          }
-          
-          const usuario = await response.json();
+          const id = usuarioActual.idUsuario || usuarioActual.id;
+          const usuario = await API.obtenerUsuarioPorId(id);
           usuarioActual = usuario;
           
-          // Actualizar localStorage con datos completos
           localStorage.setItem('fs_usuario_actual', JSON.stringify(usuario));
           
-          // Llenar el formulario con los datos
           document.getElementById('nombre').value = usuario.nombres || '';
           document.getElementById('apellido').value = usuario.apellidos || '';
           document.getElementById('email').value = usuario.correo || '';
@@ -315,198 +265,107 @@
           document.getElementById('tipoDocumento').value = usuario.tipoDocumento || '';
           document.getElementById('numeroDocumento').value = usuario.numeroDocumento || '';
           
-          // Actualizar nombre en la card (NO en la bienvenida, eso lo hace user-session.js)
+          syncAvatar(usuario.fotoPerfil);
+
           document.querySelector('h3').textContent = `${usuario.nombres} ${usuario.apellidos}`;
-          document.querySelector('.small-muted').textContent = usuario.cargo.charAt(0).toUpperCase() + usuario.cargo.slice(1);
-          
+          const cargoEl = document.querySelector('.small-muted');
+          if (cargoEl && usuario.cargo) {
+            cargoEl.textContent = usuario.cargo.charAt(0).toUpperCase() + usuario.cargo.slice(1);
+          }
         } catch (error) {
-          console.error('Error al cargar usuario:', error);
-          mostrarModal('Error', 'No se pudieron cargar los datos del usuario');
+          console.error('Error loading user:', error);
+          // Fallback if API fails but we have localStorage
+          document.getElementById('nombre').value = usuarioActual.nombres || '';
+          document.getElementById('apellido').value = usuarioActual.apellidos || '';
+          document.getElementById('email').value = usuarioActual.correo || '';
+          document.getElementById('telefono').value = usuarioActual.telefono || '';
+          document.getElementById('tipoDocumento').value = usuarioActual.tipoDocumento || '';
+          document.getElementById('numeroDocumento').value = usuarioActual.numeroDocumento || '';
+          syncAvatar(usuarioActual.fotoPerfil);
         }
       }
       
-      // Guardar cambios del perfil
+      // Update logic
       form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        const datosActualizados = {
+        const payload = {
           nombres: document.getElementById('nombre').value.trim(),
           apellidos: document.getElementById('apellido').value.trim(),
           correo: document.getElementById('email').value.trim(),
           telefono: document.getElementById('telefono').value.trim(),
-          numeroDocumento: usuarioActual.numeroDocumento,
-          tipoDocumento: usuarioActual.tipoDocumento,
-          cargo: usuarioActual.cargo,
-          contrasena: usuarioActual.contrasena // Mantener la contraseña actual
+          fotoPerfil: usuarioActual.fotoPerfil || localStorage.getItem('fs_usuario_foto') || null
         };
         
-        // Validaciones básicas
-        if (!datosActualizados.nombres || !datosActualizados.apellidos) {
-          mostrarModal('Error', 'El nombre y apellido son obligatorios');
-          return;
-        }
-        
-        if (!datosActualizados.correo || !datosActualizados.correo.includes('@')) {
-          mostrarModal('Error', 'Ingresa un correo válido');
+        if (!payload.nombres || !payload.apellidos) {
+          mostrarModal('Error', 'Nombre y apellido son obligatorios');
           return;
         }
         
         try {
-          const response = await fetch(`http://localhost:3000/usuario/${usuarioActual.idUsuario}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(datosActualizados)
-          });
+          const id = usuarioActual.idUsuario || usuarioActual.id;
+          const response = await API.actualizarUsuario(id, payload);
+          usuarioActual = response.data;
+          localStorage.setItem('fs_usuario_actual', JSON.stringify(usuarioActual));
           
-          if (!response.ok) {
-            const error = await response.text();
-            throw new Error(error);
+          if (usuarioActual.fotoPerfil) {
+             localStorage.setItem('fs_usuario_foto', usuarioActual.fotoPerfil);
           }
-          
-          const usuarioActualizado = await response.json();
-          usuarioActual = usuarioActualizado;
-          
-          // Actualizar localStorage
-          localStorage.setItem('fs_usuario_actual', JSON.stringify(usuarioActualizado));
-          
+
           mostrarModal('✅ Éxito', 'Perfil actualizado correctamente');
+          document.querySelector('h3').textContent = `${usuarioActual.nombres} ${usuarioActual.apellidos}`;
           
-          // Actualizar interfaz (solo la card, la bienvenida la maneja user-session.js)
-          document.querySelector('h3').textContent = `${usuarioActualizado.nombres} ${usuarioActualizado.apellidos}`;
-          
-          // Actualizar también la bienvenida con el nuevo nombre
           if (window.FSUserSession && typeof window.FSUserSession.updateUserName === 'function') {
             window.FSUserSession.updateUserName();
           }
+
+          // Disable editing after save
+          toggleEdicion(false);
           
         } catch (error) {
-          console.error('Error al actualizar perfil:', error);
-          mostrarModal('❌ Error', 'No se pudo actualizar el perfil: ' + error.message);
+          console.error('Update error:', error);
+          mostrarModal('❌ Error', 'No se pudo actualizar: ' + error.message);
         }
       });
       
-      // Cambiar contraseña
-      btnCambiarPassword.addEventListener('click', function() {
-        const contenido = `
-          <div style="padding: 20px;">
-            <div style="margin-bottom: 18px;">
-              <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text); font-size: 14px;">Contraseña actual:</label>
-              <input type="password" id="passwordActual" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #cbd5e1; background: #ffffff; color: #1e293b; font-size: 14px; box-sizing: border-box; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#cbd5e1'">
-            </div>
-            <div style="margin-bottom: 18px;">
-              <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text); font-size: 14px;">Nueva contraseña:</label>
-              <input type="password" id="passwordNueva" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #cbd5e1; background: #ffffff; color: #1e293b; font-size: 14px; box-sizing: border-box; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#cbd5e1'">
-              <small style="color: #64748b; font-size: 12px; display: block; margin-top: 6px;">Mínimo 8 caracteres, incluir mayúscula, minúscula, número y carácter especial</small>
-            </div>
-            <div style="margin-bottom: 24px;">
-              <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text); font-size: 14px;">Confirmar contraseña:</label>
-              <input type="password" id="passwordConfirm" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #cbd5e1; background: #ffffff; color: #1e293b; font-size: 14px; box-sizing: border-box; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#cbd5e1'">
-            </div>
-            <button id="btnGuardarPassword" class="btn" style="width: 100%; padding: 14px; background: #10b981; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 15px; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);">Cambiar contraseña</button>
-          </div>
-        `;
+      function toggleEdicion(enable) {
+        const inputs = form.querySelectorAll('input:not([readonly])');
+        inputs.forEach(i => i.disabled = !enable);
         
-        mostrarModal('Cambiar contraseña', contenido);
-        
-        // Event listener para el botón de guardar
-        setTimeout(() => {
-          document.getElementById('btnGuardarPassword').addEventListener('click', async function() {
-            const actual = document.getElementById('passwordActual').value;
-            const nueva = document.getElementById('passwordNueva').value;
-            const confirmar = document.getElementById('passwordConfirm').value;
-            
-            if (!actual || !nueva || !confirmar) {
-              alert('Todos los campos son obligatorios');
-              return;
-            }
-            
-            if (actual !== usuarioActual.contrasena) {
-              alert('La contraseña actual es incorrecta');
-              return;
-            }
-            
-            if (nueva !== confirmar) {
-              alert('Las contraseñas no coinciden');
-              return;
-            }
-            
-            // Validar formato de contraseña
-            const passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!¿?*.,:;_-]).{8,}$/;
-            if (!passwordRegex.test(nueva)) {
-              alert('La contraseña debe tener mínimo 8 caracteres, incluir mayúscula, minúscula, número y carácter especial');
-              return;
-            }
-            
-            try {
-              const datosActualizados = {
-                ...usuarioActual,
-                contrasena: nueva
-              };
-              
-              const response = await fetch(`http://localhost:3000/usuario/${usuarioActual.idUsuario}`, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(datosActualizados)
-              });
-              
-              if (!response.ok) {
-                throw new Error('Error al cambiar contraseña');
-              }
-              
-              usuarioActual.contrasena = nueva;
-              cerrarModalFunc();
-              mostrarModal('✅ Éxito', 'Contraseña cambiada correctamente');
-              
-            } catch (error) {
-              console.error('Error:', error);
-              alert('No se pudo cambiar la contraseña');
-            }
-          });
-        }, 100);
+        if (enable) {
+          btnEditarPerfil.textContent = 'Cancelar';
+          btnEditarPerfil.classList.add('delete');
+        } else {
+          btnEditarPerfil.textContent = 'Editar';
+          btnEditarPerfil.classList.remove('delete');
+        }
+        modoEdicion = enable;
+      }
+
+      let modoEdicion = false;
+      btnEditarPerfil.addEventListener('click', () => {
+        if (modoEdicion) {
+          cargarDatosUsuario();
+          toggleEdicion(false);
+        } else {
+          toggleEdicion(true);
+        }
       });
-      
-      // Cerrar sesión
-      btnCerrarSesion.addEventListener('click', function() {
-        if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
-          // Limpiar datos de sesión
+
+      btnCerrarSesion.addEventListener('click', () => {
+        if (confirm('¿Cerrar sesión?')) {
           localStorage.removeItem('fs_usuario_actual');
-          // Redirigir al login
           window.location.href = 'login.html';
         }
       });
-      
-      // Modo edición del perfil
-      let modoEdicion = false;
-      btnEditarPerfil.addEventListener('click', function() {
-        modoEdicion = !modoEdicion;
-        
-        const inputs = form.querySelectorAll('input');
-        inputs.forEach(input => {
-          input.disabled = !modoEdicion;
-        });
-        
-        if (modoEdicion) {
-          btnEditarPerfil.textContent = 'Cancelar';
-          btnEditarPerfil.style.background = 'var(--danger)';
-        } else {
-          btnEditarPerfil.textContent = 'Editar';
-          btnEditarPerfil.style.background = 'var(--accent)';
-          cargarDatosUsuario(); // Recargar datos originales
-        }
+
+      btnCambiarPassword.addEventListener('click', () => {
+         mostrarModal('Cambiar Contraseña', '<p style="padding:10px">Para cambiar tu contraseña, contacta al administrador o usa un flujo de recuperación (Próximamente).</p>');
       });
       
-      // Inicializar: cargar datos del usuario
+      // Init
+      toggleEdicion(false);
       cargarDatosUsuario();
-      
-      // Desactivar inputs inicialmente
-      const inputs = form.querySelectorAll('input');
-      inputs.forEach(input => {
-        input.disabled = true;
-      });
       
     })();
   </script>

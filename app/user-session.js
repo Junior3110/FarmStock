@@ -38,7 +38,7 @@
 
     // Mostrar foto de perfil en el avatar de bienvenida si existe
     const avatarBienvenida = document.querySelector('.bienvenida img.foto-usuario');
-    const userPhoto = localStorage.getItem('fs_usuario_foto');
+    const userPhoto = (user && user.fotoPerfil) || localStorage.getItem('fs_usuario_foto');
     if (avatarBienvenida && userPhoto) {
       avatarBienvenida.src = userPhoto;
     }
@@ -64,13 +64,7 @@
     const user = getCurrentUser();
     const documento = localStorage.getItem('documento');
     
-    // Solo redirigir si definitivamente no hay sesión
-    //if (!user && !documento) {
-      //console.warn('No hay sesión activa, redirigiendo a login');
-      //setTimeout(() => {
-//        window.location.replace('login.html');
- //     }, 100);
-    }
+    // Auth check logic can be added here if needed
   }
   
   // Inicializar cuando el DOM esté listo
@@ -91,6 +85,7 @@
     checkAuth: checkAuth,
     logout: function() {
       localStorage.removeItem('fs_usuario_actual');
+      localStorage.removeItem('fs_usuario_foto');
       localStorage.removeItem('documento');
       localStorage.removeItem('rol');
       window.location.replace('login.html');

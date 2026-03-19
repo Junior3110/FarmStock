@@ -128,22 +128,22 @@ function startBackend() {
 function createWindow() {
     const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
-  win = new BrowserWindow({
-    width: Math.min(1280, width),
-    height: Math.min(900, height),
-    show: false,
-    frame: false, // ⚠️ muy importante → quita los botones nativos
-    titleBarStyle: "hidden", // 👈 también oculta la barra de título
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-      contextIsolation: true,
-      nodeIntegration: false
-    }
-  });
+    win = new BrowserWindow({
+        width: Math.min(1280, width),
+        height: Math.min(900, height),
+        show: false,
+        frame: false, // ⚠️ muy importante → quita los botones nativos
+        titleBarStyle: "hidden", // 👈 también oculta la barra de título
+        webPreferences: {
+            preload: path.join(__dirname, "preload.js"),
+            contextIsolation: true,
+            nodeIntegration: false
+        }
+    });
 
 
     // 👇 Página inicial
-    win.loadFile(path.join(__dirname, "app/HTML/indexInventario.html"));
+    win.loadFile(path.join(__dirname, "app/HTML/index.html"));
 
     win.once("ready-to-show", () => {
         win.show();
@@ -283,7 +283,7 @@ ipcMain.on("generar-pdf", async (event, { html, fecha }) => {
     try {
         const fs = require('fs');
         const os = require('os');
-        
+
         // Crear ventana oculta para renderizar el HTML
         const pdfWindow = new BrowserWindow({
             show: false,
@@ -291,17 +291,17 @@ ipcMain.on("generar-pdf", async (event, { html, fecha }) => {
                 nodeIntegration: false
             }
         });
-        
+
         // Cargar el HTML
         await pdfWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`);
-        
+
         // Esperar a que cargue completamente
         await new Promise(resolve => setTimeout(resolve, 500));
-        
+
         // Generar nombre del archivo
         const fechaFormato = new Date().toISOString().split('T')[0];
         const nombreArchivo = `Estadisticas_FarmStock_${fechaFormato}.pdf`;
-        
+
         // Mostrar diálogo para guardar
         const { filePath, canceled } = await dialog.showSaveDialog({
             title: 'Guardar Informe PDF',
@@ -310,7 +310,7 @@ ipcMain.on("generar-pdf", async (event, { html, fecha }) => {
                 { name: 'PDF', extensions: ['pdf'] }
             ]
         });
-        
+
         if (!canceled && filePath) {
             // Generar el PDF
             const data = await pdfWindow.webContents.printToPDF({
@@ -323,13 +323,13 @@ ipcMain.on("generar-pdf", async (event, { html, fecha }) => {
                     right: 0.5
                 }
             });
-            
+
             // Guardar el archivo
             fs.writeFileSync(filePath, data);
-            
+
             // Cerrar ventana temporal
             pdfWindow.close();
-            
+
             // Notificar éxito
             event.reply('pdf-generado', filePath);
         } else {

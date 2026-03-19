@@ -3,7 +3,15 @@ const herramientasService = require('../services/herramientas.service');
 const getHerramientas = async (req, res, next) => {
     try {
         const data = await herramientasService.getAll();
-        // El frontend espera un array plano, no un wrapper
+        res.json(data);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getHerramientasHoy = async (req, res, next) => {
+    try {
+        const data = await herramientasService.getHoy();
         res.json(data);
     } catch (error) {
         next(error);
@@ -31,7 +39,11 @@ const createHerramienta = async (req, res, next) => {
 
 const updateHerramienta = async (req, res, next) => {
     try {
-        await herramientasService.update(req.params.id, req.body);
+        const id = req.params.id;
+        if (!id || id === 'undefined' || isNaN(id)) {
+            return res.status(400).json({ message: "ID de herramienta no válido" });
+        }
+        await herramientasService.update(id, req.body);
         res.json({ mensaje: "Actualizada" });
     } catch (error) {
         next(error);
@@ -49,6 +61,7 @@ const deleteHerramienta = async (req, res, next) => {
 
 module.exports = {
     getHerramientas,
+    getHerramientasHoy,
     getHerramientaById,
     createHerramienta,
     updateHerramienta,

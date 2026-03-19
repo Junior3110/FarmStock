@@ -118,7 +118,7 @@
 
     obtenerHerramientasHoy: async function () {
       try {
-        const res = await safeFetch(HERR_URL + { method: 'GET' });
+        const res = await safeFetch(HERR_URL + '/hoy', { method: 'GET' });
         if (!res.ok) {
           const txt = await parseJSONSafe(res);
           throw new Error((txt && (txt.message || txt.error)) || ('HTTP ' + res.status));
@@ -320,6 +320,36 @@
         }
 
         throw new Error((body && (body.message || body.error)) || ('HTTP ' + res.status));
+      } catch (err) {
+        throw err;
+      }
+    },
+
+    obtenerUsuarioPorId: async function (id) {
+      try {
+        const res = await safeFetch(`${USUARIO_URL}/${id}`, { method: 'GET' });
+        if (!res.ok) {
+          const txt = await parseJSONSafe(res);
+          throw new Error((txt && (txt.message || txt.error)) || ('HTTP ' + res.status));
+        }
+        return await res.json();
+      } catch (err) {
+        throw err;
+      }
+    },
+
+    actualizarUsuario: async function (id, payload) {
+      try {
+        const res = await safeFetch(`${USUARIO_URL}/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+          const txt = await parseJSONSafe(res);
+          throw new Error((txt && (txt.message || txt.error)) || ('HTTP ' + res.status));
+        }
+        return await res.json();
       } catch (err) {
         throw err;
       }
