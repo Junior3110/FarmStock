@@ -6,7 +6,7 @@ const login = async (req, res, next) => {
         const { numeroDocumento, tipoDocumento, contrasena, cargo } = req.body;
         
         const [rows] = await db.query(
-            'SELECT * FROM usuario WHERE num_documento = ? AND tipo_documento = ? AND cargo = ?',
+            'SELECT * FROM usuarios WHERE num_documento = ? AND tipo_documento = ? AND cargo = ?',
             [numeroDocumento, tipoDocumento, cargo]
         );
 
@@ -48,13 +48,13 @@ const registrar = async (req, res, next) => {
         const { nombres, apellidos, tipoDocumento, numeroDocumento, correo, telefono, cargo, contrasena } = req.body;
 
         // Verificar si ya existe
-        const [exists] = await db.query('SELECT id_usuario FROM usuario WHERE num_documento = ? OR correo = ?', [numeroDocumento, correo]);
+        const [exists] = await db.query('SELECT id_usuario FROM usuarios WHERE num_documento = ? OR correo = ?', [numeroDocumento, correo]);
         if (exists.length > 0) {
             return res.status(400).json({ success: false, message: "El documento o correo ya está registrado" });
         }
 
         const [result] = await db.query(
-            'INSERT INTO usuario (nombres, apellidos, correo, telefono, cargo, tipo_documento, num_documento, contrasena) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO usuarios (nombres, apellidos, correo, telefono, cargo, tipo_documento, num_documento, contrasena) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             [nombres, apellidos, correo, telefono, cargo, tipoDocumento, numeroDocumento, contrasena]
         );
 
@@ -68,7 +68,7 @@ const registrar = async (req, res, next) => {
 const getByDocumento = async (req, res, next) => {
     try {
         const { numeroDocumento } = req.params;
-        const [rows] = await db.query('SELECT id_usuario as idUsuario, nombres, apellidos, correo, telefono, cargo, tipo_documento as tipoDocumento, num_documento as numeroDocumento FROM usuario WHERE num_documento = ?', [numeroDocumento]);
+        const [rows] = await db.query('SELECT id_usuario as idUsuario, nombres, apellidos, correo, telefono, cargo, tipo_documento as tipoDocumento, num_documento as numeroDocumento FROM usuarios WHERE num_documento = ?', [numeroDocumento]);
         
         if (rows.length === 0) {
             return res.status(404).json({ success: false, message: "Usuario no encontrado" });

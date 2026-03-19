@@ -155,8 +155,12 @@
               <label for="ubicacion">Ubicación</label>
               <select id="ubicacion" name="ubicacion" required>
                 <option value="">Seleccionar</option>
-                <option value="Bodega">Bodega</option>
-                <option value="Taller">Taller</option>
+                <option value="1">Bodega principal</option>
+                <option value="2">Salvajina</option>
+                <option value="3">Urra</option>
+                <option value="4">Ibague</option>
+                <option value="5">San Carlos</option>
+                <option value="6">Fundación</option>
               </select>
             </div>
 
@@ -178,6 +182,8 @@
             <div class="columna descripcion">
               <label for="codigoHerramienta">Código de Herramienta</label>
               <input type="text" id="codigoHerramienta" name="codigoHerramienta" placeholder="Ejemplo: HER-2026-001" required>
+              <label for="foto">Foto de la herramienta (Opcional)</label>
+              <input type="file" id="foto" name="foto" accept="image/*" style="margin-bottom:12px; display:block; width:100%; border:1px solid var(--input-border); border-radius:8px; padding:6px; background:var(--surface);">
               <label for="descripcion">Descripción de herramienta</label>
               <textarea id="descripcion" name="descripcion" placeholder="Escribe aquí la descripción de la herramienta"></textarea>
               <div class="boton-registrar" style="display:flex;justify-content:flex-end;align-items:flex-end;margin-top:24px;">
@@ -304,6 +310,14 @@
           var tipo = h.tipo || '—';
           var ubicacion = h.ubicacion || '—';
           var fecha = h.fechaRegistro || h.fecha_registro || h.fecha || '—';
+          if (fecha && fecha !== '—') {
+              try {
+                  var d = new Date(fecha);
+                  if(!isNaN(d.getTime())) {
+                      fecha = d.toLocaleString('es-CO', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+                  }
+              }catch(e){}
+          }
           var lote = h.numeroLote || h.numero_lote || h.lote || '—';
           var cantidad = (h.cantidad != null) ? h.cantidad : 0;
           var descripcion = h.descripcion || 'Sin descripción';
@@ -311,15 +325,28 @@
 
           var card = document.createElement('div');
           card.className = 'tarjeta';
-          var inner = '<h4>🛠 ' + escapeHtml(nombre) + '</h4>' +
-              '<p><strong>Estado:</strong> ' + escapeHtml(estado) + '</p>' +
-              '<p><strong>Tipo:</strong> ' + escapeHtml(tipo) + '</p>' +
-              '<p><strong>Ubicación:</strong> ' + escapeHtml(ubicacion) + '</p>' +
-              '<p><strong>Fecha registro:</strong> ' + escapeHtml(String(fecha)) + '</p>' +
-              '<p><strong>Lote:</strong> ' + escapeHtml(lote) + '</p>' +
-              '<p><strong>Cantidad:</strong> ' + escapeHtml(String(cantidad)) + '</p>' +
-              '<p><strong>Descripción:</strong> ' + escapeHtml(descripcion) + '</p>' +
-              '<p><strong>Código de herramienta:</strong> ' + escapeHtml(h.codigoHerramienta || h.codigo_herramienta || '-') + '</p>';
+          
+          var imagePart = h.foto ? 
+            `<div style="flex-shrink:0; margin-left:16px;">
+                <img src="${API_BASE}${h.foto}" style="width:200px; height:180px; object-fit:cover; border-radius:10px; border:2px solid var(--card-border);" alt="Foto herramienta"/>
+            </div>` : '';
+
+          var inner = `
+            <div style="display:flex; justify-content:space-between; align-items:stretch;">
+              <div style="flex-grow:1; display:flex; flex-direction:column; gap:4px;">
+                <h4 style="margin-top:0; margin-bottom:8px; font-size:18px;">🛠 ${escapeHtml(nombre)}</h4>
+                <p><strong>Estado:</strong> ${escapeHtml(estado)}</p>
+                <p><strong>Tipo:</strong> ${escapeHtml(tipo)}</p>
+                <p><strong>Ubicación:</strong> ${escapeHtml(ubicacion)}</p>
+                <p><strong>Fecha registro:</strong> ${escapeHtml(String(fecha))}</p>
+                <p><strong>Lote:</strong> ${escapeHtml(lote)}</p>
+                <p><strong>Cantidad:</strong> ${escapeHtml(String(cantidad))}</p>
+                <p style="margin-top:8px;"><strong>Descripción:</strong> ${escapeHtml(descripcion)}</p>
+                <p><strong>Código de herramienta:</strong> ${escapeHtml(h.codigoHerramienta || h.codigo_herramienta || '-')}</p>
+              </div>
+              ${imagePart}
+            </div>
+          `;
 
           card.innerHTML = inner;
 
@@ -384,39 +411,22 @@
       ev.preventDefault();
       hideError();
       var fd = new FormData(form);
-      var data = {};
-      fd.forEach(function(v, k) { data[k] = v; });
-
-      if (!data.fecha_registro) data.fecha_registro = nowIsoDate();
-      data.cantidad = parseInt(data.cantidad, 10) || 0;
-      function getTodayISO() {
-          var d = new Date();
-          return d.toISOString().slice(0, 10);
-      }
-      var payload = {
-          nombre: data.nombre,
-          descripcion: data.descripcion,
-          estado: data.estado,
-          tipo: data.tipo,
-          ubicacion: data.ubicacion,
-          numeroLote: data.numero_lote,
-          cantidad: parseInt(data.cantidad, 10) || 0,
-          fechaRegistro: getTodayISO(),
-          codigoHerramienta: data.codigoHerramienta
-      };
+      if (!fd.get('fechaRegistro') && fd.get('fecha_registro')) fd.set('fechaRegistro', fd.get('fecha_registro'));
+      if (!fd.get('fechaRegistro')) fd.set('fechaRegistro', getTodayISO());
+      
+      const payload = Object.fromEntries(fd.entries());
+      
       if (!payload.nombre || payload.nombre.trim() === '') { alert('❌ El nombre es obligatorio'); return; }
       if (!payload.estado || payload.estado === '') { alert('❌ El estado es obligatorio'); return; }
       if (!payload.tipo || payload.tipo === '') { alert('❌ El tipo es obligatorio'); return; }
       if (!payload.ubicacion || payload.ubicacion === '') { alert('❌ La ubicación es obligatoria'); return; }
-      if (!payload.numeroLote || payload.numeroLote === '') { alert('❌ El número de lote es obligatorio'); return; }
+      if (!payload.numero_lote || payload.numero_lote === '') { alert('❌ El número de lote es obligatorio'); return; }
       if (!payload.cantidad || payload.cantidad <= 0) { alert('❌ La cantidad debe ser mayor a 0'); return; }
-      if (!payload.fechaRegistro) { alert('❌ La fecha de registro es obligatoria'); return; }
       if (!payload.codigoHerramienta || payload.codigoHerramienta.trim() === '') { alert('❌ El código de herramienta es obligatorio'); return; }
 
       fetch(HERR_URL, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload)
+              body: fd
           })
           .then(function(res) {
               if (res.status === 201 || res.ok) {
@@ -491,7 +501,7 @@
               '<div style="flex:1;min-width:180px;"><label>Tipo</label><select id="edit_tipo"><option value="">Seleccionar</option><option value="Manual">Manual</option><option value="Electrica">Eléctrica</option></select></div>' +
               '</div>' +
               '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">' +
-              '<div style="flex:1;min-width:180px;"><label>Ubicación</label><select id="edit_ubicacion"><option value="">Seleccionar</option><option value="Bodega">Bodega</option><option value="Taller">Taller</option></select></div>' +
+              '<div style="flex:1;min-width:180px;"><label>Ubicación</label><select id="edit_ubicacion"><option value="">Seleccionar</option><option value="1">Bodega principal</option><option value="2">Salvajina</option><option value="3">Urra</option><option value="4">Ibague</option><option value="5">San Carlos</option><option value="6">Fundación</option></select></div>' +
               '<div style="flex:1;min-width:180px;"><label>Fecha registro</label><input id="edit_fecha" type="date" value="' + escapeHtml(String(found.fechaRegistro || found.fecha_registro || found.fecha_registro || '')) + '" /></div>' +
               '<div style="flex:1;min-width:180px;"><label>Número lote</label><select id="edit_lote"><option value="">Seleccionar</option><option value="Lote 1">Lote 1</option><option value="Lote 2">Lote 2</option></select></div>' +
               '</div>' +

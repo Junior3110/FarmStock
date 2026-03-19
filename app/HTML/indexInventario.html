@@ -76,7 +76,7 @@
     .confirm-modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.6);
+     outline: 3px solid rgba(0, 75, 135, 0.15);
       backdrop-filter: blur(8px);
       display: none;
       justify-content: center;
@@ -253,25 +253,7 @@
       <div class="content-box cuadro-visual">
         <div class="encabezado-panel">
           <h1>Inventario</h1>
-          <div class="search-box" style="display:flex;gap:16px;align-items:center;flex-direction:row;">
-            <select id="tipoFiltro" style="padding:8px 12px;border-radius:8px;border:1px solid var(--card-border);background:var(--surface);color:var(--text);font-size:13px;">
-              <option value="codigo">Filtrar por código único</option>
-              <option value="informe">Filtrar por código informe</option>
-            </select>
-            <input 
-              type="text" 
-              id="buscarCodigo" 
-              placeholder="🔍 Escribe el código único..." 
-              style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--surface); color: var(--text); width: 240px; font-size: 13px;"
-            />
-            <input 
-              type="text" 
-              id="buscarCodigoInforme" 
-              placeholder="🔍 Escribe el código informe..." 
-              style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--surface); color: var(--text); width: 240px; font-size: 13px; display:none;"
-            />
-            <!-- Botón eliminado para búsqueda automática por código informe -->
-          </div>
+          <div><!-- Removed filter boxes --></div>
         </div>
 
         <div id="inventarioLista" class="tarjetas-container" aria-live="polite"></div>
@@ -356,109 +338,13 @@ function renderCard(h) {
   return div;
 }
 
-(function() {
-  var BACKEND = 'http://localhost:3000';
-  var HERR_URL = BACKEND + '/herramienta';
-  var contenedor = document.getElementById('inventarioLista');
-  var tipoFiltro = document.getElementById('tipoFiltro');
-  var buscarCodigoInput = document.getElementById('buscarCodigo');
-  var buscarCodigoInformeInput = document.getElementById('buscarCodigoInforme');
-
-  tipoFiltro.addEventListener('change', function() {
-    if (this.value === 'codigo') {
-      buscarCodigoInput.style.display = '';
-      buscarCodigoInformeInput.style.display = 'none';
-      buscarCodigoInput.focus();
-    } else {
-      buscarCodigoInput.style.display = 'none';
-      buscarCodigoInformeInput.style.display = '';
-      buscarCodigoInformeInput.focus();
-    }
-  });
-
-  // Filtro por código informe
-  let timeoutBusquedaInforme = null;
-  buscarCodigoInformeInput.addEventListener('input', function() {
-    clearTimeout(timeoutBusquedaInforme);
-    const codigo = this.value.trim();
-    timeoutBusquedaInforme = setTimeout(function() {
-      if (tipoFiltro.value !== 'informe') return;
-      if (!codigo) {
-        contenedor.innerHTML = '<p style="color:#b00020;">Debes ingresar un código de informe.</p>';
-        return;
-      }
-      fetch(HERR_URL + '/codigo-informe/' + encodeURIComponent(codigo), {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(function(res) {
-        if (!res.ok) return res.text().then(function(msg) { throw new Error(msg); });
-        return res.json();
-      })
-      .then(function(herramientas) {
-        if (!herramientas || herramientas.length === 0) {
-          contenedor.innerHTML = '<p>No se encontraron herramientas para ese código de informe.</p>';
-          return;
-        }
-        contenedor.innerHTML = '';
-        var grid = document.createElement('div');
-        grid.className = 'tarjetas-container';
-        herramientas.forEach(function(h) {
-          grid.appendChild(renderCard(h));
-        });
-        contenedor.appendChild(grid);
-      })
-      .catch(function(err) {
-        contenedor.innerHTML = '<p style="color:#b00020;">Error: ' + (err.message || err) + '</p>';
-      });
-    }, 300);
-  });
-
-  // Filtro por código único
-  let timeoutBusqueda = null;
-  buscarCodigoInput.addEventListener('input', function() {
-    clearTimeout(timeoutBusqueda);
-    const codigo = this.value.trim();
-    timeoutBusqueda = setTimeout(() => {
-      if (!codigo) {
-        contenedor.innerHTML = '<p style="color:#b00020;">Debes ingresar un código único.</p>';
-        return;
-      }
-      fetch(HERR_URL + '/buscar?codigoUnico=' + encodeURIComponent(codigo), {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(function(res) {
-        if (!res.ok) return res.text().then(function(msg) { throw new Error(msg); });
-        return res.json();
-      })
-      .then(function(herramientas) {
-        if (!herramientas || herramientas.length === 0) {
-          contenedor.innerHTML = '<p>No se encontraron herramientas para ese código único.</p>';
-          return;
-        }
-        contenedor.innerHTML = '';
-        var grid = document.createElement('div');
-        grid.className = 'tarjetas-container';
-        herramientas.forEach(function(h) {
-          grid.appendChild(renderCard(h));
-        });
-        contenedor.appendChild(grid);
-      })
-      .catch(function(err) {
-        contenedor.innerHTML = '<p style="color:#b00020;">Error: ' + (err.message || err) + '</p>';
-      });
-    }, 300);
-  });
-
-})();
+// (Removed old filter listeners)
 </script>
 
     <script>
     (function () {
       const API = window.FSApiClient;
       const contenedor = document.getElementById('inventarioLista');
-      const buscarCodigoInput = document.getElementById('buscarCodigo');
       const modalBackdrop = document.getElementById('modalBackdropInv');
       const modalContent = document.getElementById('modalContentInv');
       const modalTitle = document.getElementById('modalTitleInv');
@@ -675,6 +561,7 @@ function renderCard(h) {
         div.className = 'tarjeta herramienta-card';
         div.innerHTML = `
           <h3>${escapeHtml(h.nombre)}</h3>
+          ${h.foto ? '<img src="' + BACKEND + h.foto + '" style="max-width:100%; height:auto; border-radius:8px; margin-bottom:8px; max-height:120px; object-fit:cover;" alt="Foto herramienta"/>' : ''}
           <p><strong>Estado:</strong> ${escapeHtml(h.estado)}</p>
           <p><strong>Tipo:</strong> ${escapeHtml(h.tipo)}</p>
           <p><strong>Ubicación:</strong> ${escapeHtml(h.ubicacion)}</p>
@@ -707,66 +594,96 @@ function renderCard(h) {
         return div;
       }
 
-      function applyCodeFilter(items, codigoBusqueda, todosDetalles) {
-        if (!codigoBusqueda || codigoBusqueda.trim() === '') return items;
-        
-        const termino = codigoBusqueda.trim().toLowerCase();
-        console.log('🔍 Buscando por código:', termino);
-        
-        // Filtrar detalles que coincidan con el código buscado
-        const detallesFiltrados = todosDetalles.filter(detalle => {
-          const codigo = (detalle.codigoUnico || '').toLowerCase();
-          return codigo.includes(termino);
-        });
-        
-        console.log('📋 Detalles encontrados:', detallesFiltrados);
-        
-        // Obtener IDs de herramientas que tienen esos códigos
-        const idsHerramientas = [...new Set(detallesFiltrados.map(d => 
-          d.herramienta?.idHerramienta || d.herramienta?.id
-        ))].filter(Boolean);
-        
-        console.log('🔑 IDs de herramientas:', idsHerramientas);
-        
-        // Filtrar herramientas que coincidan
-        return items.filter(h => 
-          idsHerramientas.includes(h.idHerramienta || h.id)
-        );
+
+
+      let currentProyectoView = null;
+
+      function renderProyectos() {
+         currentProyectoView = null;
+         
+         const headerPanel = document.querySelector('.encabezado-panel');
+         if (headerPanel) {
+            headerPanel.innerHTML = '<h1>Inventario</h1><div></div>';
+         }
+         
+         contenedor.innerHTML = '';
+         
+         const proyectos = [
+            { id: 1, nombre: 'Bodega principal', icono: '🏭' },
+            { id: 2, nombre: 'Salvajina', icono: '🏗️' },
+            { id: 3, nombre: 'Urra', icono: '🏗️' },
+            { id: 4, nombre: 'Ibague', icono: '🏗️' },
+            { id: 5, nombre: 'San Carlos', icono: '🏗️' },
+            { id: 6, nombre: 'Fundación', icono: '🏗️' }
+         ];
+
+         contenedor.className = 'tarjetas-container';
+         proyectos.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'tarjeta';
+            card.style.cursor = 'pointer';
+            card.style.textAlign = 'center';
+            card.style.padding = '24px 12px';
+            card.innerHTML = '<div style="font-size:32px; margin-bottom:12px;">' + p.icono + '</div><h3 style="justify-content:center;margin:0;">' + p.nombre + '</h3>';
+            card.addEventListener('click', () => verInventarioProyecto(p));
+            contenedor.appendChild(card);
+         });
       }
 
-      async function mostrarInventario(codigoBusqueda = '') {
-        contenedor.innerHTML = '<p>Cargando inventario...</p>';
-        console.log('🔄 Iniciando carga de inventario...');
-        
-        let all = [];
-        try { 
-          all = await fetchAllTools(); 
-          console.log('✅ Herramientas cargadas:', all.length);
-        } catch (e) { 
-          console.error('❌ Error:', e);
-          all = loadToolsFromLocal(); 
-        }
-        
-        let mostrados = all;
-        
-        // Aplicar filtro de búsqueda por código único
-        if (codigoBusqueda && codigoBusqueda.trim() !== '') {
-          const todosDetalles = await fetchAllToolsWithDetails();
-          mostrados = applyCodeFilter(all, codigoBusqueda, todosDetalles);
-        }
-        
-        contenedor.innerHTML = '';
-        if (!mostrados || mostrados.length === 0) {
-          if (codigoBusqueda && codigoBusqueda.trim() !== '') {
-            contenedor.innerHTML = '<p>🔍 No se encontraron herramientas con el código "<strong>' + escapeHtml(codigoBusqueda) + '</strong>"</p>';
+      async function mostrarInventario() {
+          if (currentProyectoView) {
+              await verInventarioProyecto(currentProyectoView);
           } else {
-            contenedor.innerHTML = '<p>No hay herramientas registradas. Verifica que el backend esté corriendo en ' + BACKEND + '</p>';
+              renderProyectos();
           }
-          return;
-        }
-        
-        console.log('📊 Mostrando', mostrados.length, 'herramientas');
-        mostrados.forEach(t => contenedor.appendChild(renderCard(t)));
+      }
+
+      async function verInventarioProyecto(proyecto) {
+         currentProyectoView = proyecto;
+         
+         const headerPanel = document.querySelector('.encabezado-panel');
+         if (headerPanel) {
+            headerPanel.innerHTML = `
+               <div style="flex:1; display:flex; justify-content:flex-start;">
+                  <button id="btnVolverTop" class="btn-small btn-outline" style="border: 1px solid var(--card-border); background: var(--surface); color: var(--text); padding: 8px 16px; font-weight: bold; cursor: pointer;">&larr; Volver a Proyectos</button>
+               </div>
+               <h2 style="margin:0; flex:2; text-align:center; color: var(--accent-600); font-size: 28px;">Inventario: ${escapeHtml(proyecto.nombre)}</h2>
+               <div style="flex:1;"></div>
+            `;
+            document.getElementById('btnVolverTop').addEventListener('click', () => { currentProyectoView = null; renderProyectos(); });
+         }
+
+         contenedor.innerHTML = '<p style="padding:12px;">Cargando herramientas...</p>';
+
+         let all = [];
+         try {
+            all = await fetchAllTools();
+         } catch(e) {
+            all = loadToolsFromLocal();
+         }
+
+         const permitidas = ['Bodega principal', proyecto.nombre];
+         
+         const mostrados = all.filter(h => {
+             const ubic = h.ubicacion || '';
+             if (permitidas.includes(ubic)) return true;
+             const idU = String(h.id_ubicacion || h.ubicacion_id || '');
+             if (idU === '1' || idU === String(proyecto.id)) return true;
+             return false;
+         });
+
+         contenedor.innerHTML = '';
+
+         contenedor.className = 'tarjetas-container';
+
+         if (mostrados.length === 0) {
+             const msg = document.createElement('p');
+             msg.style.padding = '12px';
+             msg.textContent = 'No hay herramientas registradas para Bodega principal ni ' + proyecto.nombre;
+             contenedor.appendChild(msg);
+         } else {
+             mostrados.forEach(t => contenedor.appendChild(renderCard(t)));
+         }
       }
 
       // Edit modal (simplificado) y detalles modal que muestran QR grande por unidad
@@ -822,6 +739,10 @@ function renderCard(h) {
             '<div style="flex:1;min-width:180px;margin-top:10px;"><label>Código informe</label><input id="edit_codigoInforme" type="text" value="' + codigoInforme + '" readonly /></div>' +
             '<div style="margin-top:10px;"><label>Cantidad</label><input id="edit_cantidad" type="number" min="0" value="' + escapeHtml(String(found.cantidad || 0)) + '" /></div>' +
             '<div style="margin-top:10px;"><label>Descripción</label><textarea id="edit_descripcion" style="width:100%;">' + escapeHtml(found.descripcion || '') + '</textarea></div>' +
+            '<div style="margin-top:10px; display:flex; gap:12px; align-items:flex-start;">' + 
+            (found.foto ? '<img src="' + BACKEND + escapeHtml(found.foto) + '" style="max-height:80px; border-radius:4px; border:1px solid #ddd;" alt="Foto actual"/>' : '<div style="width:80px; height:80px; background:#f0f0f0; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; border-radius:4px;"><small>Sin foto</small></div>') +
+            '<div style="flex:1"><label>Cambiar foto (Dejar vacío para mantener actual)</label><input type="file" id="edit_foto" name="foto" accept="image/*" style="width:100%; padding:8px;"></div>' +
+            '</div>' +
             '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;"><button id="saveEditInv" class="btn-small" type="button">Guardar</button><button id="cancelEditInv" class="btn-small delete" type="button">Cancelar</button></div>';
           container.innerHTML = html;
           modalContent.appendChild(container);
@@ -851,29 +772,31 @@ function renderCard(h) {
             }
 
             try {
-              if (API && typeof API.actualizarHerramienta === 'function') {
-                await API.actualizarHerramienta(found.idHerramienta || found.id, payload);
-              } else {
-                const response = await fetch(BACKEND + '/herramienta/' + encodeURIComponent(found.idHerramienta || found.id), {
-                  method: 'PUT',
-                  headers: {'Content-Type':'application/json'},
-                  body: JSON.stringify(payload)
-                });
-                if (!response.ok) {
-                  const errorData = await response.text();
-                  let errorMessage = 'Error al actualizar';
-                  try {
-                    const errorJson = JSON.parse(errorData);
-                    errorMessage = errorJson.message || errorJson.error || errorData;
-                  } catch(e) {
-                    errorMessage = errorData || `Error HTTP ${response.status}`;
-                  }
-                  throw new Error(errorMessage);
+              const formData = new FormData();
+              Object.keys(payload).forEach(key => formData.append(key, payload[key]));
+              const fileInput = document.getElementById('edit_foto');
+              if (fileInput && fileInput.files[0]) {
+                 formData.append('foto', fileInput.files[0]);
+              }
+
+              const response = await fetch(BACKEND + '/herramienta/' + encodeURIComponent(found.idHerramienta || found.id), {
+                method: 'PUT',
+                body: formData
+              });
+              if (!response.ok) {
+                const errorData = await response.text();
+                let errorMessage = 'Error al actualizar';
+                try {
+                  const errorJson = JSON.parse(errorData);
+                  errorMessage = errorJson.message || errorJson.error || errorData;
+                } catch(e) {
+                  errorMessage = errorData || `Error HTTP ${response.status}`;
                 }
+                throw new Error(errorMessage);
               }
               alert('Registro actualizado en servidor.');
               closeModal();
-              mostrarInventario(buscarCodigoInput.value);
+              mostrarInventario();
             } catch (e) {
               console.error('Error al actualizar:', e);
               alert('Error: ' + (e.message || e));
@@ -889,23 +812,31 @@ function renderCard(h) {
         modalBackdrop.classList.add('open');
         modalBackdrop.setAttribute('aria-hidden','false');
 
-        const qrImgUrl = qrUrlForToolName(nombre);
+        let toolObj = null;
+        let detalles = [];
 
         try {
-          let detalles = [];
-          if (API && typeof API.obtenerDetalles === 'function') {
-            detalles = await API.obtenerDetalles(herramientaId);
-          } else {
-            const local = loadToolsFromLocal();
-            const t = local.find(x => String(x.idHerramienta) === String(herramientaId) || String(x.id) === String(herramientaId));
-            detalles = (t && t.detalles) ? t.detalles : [];
+          const response = await fetch(BACKEND + '/herramienta/' + encodeURIComponent(herramientaId));
+          if (response.ok) {
+              toolObj = await response.json();
           }
-          renderDetallesList(detalles || [], herramientaId, nombre, qrImgUrl);
+
+          const rulesUrl = BACKEND + '/api/herramienta-detalle/herramienta/' + herramientaId;
+          const detRes = await fetch(rulesUrl);
+          if (detRes.ok) {
+              detalles = await detRes.json();
+          }
+
+          if (!toolObj && detalles.length > 0 && detalles[0].herramienta) {
+             toolObj = detalles[0].herramienta;
+          }
+
+          renderDetallesList(detalles || [], herramientaId, nombre, toolObj);
         } catch (err) {
           console.warn('DETALLE failed', err);
           const local = loadToolsFromLocal();
-          const t = local.find(x => String(x.idHerramienta) === String(herramientaId) || String(x.id) === String(herramientaId));
-          if (t) renderDetallesList(t.detalles || [], herramientaId, nombre, qrImgUrl);
+          toolObj = local.find(x => String(x.idHerramienta) === String(herramientaId) || String(x.id) === String(herramientaId));
+          if (toolObj) renderDetallesList(toolObj.detalles || [], herramientaId, nombre, toolObj);
           else {
             modalBackdrop.classList.remove('open');
             modalBackdrop.setAttribute('aria-hidden','true');
@@ -913,56 +844,32 @@ function renderCard(h) {
           }
         }
 
-        function renderDetallesList(detalles, herramientaId, nombre, qrImgUrl) {
+        function renderDetallesList(detalles, herramientaId, nombre, toolObj) {
           modalContent.innerHTML = '';
-          const qrElement = createQrElement(qrImgUrl, nombre || '', herramientaId);
-          modalContent.appendChild(qrElement);
+
+          if (toolObj && toolObj.foto) {
+             const imgDiv = document.createElement('div');
+             imgDiv.innerHTML = '<img src="' + BACKEND + escapeHtml(toolObj.foto) + '" style="max-height:160px; max-width:100%; border-radius:8px; display:block; margin: 0 auto 16px auto;" alt="Foto"/>';
+             modalContent.appendChild(imgDiv);
+          }
 
           if (!Array.isArray(detalles) || detalles.length === 0) {
-            modalContent.innerHTML += '<p>No hay detalles.</p>';
+            modalContent.innerHTML += '<p>No hay detalles/unidades registradas para esta herramienta.</p>';
             return;
           }
           const listDiv = document.createElement('div');
           listDiv.className = 'modal-list';
           detalles.forEach(function(d, idx){
-            // Contenedor principal que incluirá tanto la tarjeta como el panel de edición
             const itemWrapper = document.createElement('div');
             itemWrapper.style.marginBottom = '20px';
             
             const cont = document.createElement('div');
             cont.className = 'tarjeta';
             cont.style.display = 'grid';
-            cont.style.gridTemplateColumns = '1fr 2fr 1fr';
-            cont.style.gap = '30px';
+            cont.style.gridTemplateColumns = '3fr 1fr';
+            cont.style.gap = '20px';
             cont.style.alignItems = 'center';
             cont.style.padding = '20px';
-
-            // COLUMNA IZQUIERDA: QR centrado con diseño de caja
-            const leftColumn = document.createElement('div');
-            leftColumn.style.display = 'flex';
-            leftColumn.style.flexDirection = 'column';
-            leftColumn.style.alignItems = 'center';
-            leftColumn.style.justifyContent = 'center';
-            leftColumn.style.padding = '20px';
-            leftColumn.style.backgroundColor = '#f5f5f5';
-            leftColumn.style.borderRadius = '10px';
-            leftColumn.style.border = '2px solid #ddd';
-            leftColumn.style.minHeight = '150px';
-
-            // mostrar QR por código único del detalle
-            const codigo = d.codigoUnico || d.codigo || d.idDetalle || d.id;
-            const img = document.createElement('img');
-            img.src = codigo ? qrUrlForCodigo(codigo) : '';
-            img.alt = 'QR ' + (codigo || '');
-            img.style.width = '100px';
-            img.style.height = '100px';
-            img.style.objectFit = 'contain';
-            img.style.backgroundColor = '#fff';
-            img.style.padding = '8px';
-            img.style.borderRadius = '8px';
-            img.style.border = '1px solid #e0e0e0';
-            img.onerror = function() { console.warn('[QR] detalle not found:', img.src); this.style.display = 'none'; };
-            leftColumn.appendChild(img);
 
             // COLUMNA CENTRO: Información
             const centerColumn = document.createElement('div');
@@ -986,136 +893,7 @@ function renderCard(h) {
             // COLUMNA DERECHA: Botones
             const rightColumn = document.createElement('div');
             rightColumn.style.display = 'flex';
-            rightColumn.style.flexDirection = 'column';
-            rightColumn.style.gap = '10px';
-            rightColumn.style.alignItems = 'stretch';
-
-            const btnPrintQR = document.createElement('button');
-            btnPrintQR.type = 'button';
-            btnPrintQR.className = 'btn-small';
-            btnPrintQR.style.background = '#4CAF50';
-            btnPrintQR.style.color = '#fff';
-            btnPrintQR.style.fontSize = '12px';
-            btnPrintQR.style.padding = '8px 12px';
-            btnPrintQR.style.border = 'none';
-            btnPrintQR.style.borderRadius = '5px';
-            btnPrintQR.style.cursor = 'pointer';
-            btnPrintQR.textContent = '🖨️ Imprimir';
-            btnPrintQR.addEventListener('click', async function(){
-              const codigoPrint = d.codigoUnico || d.codigo;
-              if (!codigoPrint) {
-                alert('❌ No se encontró el código único');
-                return;
-              }
-              try {
-                const qrUrl = BACKEND + '/api/herramienta-detalle/qr/' + encodeURIComponent(codigoPrint);
-                const response = await fetch(qrUrl);
-                if (!response.ok) {
-                  throw new Error('No se pudo obtener el código QR');
-                }
-                const blob = await response.blob();
-                const imgUrl = URL.createObjectURL(blob);
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
-                  <!DOCTYPE html>
-                  <html>
-                  <head>
-                    <title>Imprimir QR - ${codigoPrint}</title>
-                    <style>
-                      @page { margin: 0.5cm; }
-                      body {
-                        margin: 0;
-                        padding: 0;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        height: 100vh;
-                        background: #fff;
-                        font-family: Arial, sans-serif;
-                      }
-                      .print-box {
-                        display: flex;
-                        align-items: center;
-                        border: 2px solid #222;
-                        border-radius: 8px;
-                        padding: 10px 18px;
-                        background: #fff;
-                        min-width: 220px;
-                        max-width: 320px;
-                      }
-                      .print-qr {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        width: 80px;
-                        height: 80px;
-                        border: 2px solid #222;
-                        border-radius: 10px;
-                        margin-right: 18px;
-                        background: #fff;
-                      }
-                      .print-qr img {
-                        width: 60px;
-                        height: 60px;
-                        object-fit: contain;
-                        display: block;
-                      }
-                      .print-info {
-                        flex: 1;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        gap: 4px;
-                      }
-                      .print-info .nombre {
-                        font-size: 13px;
-                        font-weight: 700;
-                        color: #222;
-                      }
-                      .print-info .codigo {
-                        font-size: 11px;
-                        color: #444;
-                        font-weight: 600;
-                      }
-                      .print-info .fecha {
-                        font-size: 10px;
-                        color: #555;
-                      }
-                      @media print {
-                        body { padding: 0; }
-                      }
-                    </style>
-                  </head>
-                  <body>
-                    <div class="print-box">
-                      <div class="print-qr"><img src="${imgUrl}" alt="QR"></div>
-                      <div class="print-info">
-                        <div class="nombre">${nombreUnit}</div>
-                        <div class="codigo">${codigoPrint}</div>
-                        <div class="fecha">${new Date().toLocaleDateString('es-ES')}</div>
-                      </div>
-                    </div>
-                    <script>
-                      window.onload = function() {
-                        setTimeout(function() {
-                          window.print();
-                        }, 500);
-                      };
-                      window.onafterprint = function() {
-                        window.close();
-                      };
-                    <\/script>
-                  </body>
-                  </html>
-                `);
-                printWindow.document.close();
-              } catch (error) {
-                console.error('❌ Error al imprimir:', error);
-                alert('❌ Error al imprimir el código QR. Verifica que el backend esté corriendo.');
-              }
-            });
-
-            const btnEdit = document.createElement('button');
+            rightColumn.style.flexDirection = 'column';            const btnEdit = document.createElement('button');
             btnEdit.type = 'button';
             btnEdit.className = 'btn-small';
             btnEdit.style.padding = '8px 12px';
@@ -1142,7 +920,6 @@ function renderCard(h) {
               const nombreUnidad = (d.herramienta && d.herramienta.nombre) ? d.herramienta.nombre : 'esta unidad';
               const codigoUnidad = d.codigoUnico || idD;
               
-              // Mostrar modal de confirmación personalizado
               const confirmed = await showConfirmModal(
                 '¿Está seguro de que desea eliminar esta unidad?',
                 `${nombreUnidad} (${codigoUnidad})`
@@ -1151,44 +928,25 @@ function renderCard(h) {
               if (!confirmed) return;
 
               try {
-                console.log('🗑️ Eliminando unidad:', idD);
-                
-                const response = await fetch(BACKEND + '/api/herramienta-detalle/' + encodeURIComponent(idD), {
-                  method: 'DELETE'
-                });
-                
+                const response = await fetch(BACKEND + '/api/herramienta-detalle/' + encodeURIComponent(idD), { method: 'DELETE' });
                 if (!response.ok && response.status !== 204) {
                   const errorData = await response.text();
                   let errorMessage = 'Error al eliminar';
-                  try {
-                    const errorJson = JSON.parse(errorData);
-                    errorMessage = errorJson.message || errorJson.error || errorData;
-                  } catch(e) {
-                    errorMessage = errorData || `Error HTTP ${response.status}`;
-                  }
+                  try { errorMessage = JSON.parse(errorData).message || errorData; } catch(e) {}
                   throw new Error(errorMessage);
                 }
                 
-                console.log('✅ Unidad eliminada');
                 alert('✅ Unidad eliminada exitosamente');
-                
-                // Recargar el modal de detalles
                 await openDetallesModal(herramientaId, nombre);
-                
-                // Recargar también el inventario principal en segundo plano
-                mostrarInventario(buscarCodigoInput.value);
-                
+                mostrarInventario();
               } catch (e) {
-                console.error('❌ Error al eliminar detalle:', e);
                 alert('❌ Error al eliminar:\n\n' + (e.message || e));
               }
             });
 
-            rightColumn.appendChild(btnPrintQR);
             rightColumn.appendChild(btnEdit);
             rightColumn.appendChild(btnDelete);
 
-            cont.appendChild(leftColumn);
             cont.appendChild(centerColumn);
             cont.appendChild(rightColumn);
 
@@ -1327,7 +1085,7 @@ async function eliminarHerramienta(id, nombre) {
     }
 
     alert('✅ Herramienta eliminada exitosamente');
-    await mostrarInventario(buscarCodigoInput.value);
+    await mostrarInventario();
 
   } catch (e) {
     alert('❌ Error inesperado:\n\n' + (e.message || e));
@@ -1336,50 +1094,7 @@ async function eliminarHerramienta(id, nombre) {
   }
 }
 
-      // Búsqueda con debounce para mejor rendimiento
-      let timeoutBusqueda = null;
-      buscarCodigoInput.addEventListener('input', function() {
-        clearTimeout(timeoutBusqueda);
-        const codigo = this.value.trim();
-        timeoutBusqueda = setTimeout(() => {
-          if (!codigo) {
-            contenedor.innerHTML = '<p style="color:#b00020;">Debes ingresar un código único.</p>';
-            return;
-          }
-          fetch(HERR_URL + '/buscar?codigoUnico=' + encodeURIComponent(codigo), {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
-          })
-          .then(function(res) {
-            if (!res.ok) return res.text().then(function(msg) { throw new Error(msg); });
-            return res.json();
-          })
-          .then(function(herramientas) {
-            if (!herramientas || herramientas.length === 0) {
-              contenedor.innerHTML = '<p>No se encontraron herramientas para ese código único.</p>';
-              return;
-            }
-            contenedor.innerHTML = '';
-            var grid = document.createElement('div');
-            grid.className = 'tarjetas-container';
-            herramientas.forEach(function(h) {
-              grid.appendChild(renderCard(h));
-            });
-            contenedor.appendChild(grid);
-          })
-          .catch(function(err) {
-            contenedor.innerHTML = '<p style="color:#b00020;">Error: ' + (err.message || err) + '</p>';
-          });
-        }, 300); // Esperar 300ms después de que el usuario deje de escribir
-      });
-
-      // Limpiar búsqueda al presionar Escape
-      buscarCodigoInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          this.value = '';
-          mostrarInventario('');
-        }
-      });
+// (Search inputs removed)
 
       // debug: mostrar backend base en consola
       console.log('[CONFIG] BACKEND =', BACKEND);

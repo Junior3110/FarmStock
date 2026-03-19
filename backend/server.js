@@ -1,6 +1,7 @@
 require('dotenv').config({ quiet: true });
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const errorHandler = require('./middlewares/error.middleware');
 const herramientasRoutes = require('./routes/herramientas.routes');
 const equiposComputosRoutes = require('./routes/equipos_computos.routes');
@@ -14,15 +15,14 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Rutas — alineadas con FSApiClient.js (singular)
 app.use('/herramienta', herramientasRoutes);
 app.use('/equipos-computos', equiposComputosRoutes);
 
-// Placeholders para módulos pendientes
-app.use('/prestamo', (req, res) => {
-    res.json({ success: true, data: [], message: "Módulo de préstamos pendiente" });
-});
+const prestamosRoutes = require('./routes/prestamos.routes');
+app.use('/prestamo', prestamosRoutes);
 
 app.use('/usuario', usuariosRoutes);
 app.use('/aprendices', aprendicesRoutes);
@@ -65,7 +65,7 @@ app.put('/api/herramienta-detalle/:idDetalle', (req, res) => {
 const db = require('./config/database');
 app.get('/mantenimientos/estadisticas', async (req, res, next) => {
     try {
-        const [herramientas] = await db.query('SELECT * FROM herramienta');
+        const [herramientas] = await db.query('SELECT * FROM herramientas');
         const stats = herramientas.map(h => {
             // Generar algo de ruido pseudoaleatorio en base a la longitud del nombre para que siempre sea igual
             const nombreStr = h.nombre || 'Herramienta';

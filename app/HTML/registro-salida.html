@@ -137,10 +137,13 @@
 
           <!-- Filtros -->
           <div class="filtros" style="margin-bottom: 12px;">
-            <select id="filtroEstado">
-              <option value="activos">Solo Activos</option>
-              <option value="todos">Todos los Préstamos</option>
-              <option value="finalizados">Solo Devueltos</option>
+            <select id="filtroUbicacion">
+              <option value="">Seleccione Proyecto</option>
+              <option value="2">Salvajina</option>
+              <option value="3">Urra</option>
+              <option value="4">Ibague</option>
+              <option value="5">San Carlos</option>
+              <option value="6">Fundación</option>
             </select>
             <input type="text" id="filtroCodigo" placeholder="Buscar por código..." style="flex: 1; max-width: 300px;" />
             <button id="btnLimpiarFiltros" class="btn-small btn-outline">Limpiar filtros</button>
@@ -274,7 +277,7 @@
 
       const tablaBody = document.querySelector('#tablaHistorial tbody');
       const btnExport = document.getElementById('btnExportHist');
-      const filtroEstado = document.getElementById('filtroEstado');
+      const filtroUbicacion = document.getElementById('filtroUbicacion');
       const filtroCodigo = document.getElementById('filtroCodigo');
       const btnLimpiarFiltros = document.getElementById('btnLimpiarFiltros');
 
@@ -299,16 +302,14 @@
         tablaBody.innerHTML = '<tr><td colspan="9" style="padding:14px;color:var(--muted)">Cargando...</td></tr>';
         
         // Obtener filtros
-        const estadoFiltro = filtroEstado.value;
+        const idUbicacionFiltro = filtroUbicacion.value;
         const codigoFiltro = filtroCodigo.value.trim().toLowerCase();
         
         try {
-          // Determinar qué endpoint usar según el filtro de estado
-          let endpoint = 'http://localhost:3000/prestamos/activos';
-          if (estadoFiltro === 'todos') {
-            endpoint = 'http://localhost:3000/prestamos/todos';
-          } else if (estadoFiltro === 'finalizados') {
-            endpoint = 'http://localhost:3000/prestamos/devueltos';
+          // Determinar qué endpoint usar según el filtro de ubicación
+          let endpoint = 'http://localhost:3000/prestamo/activos';
+          if (idUbicacionFiltro) {
+             endpoint += `/${idUbicacionFiltro}`;
           }
           
           console.log('📡 Cargando préstamos desde:', endpoint);
@@ -322,8 +323,8 @@
             // Filtrar por código si hay texto en el filtro
             if (codigoFiltro) {
               prestamos = prestamos.filter(p => {
-                const codigo = (p.herramientaDetalle?.codigoUnico || '').toLowerCase();
-                const nombre = (p.herramienta?.nombre || '').toLowerCase();
+                const codigo = (p.herramientaDetalle?.codigoUnico || p.codigo_herramienta || '').toLowerCase();
+                const nombre = (p.herramienta?.nombre || p.nombre || '').toLowerCase();
                 return codigo.includes(codigoFiltro) || nombre.includes(codigoFiltro);
               });
               console.log('🔍 Préstamos después de filtrar por código:', prestamos.length);
@@ -351,15 +352,15 @@
               if (horaEntrada) {
                 horaEntradaHTML = escapeHtml(horaEntrada);
               } else {
-                horaEntradaHTML = `<button class="btn-small btn-green btn-registrar-entrada" data-codigo="${escapeHtml(p.herramientaDetalle?.codigoUnico || '')}">Registrar Entrada</button>`;
+                horaEntradaHTML = `<button class="btn-small btn-green btn-registrar-entrada" data-codigo="${escapeHtml(p.herramientaDetalle?.codigoUnico || p.codigo_herramienta || '')}">Registrar Entrada</button>`;
               }
               
               tr.innerHTML = `
                 <td>${escapeHtml(p.idPrestamo)}</td>
-                <td>${escapeHtml(p.herramienta?.nombre || 'N/A')}</td>
+                <td>${escapeHtml(p.herramienta?.nombre || p.nombre || 'N/A')}</td>
                 <td>${escapeHtml(p.estado)}</td>
-                <td>${escapeHtml(p.aprendiz?.numeroDocumento || 'N/A')}</td>
-                <td>${escapeHtml(p.aprendiz?.numeroFicha || 'N/A')}</td>
+                <td>${escapeHtml(p.aprendiz?.numeroDocumento || p.aprendiz_cc || 'N/A')}</td>
+                <td>${escapeHtml(p.aprendiz?.numeroFicha || p.aprendiz_ficha || 'N/A')}</td>
                 <td>${escapeHtml(fecha)}</td>
                 <td>${escapeHtml(horaSalida)}</td>
                 <td>${horaEntradaHTML}</td>
@@ -904,7 +905,9 @@
       });
 
       // Event listeners para filtros
-      filtroEstado.addEventListener('change', function() {
+      filtroUbicacion.addEventListener('change', function() {
+        renderHist();
+      });
         renderHist();
       });
 
@@ -917,7 +920,7 @@
       });
 
       btnLimpiarFiltros.addEventListener('click', function() {
-        filtroEstado.value = 'activos';
+        filtroUbicacion.value = '';
         filtroCodigo.value = '';
         renderHist();
       });

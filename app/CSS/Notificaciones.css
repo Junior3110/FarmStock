@@ -7,7 +7,7 @@
 :root {
   /* no declarar bg/surface aquí: usamos las del tema global */
   --card-border: var(--card-border, #e6e6e6);
-  --accent: var(--accent, #4CAF50);
+  --accent: var(--accent, #004b87);
   --muted: var(--muted, #666);
   --shadow-lg: var(--shadow-1, 0 6px 18px rgba(16,34,31,0.06));
   --radius: var(--radius, 12px);
@@ -83,12 +83,12 @@ main, .main-content, .main-panel {
   padding: 8px 14px;
   border-radius: 10px;
   background: linear-gradient(180deg, #fff, #fff);
-  border: 2px solid #84C378;
-  color: #84C378;
+  border: 2px solid var(--accent);
+  color: var(--accent);
   font-weight: 700;
   cursor: pointer;
 }
-.boton-verde:hover { background: #eaf6ea; color: #2e7d32; }
+.boton-verde:hover { background: color-mix(in srgb, var(--accent) 8%, white); color: var(--accent-600); }
 
 /* Menú y elementos del sidebar reutilizan estilos globales */
 .menu-modulos { margin-top: 12px; list-style: none; padding: 0; }

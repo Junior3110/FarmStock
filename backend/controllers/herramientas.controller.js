@@ -30,7 +30,11 @@ const getHerramientaById = async (req, res, next) => {
 
 const createHerramienta = async (req, res, next) => {
     try {
-        await herramientasService.create(req.body);
+        const bodyData = { ...req.body };
+        if (req.file) {
+            bodyData.foto = `/uploads/${req.file.filename}`;
+        }
+        await herramientasService.create(bodyData);
         res.status(201).json({ mensaje: "Herramienta creada" });
     } catch (error) {
         next(error);
@@ -43,7 +47,11 @@ const updateHerramienta = async (req, res, next) => {
         if (!id || id === 'undefined' || isNaN(id)) {
             return res.status(400).json({ message: "ID de herramienta no válido" });
         }
-        await herramientasService.update(id, req.body);
+        const bodyData = { ...req.body };
+        if (req.file) {
+            bodyData.foto = `/uploads/${req.file.filename}`;
+        }
+        await herramientasService.update(id, bodyData);
         res.json({ mensaje: "Actualizada" });
     } catch (error) {
         next(error);

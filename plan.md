@@ -1,17 +1,13 @@
-# Plan de Acción - Resolviendo los 4 Bugs / Mejoras
+# Plan de Implementación - Actualización de Base de Datos e Interfaz
 
-1. **Quiénes Somos (Misión y Visión)**
-   - Eliminar `mision2.jpg` y `vision2.jpg` en HTML.
-   - Ajustar el CSS en `quienes-somos.css` para centrar la imagen única en su contenedor flex.
+## 1. Análisis y Arquitectura
+- **Base de Datos (PostgreSQL)**: Creación/actualización de las 11 tablas principales usando relaciones correctas y `snake_case`. (usuarios, residentes, ubicaciones, herramientas, herramienta_detalle, equipos_computo, equipos_movimiento, reporte_dano, mantenimiento, prestamos, notificaciones). Modificación de la tabla herramientas para agregar columna de foto.
+- **Backend (Node/Express)**: Ajuste en los controladores y rutas para gestionar la subida de imágenes (archivos adjuntos) y traer los préstamos activos de los últimos 3 meses.
+- **Frontend (UI)**:
+  - **Registro de herramientas**: Añadir subida de foto. Arreglar formateo de fecha para que sea legible y con hora. Reemplazar "Bodega/Taller" por los 6 proyectos específicos.
+  - **Salida**: Nuevo selector para proyectos (sin incluir Bodega principal). Mostrar sólo activos de los últimos 3 meses de la ubicación.
+  - **Inventario**: Eliminar buscador por código. La vista principal mostrará tarjetas (recuadros) por cada Proyecto. Al hacer clic en un proyecto, se mostrarán las herramientas de ese proyecto. Las herramientas tendrán su foto en la tarjeta.
 
-2. **Mejores Estadísticas (Tiempo Real)**
-   - Agregar polling con `setInterval` en `estats.html` para consultar los datos periódicamente sin refrescar la página manualmente.
-
-3. **Herramientas de Hoy**
-   - Modificar la query SQL en `herramientas.controller.js` método `obtenerHoy`.
-   - Asegurar `ORDER BY id_herramienta DESC` y el filtro `DATE(fecha_registro) = CURDATE()`.
-
-4. **Equipos de Cómputo (Arreglo de Registro + 3 Datos)**
-   - Implementar todo el endpoint faltante en el backend (Rutas y Controladores).
-   - Crear tabla en la BD usando conexión DDL si no existe.
-   - Insertar 3 registros de prueba.
+## 2. Validación
+- Realizar simulación de registro de herramienta con imagen, validando la inserción.
+- Checar los listados en Inventario y los reportes en Salida para comprobar la lógica de negocios deseada por proyectos.

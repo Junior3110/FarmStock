@@ -22,116 +22,9 @@
   <link rel="stylesheet" href="../CSS/index.css" />
 
   <style>
-    /* --- Layout / form tweaks --- */
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px;
-      align-items: end;
-    }
-    .form-grid .full { grid-column: 1 / -1; }
-
-    .input-group { display:flex; flex-direction:column; gap:6px; }
-    input[type="text"], select {
-      padding:10px 12px;
-      border-radius:10px;
-      border:1px solid var(--card-border);
-      background: color-mix(in srgb,var(--surface) 96%, transparent 4%);
-      color:var(--text);
-    }
-
-    /* Keep inputs visually inside a subtle inner panel */
-    .form-inner {
-      background: var(--surface);
-      border-radius: 12px;
-      padding: 14px;
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow-1);
-    }
-
-    /* Filter area (dropdown + single input) */
-    .filter-row {
-      display:flex;
-      gap:12px;
-      align-items:center;
-      margin-bottom:12px;
-      flex-wrap:wrap;
-    }
-    .filter-row select, .filter-row input {
-      padding:8px 10px;
-      border-radius:8px;
-      border:1px solid var(--card-border);
-      background: color-mix(in srgb,var(--surface) 96%, transparent 4%);
-      color:var(--text);
-    }
-    .filter-actions { display:flex; gap:8px; }
-
-    .table-responsive { margin-top:12px; }
-    table.reg-table {
-      width:100%;
-      border-collapse: collapse;
-      background: var(--surface);
-      min-width: 720px;
-    }
-    table.reg-table th, table.reg-table td {
-      padding:10px 12px;
-      border-bottom: 1px solid rgba(0,0,0,0.06);
-      text-align:left;
-      color:var(--text);
-    }
-    table.reg-table thead th {
-      font-weight:800;
-      color:var(--muted);
-      background: color-mix(in srgb,var(--surface) 96%, transparent 4%);
-    }
-    .actions button {
-      padding:6px 8px;
-      border-radius:8px;
-      border:none;
-      cursor:pointer;
-      font-weight:700;
-      margin-right:6px;
-    }
-    .btn-delete { background: linear-gradient(180deg,#ef5350,#d32f2f); color:#fff; }
-    .btn-edit { background:#1976d2; color:#fff; }
-
-    /* Sobrescribir el borde izquierdo verde de las tarjetas en esta página */
-    .tarjeta {
-      border-left: 1px solid var(--card-border) !important;
-    }
-
-    /* Modal: shared style for nuevo y editar */
-    .modal-backdrop-ap {
-      display:none;
-      position:fixed;
-      inset:0;
-      background: rgba(6,10,8,0.44);
-      z-index: 10000;
-      justify-content:center;
-      align-items:center;
-      padding:24px;
-    }
-    .modal-backdrop-ap.open { display:flex; }
-    .modal-ap {
-      width: 680px;
-      max-width: calc(100% - 48px);
-      background: var(--surface);
-      border-radius: 12px;
-      padding: 16px;
-      border: 1px solid var(--card-border);
-      box-shadow: 0 18px 60px rgba(6,10,8,0.6);
-      max-height: 88vh;
-      overflow:auto;
-    }
-    .modal-ap .modal-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px; }
-    .modal-ap .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-      .form-grid { grid-template-columns: 1fr; }
-      table.reg-table { min-width: 600px; }
-      .modal-ap { width: 100%; padding:14px; }
-    }
+    /* Pequenos ajustes especificos si fueran necesarios */
+    .formulario-card label { display: block; margin-bottom: 5px; }
+    .btn-small { height: 36px; display: inline-flex; align-items: center; justify-content: center; }
   </style>
 </head>
 <body>
@@ -144,7 +37,7 @@
   <div class="container">
     <aside class="sidebar">
       <div class="top-section">
-        <div class="logo"><img src="../imagenes/Logo.png" alt="Logo del sitio" style="max-width:160px;display:block;" /></div>
+        <div class="logo"><img src="../imagenes/Logo.png" alt="Logo" /></div>
         <ul class="menu-modulos">
           <li><a href="index.html">Registro Herramientas</a></li>
           <li><a href="registro-salida.html">Salida Herramientas</a></li>
@@ -163,41 +56,47 @@
       </div>
     </aside>
 
-    <main class="main-content" role="main">
-      <div class="bienvenida" style="margin-bottom:8px;">
+    <main class="main-content">
+      <div class="bienvenida">
         <a href="perfil.html">
-          <img src="../imagenes/usuario.png" alt="Foto usuario" class="foto-usuario" />
+          <img src="../imagenes/usuario.png" alt="Foto de usuario" class="foto-usuario" id="sidebar_user_img" />
         </a>
-        <p><strong>Registro Aprendices</strong></p>
+        <p><strong id="sidebar_user_name">¡Hola Usuario!</strong></p>
       </div>
 
       <div class="content-box">
         <div class="header" style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
-          <h1>Registro Aprendices</h1>
+          <h1>Registro de Aprendices</h1>
           <div style="display:flex;gap:8px;align-items:center;">
-            <button id="btnExport" class="boton-verde" style="height:40px;padding:0 14px;">Exportar CSV</button>
-            <button id="btnOpenNuevo" class="boton-verde" style="height:40px;padding:0 14px;">Registrar aprendiz</button>
+            <button id="btnExport" class="btn-small">Exportar CSV</button>
+            <button id="btnOpenNuevo">Registrar aprendiz</button>
           </div>
         </div>
 
-        <!-- Filter area: dropdown to choose field and single input for the search value -->
-        <div class="filter-row">
-          <select id="filter_field" aria-label="Campo a filtrar">
-            <option value="numero_documento">Número documento</option>
-            <option value="numero_ficha">Número ficha</option>
-          </select>
-
-          <input id="filter_value" type="text" placeholder="Escribe el valor a buscar" aria-label="Valor a buscar" />
-
-          <div class="filter-actions">
-            <button id="btnFilter" class="btn btn-small">Filtrar</button>
-            <button id="btnClearFilter" class="btn btn-small delete">Limpiar</button>
+        <!-- Filter area -->
+        <div class="formulario-card" style="padding: 15px; margin-bottom: 20px;">
+          <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+              <label for="filter_field">Filtrar por</label>
+              <select id="filter_field">
+                <option value="numero_documento">Número documento</option>
+                <option value="numero_ficha">Número ficha</option>
+              </select>
+            </div>
+            <div style="flex: 2; min-width: 250px;">
+              <label for="filter_value">Valor a buscar</label>
+              <input id="filter_value" type="text" placeholder="Escribe el valor a buscar..." />
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button id="btnFilter" class="btn-small">Filtrar</button>
+              <button id="btnClearFilter" class="btn-small delete">Limpiar</button>
+            </div>
           </div>
         </div>
 
-        <!-- Tabla con los registros locales -->
+        <!-- Tabla -->
         <div class="table-responsive">
-          <table class="reg-table" id="tablaAprendices" aria-describedby="tablaAprendicesDesc">
+          <table class="reg-table" id="tablaAprendices">
             <thead>
               <tr>
                 <th>Nombre</th>
@@ -210,29 +109,27 @@
             <tbody></tbody>
           </table>
         </div>
-
-        
       </div>
     </main>
   </div>
 
   <!-- Modal para crear nuevo aprendiz -->
-  <div id="modalNuevoAprendiz" class="modal-backdrop-ap" aria-hidden="true">
-    <div class="modal-ap" role="dialog" aria-modal="true" aria-labelledby="nuevoAprTitle">
+  <div id="modalNuevoAprendiz" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nuevoAprTitle">
       <div class="modal-header">
         <h2 id="nuevoAprTitle">Registrar aprendiz</h2>
         <button id="closeNuevoApr" class="btn-small" type="button" aria-label="Cerrar">Cerrar</button>
       </div>
 
       <form id="formNuevoAprendiz" novalidate>
-        <div class="form-inner">
-          <div class="form-grid" style="margin-bottom:10px;">
-            <div class="input-group full">
+        <div class="formulario-card">
+          <div class="formulario-horizontal">
+            <div class="columna full" style="grid-column: 1 / -1;">
               <label for="nuevo_ap_nombre">Nombre</label>
               <input id="nuevo_ap_nombre" name="nombre" type="text" placeholder="Nombre completo" required/>
             </div>
 
-            <div class="input-group">
+            <div class="columna">
               <label for="nuevo_ap_tipo">Tipo de documento</label>
               <select id="nuevo_ap_tipo" name="tipo_documento" required>
                 <option value="">Selecciona</option>
@@ -242,18 +139,18 @@
               </select>
             </div>
 
-            <div class="input-group">
+            <div class="columna">
               <label for="nuevo_ap_num">Número documento</label>
               <input id="nuevo_ap_num" name="numero_documento" type="text" placeholder="Número de documento" required />
             </div>
 
-            <div class="input-group">
+            <div class="columna">
               <label for="nuevo_ap_ficha">Número ficha</label>
               <input id="nuevo_ap_ficha" name="numero_ficha" type="text" placeholder="Número de ficha" />
             </div>
 
-            <div class="input-group full" style="display:flex;justify-content:flex-end;align-items:center;">
-              <button id="btnGuardarNuevo" class="btn btn-small" type="submit" style="background:linear-gradient(180deg,var(--accent-400),var(--accent-600)); color:#fff;">Guardar aprendiz</button>
+            <div class="columna full" style="grid-column: 1 / -1; display:flex; justify-content:flex-end;">
+              <button id="btnGuardarNuevo" type="submit">Guardar aprendiz</button>
             </div>
           </div>
         </div>
@@ -262,8 +159,8 @@
   </div>
 
   <!-- Modal para editar aprendiz -->
-  <div id="modalAprendiz" class="modal-backdrop-ap" aria-hidden="true">
-    <div class="modal-ap" role="dialog" aria-modal="true" aria-labelledby="modalAprTitle">
+  <div id="modalAprendiz" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalAprTitle">
       <div class="modal-header">
         <h2 id="modalAprTitle">Editar aprendiz</h2>
         <button id="closeModalApr" class="btn-small" type="button">Cerrar</button>
@@ -271,14 +168,14 @@
 
       <form id="formModalAprendiz" novalidate>
         <input type="hidden" id="modal_ap_id" />
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <div class="input-group">
-            <label for="modal_ap_nombre">Nombre</label>
-            <input id="modal_ap_nombre" type="text" required />
-          </div>
+        <div class="formulario-card">
+          <div class="formulario-horizontal">
+            <div class="columna full" style="grid-column: 1 / -1;">
+              <label for="modal_ap_nombre">Nombre</label>
+              <input id="modal_ap_nombre" type="text" required />
+            </div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-            <div class="input-group">
+            <div class="columna">
               <label for="modal_ap_tipo">Tipo de documento</label>
               <select id="modal_ap_tipo" required>
                 <option value="">Selecciona</option>
@@ -288,20 +185,20 @@
               </select>
             </div>
 
-            <div class="input-group">
+            <div class="columna">
               <label for="modal_ap_num">Número documento</label>
               <input id="modal_ap_num" type="text" required />
             </div>
 
-            <div class="input-group">
+            <div class="columna">
               <label for="modal_ap_ficha">Número ficha</label>
               <input id="modal_ap_ficha" type="text" />
             </div>
-          </div>
 
-          <div class="modal-actions">
-            <button type="button" id="cancelModalApr" class="btn btn-small delete">Cancelar</button>
-            <button type="submit" class="btn btn-small" style="background:linear-gradient(180deg,var(--accent-400),var(--accent-600)); color:#fff;">Guardar</button>
+            <div class="columna full" style="grid-column: 1 / -1; display:flex; justify-content:flex-end; gap:10px;">
+              <button type="button" id="cancelModalApr" class="btn-small delete">Cancelar</button>
+              <button type="submit">Guardar Cambios</button>
+            </div>
           </div>
         </div>
       </form>
@@ -395,8 +292,8 @@ async function renderTable(filter = {}) {
       <td>${escapeHtml(item.numeroDocumento)}</td>
       <td>${escapeHtml(item.numeroFicha)}</td>
       <td class="actions">
-        <button class="btn-edit" data-id="${item.idAprendiz}">Editar</button>
-        <button class="btn-delete" data-id="${item.idAprendiz}">Eliminar</button>
+        <button class="btn-small editar" data-id="${item.idAprendiz}">Editar</button>
+        <button class="btn-small delete" data-id="${item.idAprendiz}">Eliminar</button>
       </td>
     `;
     tablaBody.appendChild(tr);
@@ -452,7 +349,7 @@ tablaBody.addEventListener('click', async function (ev) {
   const btn = ev.target.closest('button');
   if (!btn) return;
   const id = btn.dataset.id;
-  if (btn.classList.contains('btn-delete')) {
+  if (btn.classList.contains('delete')) {
     if (!confirm('Eliminar aprendiz?')) return;
     try {
       await eliminarAprendiz(id);
@@ -463,7 +360,7 @@ tablaBody.addEventListener('click', async function (ev) {
     }
     return;
   }
-  if (btn.classList.contains('btn-edit')) {
+  if (btn.classList.contains('editar')) {
     openEditModal(id);
     return;
   }
